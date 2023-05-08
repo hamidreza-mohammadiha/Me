@@ -214,17 +214,17 @@ footer {
 @media screen and (max-width: 749px) {
 	
    .content-wrap {
-  max-width: 749px;
+  max-width: 370px;
   width: 85%;
   margin: 0 auto;
-  padding: 60px 0;
+  padding: 6px 0;
  }
 	
 	 .content-wrap iframe{
-  max-width: 749px;
+  max-width: 370px;
   width: 85%;
   margin: 0 auto;
-  padding: 60px 0;
+  padding: 6px 0;
  }
 	
   h1 {
@@ -246,19 +246,18 @@ footer {
 }
 
 @media screen and (max-width: 420px) {
-	
-	   .content-wrap {
-  max-width: 420px;
+    .content-wrap {
+  max-width: 370px;
   width: 85%;
   margin: 0 auto;
-  padding: 60px 0;
+  padding: 6px 0;
  }
 	
 	 .content-wrap iframe{
-  max-width: 420px;
+  max-width: 370px;
   width: 85%;
   margin: 0 auto;
-  padding: 60px 0;
+  padding: 6px 0;
  }
 
 	.project-item img {
