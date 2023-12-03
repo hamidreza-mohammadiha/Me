@@ -92,6 +92,19 @@ h2 {
   margin: 0 auto;
   padding: 60px 0;
 }
+
+.content-wrap .btn {
+  background: #2F3061;
+  color: #F7FFF7;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.content-wrap .btn:hover {
+  background: rgba(47,48,97,80%);
+}
+
 .item-details h3 {
   margin-bottom: 5px;
 }
