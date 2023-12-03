@@ -105,6 +105,10 @@ h2 {
   background: rgba(47,48,97,80%);
 }
 
+content-wrap a {
+  color: #2F3061;
+}
+
 .item-details h3 {
   margin-bottom: 5px;
 }
