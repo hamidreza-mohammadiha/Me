@@ -18,22 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-    // dropping-letter-animation.js
+  
 
-ddocument.addEventListener("DOMContentLoaded", function() {
-    // Wait for the DOM to be fully loaded
-    var paragraph = document.createElement("p"); // Create a <p> element
-    paragraph.textContent = "I am trying to show animation :("; // Set the text content of the <p> element
     
-    // Get the element with id "1"
-    var targetElement = document.getElementById("2");
-    
-    if (targetElement) {
-        // If the element with id "1" exists, append the <p> element to it
-        targetElement.appendChild(paragraph);
-    } else {
-        // If the element with id "1" doesn't exist, log an error to the console
-        console.error("Element with id '2' not found.");
-    }
-});
   
