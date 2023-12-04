@@ -17,3 +17,28 @@ document.addEventListener("DOMContentLoaded", function() {
         console.error("Element with id '1' not found.");
     }
 });
+
+    // dropping-letter-animation.js
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Function to create dropping-letter animation
+    function droppingLetterAnimation(text, elementId) {
+      const element = document.getElementById(elementId);
+      element.innerHTML = ""; // Clear existing content
+  
+      for (let i = 0; i < text.length; i++) {
+        setTimeout(() => {
+          element.innerHTML += `<span style="position: relative; top: ${i * 20}px;">${text[i]}</span>`;
+        }, i * 100); // Adjust the delay as needed
+      }
+  
+      // Repeat the animation after a delay
+      setTimeout(() => {
+        droppingLetterAnimation(text, elementId);
+      }, text.length * 100);
+    }
+  
+    // Start the dropping-letter animation
+    droppingLetterAnimation("This paragraph", "2");
+  });
+  
