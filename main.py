@@ -1,19 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, request, jsonify
 import requests
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+def BitCoin_Price():
+    key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+    # requesting data from url
+    data = requests.get(key)
+    data = data.json()
+    return data['price']
 
-@app.route('/get_price')
-def get_price():
-    api_url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
-    response = requests.get(api_url)
-    data = response.json()
-    price = data.get('price', 'N/A')
-    return {'price': price}
+@app.route("/")
+def BTC():
+    btc_price = BitCoin_Price()
+    return f"BTC price: {btc_price}"
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=2080)
+
