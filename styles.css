@@ -94,12 +94,13 @@ h2 {
 }
 
 .content-wrap .btn_Home {
-  background: #2F3061;
+  background: #06074c;
   color: #F7FFF7;
   text-decoration: none;
   padding: 8px;
   border-radius: 4px;
   display: inline-block;
+  padding: 10px 0;
 }
 .content-wrap .btn_Home:hover {
   background: rgba(47,48,97,80%);
@@ -112,18 +113,20 @@ h2 {
   padding: 8px;
   border-radius: 4px;
   display: inline-block;
+  padding: 10px 0;
 }
 .content-wrap .btn:hover {
   background: rgba(47,48,97,80%);
 }
 
 .content-wrap .btn_Pro {
-  background: #F7FFF7;
+  background: #1e8ff2;
   color: #F7FFF7;
   text-decoration: none;
   padding: 8px;
   border-radius: 4px;
   display: inline-block;
+  padding: 10px 0;
 }
 .content-wrap .btn_pr:hover {
   background: rgba(47,48,97,80%);
