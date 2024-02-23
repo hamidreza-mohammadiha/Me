@@ -93,6 +93,18 @@ h2 {
   padding: 60px 0;
 }
 
+.content-wrap .btn_Home {
+  background: #2F3061;
+  color: #F7FFF7;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.content-wrap .btn_Home:hover {
+  background: rgba(47,48,97,80%);
+}
+
 .content-wrap .btn {
   background: #2F3061;
   color: #F7FFF7;
@@ -102,6 +114,18 @@ h2 {
   display: inline-block;
 }
 .content-wrap .btn:hover {
+  background: rgba(47,48,97,80%);
+}
+
+.content-wrap .btn_Pro {
+  background: #F7FFF7;
+  color: #F7FFF7;
+  text-decoration: none;
+  padding: 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.content-wrap .btn_pr:hover {
   background: rgba(47,48,97,80%);
 }
 
