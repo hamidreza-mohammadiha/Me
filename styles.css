@@ -30,6 +30,12 @@ body {
   line-height: 1.5;
 }
 
+#clock {
+  font-size: 2em;
+  text-align: center;
+}
+
+
 .wrapper1 {
   display: grid;
   grid-template-columns: 100%;
