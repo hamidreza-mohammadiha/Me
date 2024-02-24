@@ -16,10 +16,3 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateAge, 1); // Update the age every millisecond
     updateAge(); // Run function immediately to avoid delay
   });
-  
-  let number = 1;
-  setInterval(() => {
-    document.querySelector('.cipher').innerText = number;
-    number = number === 6 ? 1 : number + 1;
-  }, 3500);
-  
