@@ -17,3 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
     updateAge(); // Run function immediately to avoid delay
   });
   
+  let number = 1;
+  setInterval(() => {
+    document.querySelector('.cipher').innerText = number;
+    number = number === 6 ? 1 : number + 1;
+  }, 3500);
+  

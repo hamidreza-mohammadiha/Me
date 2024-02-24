@@ -30,34 +30,17 @@ body {
   line-height: 1.5;
 }
 
-.cipher-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.number {
-  font-family: 'Calibri', sans-serif;
-  font-weight: 300;
-  font-size: 14px;
+.cipher {
   width: 210px;
   height: 42px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform-origin: bottom;
-  animation: oscillate 7s infinite linear;
+  background-color: #ffffff;
+  font-family: Calibri Light;
+  font-size: 14px;
+  text-align: center;
+  line-height: 42px;
+  position: relative;
 }
 
-@keyframes oscillate {
-  0%, 100% {
-    transform: rotate(-10deg);
-  }
-  50% {
-    transform: rotate(10deg);
-  }
-}
 
 #clock {
   font-size: 2em;
