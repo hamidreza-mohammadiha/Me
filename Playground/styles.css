@@ -89,7 +89,8 @@ h2 {
 }
 
 .content-wrap .a {
-  transition: color 0.5s ease-in-out;
+  color: #007bff; /* Initial color */
+  transition: color 0.5s ease-in-out; /* Transition duration and easing function */
 }
 
 .content-wrap .a:hover {
