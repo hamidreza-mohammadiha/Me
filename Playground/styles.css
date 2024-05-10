@@ -93,6 +93,15 @@ h2 {
   padding: 60px 0;
 }
 
+.content-wrap .a {
+  color: #007bff; /* Initial color */
+  transition: color 0.5s ease-in-out; /* Transition duration and easing function */
+}
+
+.content-wrap .a:hover {
+  color: #170042; /* Hover color */
+}
+
 .content-wrap .btn_Home {
   background: #15162d;
   color: #F7FFF7;
