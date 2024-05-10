@@ -68,20 +68,12 @@ body {
 img {
   width: 300px;
 }
-
 a {
-  color: rgb(0, 0, 0);
+  color: #110e00;
 }
-
 a:hover {
-  
-  transition: color 0.5s ease-in-out;
+  text-decoration: none;
 }
-
-a:link {
-  color: rgb(0, 14, 67);
-}
-
 h1, h2 {
   font-family: 'Caveat', cursive;
   font-weight: 400;
