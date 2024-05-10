@@ -67,12 +67,7 @@ body {
 img {
   width: 300px;
 }
-a {
-  color: #FFE66D;
-}
-a:hover {
-  text-decoration: none;
-}
+
 h1, h2 {
   font-family: 'Caveat', cursive;
   font-weight: 400;
