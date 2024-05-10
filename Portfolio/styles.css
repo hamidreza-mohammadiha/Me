@@ -134,12 +134,12 @@ h2 {
   background: rgba(1, 213, 65, 0.8);
 }
 
-.content-wrap .a:hover {
+.content-wrap a:hover {
   color: rgb(55, 1, 80);
   transition: color 0.5s ease-in-out;
 }
 
-.content-wrap .a:link {
+.content-wrap a:link {
   color: rgb(0, 14, 67);
 }
 
