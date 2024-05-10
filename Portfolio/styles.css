@@ -248,8 +248,8 @@ footer {
   .project-item img {
     float: left;
     margin-right: 40px;
-	  width: 200px;
-	  height: 200px;
+	  width: 100px;
+	  height: 100px;
   }
 
   .job-item {
