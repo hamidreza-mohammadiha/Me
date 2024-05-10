@@ -68,12 +68,20 @@ body {
 img {
   width: 300px;
 }
+
 a {
-  color: #FFE66D;
+  color: rgb(0, 0, 0);
 }
+
 a:hover {
-  text-decoration: none;
+  
+  transition: color 0.5s ease-in-out;
 }
+
+a:link {
+  color: rgb(0, 14, 67);
+}
+
 h1, h2 {
   font-family: 'Caveat', cursive;
   font-weight: 400;
@@ -92,15 +100,6 @@ h2 {
   width: 85%;
   margin: 0 auto;
   padding: 60px 0;
-}
-
-.content-wrap .a:hover {
-  color: rgb(55, 1, 80);
-  transition: color 0.5s ease-in-out;
-}
-
-.content-wrap .a:link {
-  color: rgb(0, 14, 67);
 }
 
 .content-wrap .btn_Home {
@@ -215,6 +214,8 @@ header {
 .education p {
   width: 60%;
 }
+
+
 
 
 /* Contact Info
