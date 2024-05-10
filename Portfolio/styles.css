@@ -30,6 +30,16 @@ body {
   line-height: 1.5;
 }
 
+a {
+  color: blue;
+  transition: color 0.5s ease-in-out;
+}
+
+a:hover {
+  color: rgb(16, 0, 81);
+}
+
+
 .wrapper1 {
   display: grid;
   grid-template-columns: 100%;
