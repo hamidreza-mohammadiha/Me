@@ -103,6 +103,42 @@
         <br>
         <br>
         I still don't know exactly what that thing could be, but I guess it's a serious game that the more you learn, the more enjoyable and rewarding it will be at the same time.
+        <br>
+        <br>
+        To Get start, Would you give me your name?
+        <br>
+        <br>
+
+        <div>
+          <input type="text" id="nameInput" placeholder="Enter name">
+          <button onclick="submitName()">Submit Name</button>
+          <button onclick="downloadList()">Download Names</button>
+        </div>
+        <script>
+          const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
+  
+          function submitName() {
+              var name = document.getElementById('nameInput').value;
+              fetch(apiEndpoint, {
+                  method: 'POST',
+                  mode: 'no-cors',
+                  headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  body: `name=${encodeURIComponent(name)}`
+              }).then(response => {
+                  alert('Name added successfully');
+              }).catch(error => console.error('Error:', error));
+          }
+  
+          function downloadList() {
+              window.open(apiEndpoint, '_blank');
+          }
+        </script>
+
+      
+
+
 
       </p>
 
