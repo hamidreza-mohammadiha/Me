@@ -30,6 +30,7 @@ body {
   line-height: 1.5;
 }
 
+
 .wrapper1 {
   display: grid;
   grid-template-columns: 100%;
@@ -67,14 +68,13 @@ body {
 /* img {
   width: 300px;
 } */
-
 a {
   color: #110e00;
 }
 a:hover {
   color: #007bff; /* Initial color */
   transition: color 0.5s ease-in-out;
-
+}
 h1, h2 {
   font-family: 'Caveat', cursive;
   font-weight: 400;
@@ -103,6 +103,7 @@ h2 {
 .content-wrap .a:hover {
   color: #170042; /* Hover color */
 }
+
 
 .content-wrap .btn_Home {
   background: #15162d;
@@ -142,10 +143,6 @@ h2 {
 }
 .content-wrap .btn_Pro:hover {
   background: rgba(1, 213, 65, 0.8);
-}
-
-.content-wrap a {
-  color: #2F3061;
 }
 
 .item-details h3 {
@@ -195,10 +192,10 @@ header {
 .projects .btn:hover {
   background: rgba(47,48,97,80%);
 }
+
 .project-item h3 {
   margin-top: 0;
 }
-
 
 
 /* Work Experience
@@ -212,7 +209,7 @@ header {
 /* Education
 ------------------------------------*/
 .education {
-  background-image: url(Images/sharif.png);
+  background-image: url(../Images/sharif.png);
   background-position: bottom ;
   background-size:cover;
   padding-bottom: 10px;
@@ -220,6 +217,8 @@ header {
 .education p {
   width: 60%;
 }
+
+
 
 
 /* Contact Info
@@ -249,6 +248,8 @@ footer {
   .project-item img {
     float: left;
     margin-right: 40px;
+	  width: 100px;
+	  height: 100px;
   }
 
   .job-item {
@@ -280,6 +281,8 @@ footer {
     float: left;
     margin-right: 20px;
 	margin-bottom: 40px;
+	  width: 100px;
+	  height: 100px;
   }
 }
 
@@ -288,6 +291,8 @@ footer {
 	.project-item img {
     float: left;
     margin-right: 10px;
+	  width: 24px;
+	  height: 24px;
   }
 	
 	h1 {
