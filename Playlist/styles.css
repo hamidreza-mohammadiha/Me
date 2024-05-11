@@ -68,10 +68,11 @@ img {
   width: 300px;
 }
 a {
-  color: #FFE66D;
+  color: #110e00;
 }
 a:hover {
-  text-decoration: none;
+  color: #007bff; /* Initial color */
+  transition: color 0.5s ease-in-out;
 }
 h1, h2 {
   font-family: 'Caveat', cursive;
