@@ -30,6 +30,10 @@ body {
   line-height: 1.5;
 }
 
+#next1 {
+  display: none; /* Hide the container initially */
+}
+
 
 .wrapper1 {
   display: grid;

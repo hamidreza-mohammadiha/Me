@@ -109,35 +109,40 @@
         <br>
         <br>
 
+        <!-- https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec -->
+
         <div>
           <input type="text" id="nameInput" placeholder="Enter name">
           <button onclick="submitName()">Submit Name</button>
       </div>
-      <p>Last Submitted Name: <span id="lastUserName">None</span></p>
-      
-        <script>
-          const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
+      <p id="lastUserNameContainer"> <br><br>How are you <strong><span id="lastUserName">...</span></strong> ?</p>
+  
+      <script>
+          const apiEndpoint = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
   
           function submitName() {
-            var name = document.getElementById('nameInput').value;
-            if (!name) {
-                alert("Please enter a name.");
-                return;
-            }
-            fetch(apiEndpoint, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `name=${encodeURIComponent(name)}`
-            }).then(() => {
-                document.getElementById('lastUserName').textContent = name;
-                document.getElementById('nameInput').value = ''; // Clear the input box
-                alert('Name added successfully');
-            }).catch(error => console.error('Error:', error));
-        }
-        </script>
+              var name = document.getElementById('nameInput').value;
+              if (!name) {
+                  alert("Please enter a name.");
+                  return;
+              }
+              fetch(apiEndpoint, {
+                  method: 'POST',
+                  mode: 'cors',
+                  headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  body: `name=${encodeURIComponent(name)}`
+              }).then(response => response.text())
+                .then(text => {
+                  document.getElementById('lastUserName').textContent = name;
+                  document.getElementById('nameInput').value = ''; // Clear the input box
+                  document.getElementById('lastUserNameContainer').style.display = 'block'; // Show the container
+                  alert(text); // Display the response text from Google Apps Script
+                })
+                .catch(error => console.error('Error:', error));
+          }
+      </script>
 
       
 
