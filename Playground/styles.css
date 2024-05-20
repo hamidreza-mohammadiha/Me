@@ -34,6 +34,18 @@ body {
   display: none; /* Hide the container initially */
 }
 
+#next2 {
+  display: none; /* Hide the container initially */
+}
+
+#next3 {
+  display: none; /* Hide the container initially */
+}
+
+#div1 {
+  display: none; /* Hide the container initially */
+}
+
 
 .wrapper1 {
   display: grid;
