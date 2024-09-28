@@ -72,12 +72,13 @@
         <p>Optimization techniques have long been used in electricity markets to model resource allocation, pricing strategies, and grid management. Linear programming (LP) and combinatorial optimization have been fundamental methods for ensuring efficient energy distribution and resource allocation. Linear programming models involve minimizing or maximizing an objective function, typically representing cost or efficiency, subject to a series of constraints. For instance:</p>
         
         <div class="formula">
-            \[
+          <p>???</p>
+            <!-- \[
             \text{Maximize or Minimize: } Z = c_1x_1 + c_2x_2 + \cdots + c_nx_n
             \]
             \[
             \text{Subject to: } a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n \leq b_1
-            \]
+            \] -->
         </div>
         
         <p>This model can be applied to the allocation of electricity across different power plants or regions, considering production capacities and other market constraints.</p>
@@ -106,9 +107,10 @@
         <p>In practice, machine learning models aim to minimize prediction errors, commonly measured by metrics such as mean squared error (MSE):</p>
         
         <div class="formula">
-            \[
+          <p>???</p>
+            <!-- \[
             \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
-            \]
+            \] -->
         </div>
         
         <p>where \( y_i \) represents the actual price, \( \hat{y}_i \) represents the predicted price, and \( n \) is the number of observations. By minimizing this error, ISOs can improve the accuracy of price forecasts and better plan for future grid operations.</p>
@@ -119,18 +121,19 @@
         <p>A key concept in RL is the Q-learning algorithm, which updates its estimates of the value of taking specific actions in different states:</p>
         
         <div class="formula">
-            \[
+          <p>???</p>
+            <!-- \[
             Q(s,a) = r + \gamma \cdot \max_{a'} Q(s',a')
-            \]
+            \] -->
         </div>
         
         <p>where:</p>
         <ul>
-            <li>\( Q(s,a) \) represents the expected reward of taking action \( a \) in state \( s \),</li>
-            <li>\( r \) is the immediate reward,</li>
-            <li>\( \gamma \) is the discount factor,</li>
-            <li>\( s' \) is the next state, and</li>
-            <li>\( a' \) is the next action.</li>
+            <li><p>???</p></li>
+            <li><p>???</p></li>
+            <li><p>???</p></li>
+            <li><p>???</p></li>
+            <li><p>???</p></li>
         </ul>
         
         <p>Reinforcement learning is particularly useful in dynamic and competitive environments, such as electricity markets, where prices fluctuate in real-time, and participants continuously adapt their strategies. By using RL, ISOs can develop dynamic pricing strategies that respond to real-time grid conditions and market behavior, improving the overall efficiency of electricity distribution.</p>
@@ -149,12 +152,13 @@
         <p>Mathematically, this involves solving optimization problems with stochastic constraints, represented by:</p>
         
         <div class="formula">
-            \[
+          <p>???</p>
+            <!-- \[
             \text{Minimize: } E[f(x,\xi)]
-            \]
+            \] -->
         </div>
         
-        <p>where \( x \) represents decision variables (such as energy production), and \( \xi \) represents uncertain parameters (such as demand or generation availability).</p>
+        <p>where <p>???</p> represents decision variables (such as energy production), and <p>???</p> represents uncertain parameters (such as demand or generation availability).</p>
         
         <h3>3. Dynamic Adjustment Stage: Reinforcement Learning</h3>
         <p>In the final stage, reinforcement learning is used to develop dynamic bidding and pricing strategies that adapt to real-time market conditions. The RL agent continuously interacts with the electricity market, adjusting its actions based on feedback from the environment. The Q-learning algorithm is employed to update the agent's policy and maximize long-term rewards, ensuring that the bidding and pricing strategies remain optimal even as market conditions fluctuate.</p>
