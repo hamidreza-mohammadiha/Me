@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const ageInYears = ageInSeconds / (60*60*24*365.25)
   
       document.getElementById('Years').innerText = ageInYears.toFixed(10); // Display age in Years
+      document.getElementById('time').innerText = now;
       // document.getElementById('Seconds').innerText = ageInSeconds.toFixed(2); // Display age in seconds with three decimals for milliseconds
       
     }

@@ -125,21 +125,21 @@ h2 {
   margin: 5px 5px;
 }
 .content-wrap .btn:hover {
-  background: rgba(47,48,97,80%);
+  background: rgba(3, 108, 245, 0.8);
 }
 
 .content-wrap .btn_Pro {
-  background: #279ae2;
+  background: #0c8ad8;
   color: #000000;
   text-decoration: none;
   padding: 8px;
-  border-radius: 14px;
+  border-radius: 10px;
   display: inline-block;
   padding: 5px 5px;
   margin: 5px 5px;
 }
 .content-wrap .btn_Pro:hover {
-  background: rgba(4, 88, 50, 0.8);
+  background: rgba(63, 88, 4, 0.8);
   color: #fbf3f3;
 }
 

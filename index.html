@@ -129,10 +129,15 @@
           <ul class="contact-list">
             <li><a href="mailto:Hamidreza.Mohammadihaa@Gmail.com">Email</a></li>
             <li><a href="https://www.linkedin.com/in/hamidreza-mohammadiha/" target="_blank">Linkedin&nbsp;</a></li>
-            <li><a href="https://t.me/hamid76reza" target="_blank">Telegram</a></li>
-          <li><a class="btn_Pro" href="https://link.trustwallet.com/send?coin=0&address=bc1qupuy22dhj2vlzn3xh5qww3ffe4hhkcq8cav6h7"> <strong>Send BTC<br></strong></a><br></li>           
+            <li><a href="https://t.me/hamid76reza" target="_blank">Telegram</a></li>      
           </ul>
+          <p id="time"></p>
+          <strong><p id="btc"></p></strong>
+          <a id="btcButton" class="btn_Home" > Click to see <strong>BTC</strong> price </a>
+          
         </div>
+        
+        
   </footer>
     </main>
 		    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
@@ -143,6 +148,30 @@
         backspeed: 150,
         loop: true
       })
+    </script>
+
+    <script>
+      async function getBitcoinPrice() {
+          const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
+          
+          try {
+              const response = await fetch(key);
+              const data = await response.json();
+
+              const BTC_Price = Math.round(data.price);
+              const now = new Date();
+              
+              // Display the Bitcoin price in the HTML
+              document.getElementById("btcButton").innerText = `Update`;
+              document.getElementById("btc").innerText = `${BTC_Price} $`;
+          } catch (error) {
+              console.error("Error fetching data:", error);
+              document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
+          }
+      }
+      
+      // Add event listener to button to call the function on click
+      document.getElementById("btcButton").addEventListener("click", getBitcoinPrice);
     </script>
   </body>
 </html>
