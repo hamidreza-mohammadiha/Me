@@ -66,7 +66,7 @@
         <i> Adventures of a Tacticable Player </i><br>
         <br>
 
-        <!-- <iframe 
+        <iframe 
         style="border: 1px solid rgba(0, 0, 0, 0.1); 
            width: 600px; height: 800px; 
            position: absolute; 
@@ -75,7 +75,7 @@
            " 
         src="https://embed.figma.com/board/kX4G8EGEWfEGRSiEYNiLS5/Boxhak?node-id=0-1&embed-host=share" 
         allowfullscreen>
-        </iframe> -->
+        </iframe>
 
         <!-- <iframe 
         style="border: 1px solid rgba(0, 0, 0, 0.1); 
@@ -134,6 +134,9 @@
           <p id="time"></p>
           <strong><p id="btc"></p></strong>
           <a id="btcButton" class="btn_Home" > Click to see <strong>BTC</strong> price </a>
+
+          <strong><p id="ton"></p></strong>
+          <a id="TONNOT" class="btn_Home" > Click to see <strong>TON / NOT</strong> ratio </a>
           
         </div>
         
@@ -173,5 +176,35 @@
       // Add event listener to button to call the function on click
       document.getElementById("btcButton").addEventListener("click", getBitcoinPrice);
     </script>
+
+    <script>
+      async function getTPrice() {
+          const key1 = "https://api.binance.com/api/v3/ticker/price?symbol=TONUSDT";
+          const key2 = "https://api.binance.com/api/v3/ticker/price?symbol=NOTUSDT";
+          try {
+              const response1 = await fetch(key1);
+              const data1 = await response1.json();
+
+              const response2 = await fetch(key2);
+              const data2 = await response2.json();
+
+              const TON =data1.price;
+              const NOT = data2.price;
+              const Ratio = TON/NOT;
+              const now = new Date();
+              
+              // Display the Bitcoin price in the HTML
+              document.getElementById("TONNOT").innerText = `Update`;
+              document.getElementById("ton").innerText = `${Ratio}`;
+          } catch (error) {
+              console.error("Error fetching data:", error);
+              document.getElementById("ton").innerText = "Error fetching";
+          }
+      }
+      
+      // Add event listener to button to call the function on click
+      document.getElementById("TONNOT").addEventListener("click", getTPrice);
+    </script>
+
   </body>
 </html>
