@@ -104,6 +104,12 @@
       
         <img SRC="Images/Mee.png">
         <p><span class="auto-type"> <Strong> Learning</Strong></span></p>
+
+        <br><p>and thinking like this ... </p>
+
+        <div>
+          <img SRC="playgon.png">
+        </div>
         
 
         <h2><br>Ages: <div id="Years"> </div></h2>
@@ -153,9 +159,12 @@
           <!-- <strong><p id="ton"></p></strong>
           <a id="TONNOT" class="btn_Home" > Click to see <strong>TON / NOT</strong> ratio </a> -->
           
+          <div>
+            <img SRC="playgun.png">
+          </div>
+
         </div>
-        
-        
+
   </footer>
     </main>
 		    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
@@ -181,6 +190,7 @@
               
               // Display the Bitcoin price in the HTML
               document.getElementById("btcButton").innerText = `Update`;
+              document.getElementById("btcButton").innerColor = `yellow`;
               document.getElementById("btc").innerText = `${BTC_Price} $`;
           } catch (error) {
               console.error("Error fetching data:", error);
