@@ -151,8 +151,8 @@
 
 
 
-          <strong><p id="btc"></p></strong>
-          <a id="btcButton" class="btn_Home" > Click to see <strong>BTC</strong> price </a><br>
+          <strong><h2 id="btc"></h2></strong>
+          <a id="btcButton" class="btn_Home" ><p> Click to see <h2>Bitcoin</h2> price </p></a><br>
 
           <!-- <strong><p id="ton"></p></strong>
           <a id="TONNOT" class="btn_Home" > Click to see <strong>TON / NOT</strong> ratio </a> -->
@@ -161,19 +161,25 @@
             <img SRC="playgun.png">
           </div> -->
 
-          <div>
-            <p></p>
-              <audio controls autoplay muted>
-                <source src="horse.mp3" type="audio/mpeg">
-              Your browser does not support the audio element.
-              </audio>
-          </div>
-
-          <strong><p id="fdv"></p></strong>
-          <a id="fdvButton" class="btn_Home" > Click to see <strong> <h2>Equilibrium</h2></strong> price </a><br>
+          <strong><h2 id="fdv"></h2></strong>
+          <a id="fdvButton" class="btn_Home" > Click to see <strong> <h2>Equilibrium</h2></strong> Market Cap </a><br>
           
+          <p></p>
+          <!-- <span><p>Chill out .. </p></span> -->
+            <span>
+              <audio controls autoplay muted>
+              <source src="horse.mp3" type="audio/mpeg", title="Selected by AmitAli">
+            Your browser does not support the audio element.
+            </audio>
+          </span>
+          
+
           <strong><p id="trd"></p></strong>
-          <a id="trdButton" class="btn_Home" href="https://www.tradingview.com/chart/i8XwVZk7/" > Click to see <strong> <h2>Trading View</h2></strong> Value </a><br>
+          <strong><a id="trdButton" class="btn_Bro" href="https://www.tradingview.com/chart/i8XwVZk7/" > Click to see <strong> <h2>Trading View</h2></strong> Market Cap </a><br></strong>
+
+        </div>
+
+        <div>
 
         </div>
 
@@ -203,7 +209,8 @@
               // Display the Bitcoin price in the HTML
               document.getElementById("btcButton").innerText = `Refresh`;
               document.getElementById("btcButton").innerColor = `yellow`;
-              document.getElementById("btc").innerText = `${BTC_Price} $`;
+              document.getElementById("btcButton").className = `btn_Pro`;
+              document.getElementById("btcButton").innerText = `${BTC_Price} $\n @ ${now} `;
           } catch (error) {
               console.error("Error fetching data:", error);
               document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
@@ -230,8 +237,10 @@
           
           // Display the Bitcoin price in the HTML
           document.getElementById("fdvButton").innerText = `Refresh`;
+          document.getElementById("fdvButton").className = `btn_Pro`;
           document.getElementById("fdvButton").innerColor = `yellow`;
-          document.getElementById("fdv").innerText = `${Equ_Market_Cap/1000000000000} Trilion $`;
+          document.getElementById("fdvButton").innerText = `${Equ_Market_Cap/1000000000000} Trilion $\n @ ${now}`;
+          document.getElementById("trd").innerText = `Pres ctrl and `;
       } catch (error) {
           console.error("Error fetching data:", error);
           document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
@@ -242,6 +251,7 @@
   
   // Add event listener to button to call the function on click
   document.getElementById("fdvButton").addEventListener("click", getfdvPrice);
+  
 </script>
 
     <script>
