@@ -179,6 +179,8 @@
 
         </div>
 
+        <strong><h2 id="MC"></h2></strong>
+
         <div>
 
         </div>
@@ -223,65 +225,74 @@
       document.getElementById("btcButton").addEventListener("click", getBitcoinPrice);
     </script>
 
-<script>
-  async function getfdvPrice() {
-      const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
-      
-      try {
-          const response = await fetch(key);
-          const data = await response.json();
-
-          const BTC_Price = Math.round(data.price);
-          const now = new Date();
-          const Equ_Market_Cap = BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000
-          
-          // Display the Bitcoin price in the HTML
-          document.getElementById("fdvButton").innerText = `Refresh`;
-          document.getElementById("fdvButton").className = `btn_Pro`;
-          document.getElementById("fdvButton").innerColor = `yellow`;
-          document.getElementById("fdvButton").innerText = `${Equ_Market_Cap/1000000000000} Trilion $\n @ ${now}`;
-          document.getElementById("trd").innerText = `Pres ctrl and `;
-      } catch (error) {
-          console.error("Error fetching data:", error);
-          document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
-      }
-  }
-
-  
-  
-  // Add event listener to button to call the function on click
-  document.getElementById("fdvButton").addEventListener("click", getfdvPrice);
-  
-</script>
-
     <script>
-      async function getTPrice() {
-          const key1 = "https://api.binance.com/api/v3/ticker/price?symbol=TONUSDT";
-          const key2 = "https://api.binance.com/api/v3/ticker/price?symbol=NOTUSDT";
+      async function getfdvPrice() {
+          const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
+          
           try {
-              const response1 = await fetch(key1);
-              const data1 = await response1.json();
+              const response = await fetch(key);
+              const data = await response.json();
 
-              const response2 = await fetch(key2);
-              const data2 = await response2.json();
-
-              const TON =data1.price;
-              const NOT = data2.price;
-              const Ratio = TON/NOT;
+              const BTC_Price = Math.round(data.price);
               const now = new Date();
+              const Equ_Market_Cap = BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000
               
               // Display the Bitcoin price in the HTML
-              document.getElementById("TONNOT").innerText = `Update`;
-              document.getElementById("ton").innerText = `${Ratio}`;
+              document.getElementById("fdvButton").innerText = `Refresh`;
+              document.getElementById("fdvButton").className = `btn_Pro`;
+              document.getElementById("fdvButton").innerColor = `yellow`;
+              document.getElementById("fdvButton").innerText = `${Equ_Market_Cap/1000000000000} Trilion $\n @ ${now}`;
+              // document.getElementById("trd").innerText = `Pres ctrl and `;
           } catch (error) {
               console.error("Error fetching data:", error);
-              document.getElementById("ton").innerText = "Error fetching";
+              document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
+              fetchBTCMarketCap();
           }
+
+          const API_KEY = "b50cafca-9890-4eed-bc7b-a893e0d71cbc"; // Replace with your API key
+          const URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest";
+
+          // Parameters for the API request
+          const params = new URLSearchParams({
+              symbol: "BTC", // Fetch Bitcoin data
+          });
+
+          // Function to fetch BTC market cap
+          async function fetchBTCMarketCap() {
+              try {
+                  const response = await fetch(`${URL}?${params}`, {
+                      method: "GET",
+                      headers: {
+                          "Accept": "application/json",
+                          "X-CMC_PRO_API_KEY": API_KEY,
+                      },
+                  });
+
+                  if (!response.ok) {
+                      throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+
+                  const data = await response.json();
+                  const marketCap = data.data.BTC.quote.USD.market_cap;
+
+                  console.log(`Bitcoin Market Cap: $${marketCap.toLocaleString()}`);
+              } catch (error) {
+                  console.error("Error fetching data:", error);
+              }
+            document.getElementById("trd").innerText = `Bitcoin Market Cap: $${marketCap()}`;
+          }
+
+          // Call the function
+          fetchBTCMarketCap();
       }
+
+      
       
       // Add event listener to button to call the function on click
-      document.getElementById("TONNOT").addEventListener("click", getTPrice);
+      document.getElementById("fdvButton").addEventListener("click", getfdvPrice);
+      
     </script>
+
 
   </body>
 </html>
