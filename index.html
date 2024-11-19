@@ -169,7 +169,11 @@
               </audio>
           </div>
 
-
+          <strong><p id="fdv"></p></strong>
+          <a id="fdvButton" class="btn_Home" > Click to see <strong> <h2>Equilibrium</h2></strong> price </a><br>
+          
+          <strong><p id="trd"></p></strong>
+          <a id="trdButton" class="btn_Home" href="https://www.tradingview.com/chart/i8XwVZk7/" > Click to see <strong> <h2>Trading View</h2></strong> Value </a><br>
 
         </div>
 
@@ -197,7 +201,7 @@
               const now = new Date();
               
               // Display the Bitcoin price in the HTML
-              document.getElementById("btcButton").innerText = `Update`;
+              document.getElementById("btcButton").innerText = `Refresh`;
               document.getElementById("btcButton").innerColor = `yellow`;
               document.getElementById("btc").innerText = `${BTC_Price} $`;
           } catch (error) {
@@ -205,10 +209,40 @@
               document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
           }
       }
+
+      
       
       // Add event listener to button to call the function on click
       document.getElementById("btcButton").addEventListener("click", getBitcoinPrice);
     </script>
+
+<script>
+  async function getfdvPrice() {
+      const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
+      
+      try {
+          const response = await fetch(key);
+          const data = await response.json();
+
+          const BTC_Price = Math.round(data.price);
+          const now = new Date();
+          const Equ_Market_Cap = BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000
+          
+          // Display the Bitcoin price in the HTML
+          document.getElementById("fdvButton").innerText = `Refresh`;
+          document.getElementById("fdvButton").innerColor = `yellow`;
+          document.getElementById("fdv").innerText = `${Equ_Market_Cap/1000000000000} Trilion $`;
+      } catch (error) {
+          console.error("Error fetching data:", error);
+          document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
+      }
+  }
+
+  
+  
+  // Add event listener to button to call the function on click
+  document.getElementById("fdvButton").addEventListener("click", getfdvPrice);
+</script>
 
     <script>
       async function getTPrice() {
