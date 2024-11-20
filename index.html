@@ -112,7 +112,7 @@
         </div>
 
 
-        <h2><br>BTC Min Price: <div id="Min"> </div></h2>
+        <h3><br>BTC Min Price: <div id="Min"> </div></h3>
 
         <h2><br>Ages: <div id="Years"> </div></h2>
         <a class="btn_Home" href="https://drive.google.com/file/d/1eGFBI3IKE0t19hjMjXKNWSP--LjgMHSl/view?usp=sharing">Academic CV</a> <a class="btn_Home" href="https://drive.google.com/file/d/1u1eNjcBsfyNRiY8xVG68SNNw4kSurRMy/view?usp=sharing">Business Joerney</a>
@@ -152,7 +152,7 @@
 
 
           <strong><h2 id="btc"></h2></strong>
-          <a id="btcButton" class="btn_Home" ><p> Click to see <h2>Bitcoin</h2> price </p></a><br>
+          <a id="btcButton" class="btn_Home" ><p><h2>Bitcoin (<span style="color: #3498db;">$</span>) </h2></p></a><br>
 
           <!-- <strong><p id="ton"></p></strong>
           <a id="TONNOT" class="btn_Home" > Click to see <strong>TON / NOT</strong> ratio </a> -->
@@ -162,24 +162,26 @@
           </div> -->
 
           <strong><h2 id="fdv"></h2></strong>
-          <a id="fdvButton" class="btn_Home" > Click to see <strong> <h2>Equilibrium</h2></strong> Market Cap </a><br>
+          <a id="fdvButton" class="btn_Home" ><strong> <h2>Prediction (<span style="color: #3498db;">$</span>)</h2></strong></a><br>
           
           <p></p>
           <!-- <span><p>Chill out .. </p></span> -->
-            <!-- <span>
+            <span>
               <audio controls autoplay muted>
               <source src="horse.mp3" type="audio/mpeg", title="Selected by AmitAli">
-            Your browser does not support the audio element.
-            </audio>
-            </span> -->
+                Your browser does not support the audio element.
+              </audio>
+            </span>
           
 
           <strong><p id="trd"></p></strong>
-          <strong><a id="trdButton" class="btn_Bro" href="https://www.tradingview.com/chart/i8XwVZk7/" > Click to see <strong> <h2>Trading View</h2></strong> Market Cap </a><br></strong>
+          <br>
+          <p>press <strong>CTRL</strong> and chack </p>
+          <strong><a id="trdButton" class="btn_Bro" href="https://www.tradingview.com/chart/i8XwVZk7/?symbol=BITSTAMP%3ABTCUSD" ><strong> <h2>Trading View</h2></strong></a><br></strong>
 
         </div>
 
-        <strong><h2 id="MC"></h2></strong>
+        <!-- <strong><h2 id="MC"></h2></strong> -->
 
         <div>
 
@@ -242,7 +244,7 @@
               document.getElementById("fdvButton").innerText = `Refresh`;
               document.getElementById("fdvButton").className = `btn_Pro`;
               document.getElementById("fdvButton").innerColor = `yellow`;
-              document.getElementById("fdvButton").innerText = `BTCMarket Cap:\n (Min - Max)\n (${Equ_Min/1000000000000} - ${Equ_Max/1000000000000}) \n  Trilion $`;
+              document.getElementById("fdvButton").innerText = `(Min - Max)\n (${Equ_Min/20000000} $ - ${Equ_Max/19780000} $) \n `;
               // document.getElementById("trd").innerText = `Pres ctrl and `;
           } catch (error) {
               console.error("Error fetching data:", error);
