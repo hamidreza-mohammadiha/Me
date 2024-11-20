@@ -162,7 +162,7 @@
           </div> -->
 
           <strong><h2 id="fdv"></h2></strong>
-          <a id="fdvButton" class="btn_Home" ><strong> <h2>Prediction</h2></strong></a><br>
+          <a id="fdvButton" class="btn_Home" ><strong> <h2>Equilibrium</h2> Price</strong></a><br>
           
           <p></p>
           <!-- <span><p>Chill out .. </p></span> -->
@@ -238,7 +238,7 @@
               const BTC_Price = Math.round(data.price);
               const now = new Date();
               const Equ_Min = Math.round(BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000/19880000)
-              const Equ_Max = Math.round(BTC_Price * (1-Math.exp(-0.42*(10.3)))  *21000000/19780000)
+              const Equ_Max = Math.round(BTC_Price * (1-Math.exp(-0.42*(11.1)))  *21000000/19780000)
               
               // Display the Bitcoin price in the HTML
               document.getElementById("fdvButton").innerText = `Refresh`;
