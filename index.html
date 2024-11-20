@@ -112,7 +112,7 @@
         </div>
 
 
-        
+        <h2><br>BTC Min Price: <div id="Min"> </div></h2>
 
         <h2><br>Ages: <div id="Years"> </div></h2>
         <a class="btn_Home" href="https://drive.google.com/file/d/1eGFBI3IKE0t19hjMjXKNWSP--LjgMHSl/view?usp=sharing">Academic CV</a> <a class="btn_Home" href="https://drive.google.com/file/d/1u1eNjcBsfyNRiY8xVG68SNNw4kSurRMy/view?usp=sharing">Business Joerney</a>
@@ -235,13 +235,14 @@
 
               const BTC_Price = Math.round(data.price);
               const now = new Date();
-              const Equ_Market_Cap = BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000
+              const Equ_Min = BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000
+              const Equ_Max = BTC_Price * (1-Math.exp(-0.42*(10.3)))  *21000000
               
               // Display the Bitcoin price in the HTML
               document.getElementById("fdvButton").innerText = `Refresh`;
               document.getElementById("fdvButton").className = `btn_Pro`;
               document.getElementById("fdvButton").innerColor = `yellow`;
-              document.getElementById("fdvButton").innerText = `${Equ_Market_Cap/1000000000000} Trilion $\n @ ${now}`;
+              document.getElementById("fdvButton").innerText = `BTCMarket Cap:\n (Min - Max)\n (${Equ_Min/1000000000000} - ${Equ_Max/1000000000000}) \n  Trilion $`;
               // document.getElementById("trd").innerText = `Pres ctrl and `;
           } catch (error) {
               console.error("Error fetching data:", error);
