@@ -214,7 +214,7 @@
               document.getElementById("btcButton").innerText = `Refresh`;
               document.getElementById("btcButton").innerColor = `yellow`;
               document.getElementById("btcButton").className = `btn_Pro`;
-              document.getElementById("btcButton").innerText = `${BTC_Price} $\n @ ${now} `;
+              document.getElementById("btcButton").innerText = `${BTC_Price} $ `;
           } catch (error) {
               console.error("Error fetching data:", error);
               document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
@@ -237,14 +237,14 @@
 
               const BTC_Price = Math.round(data.price);
               const now = new Date();
-              const Equ_Min = BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000
-              const Equ_Max = BTC_Price * (1-Math.exp(-0.42*(10.3)))  *21000000
+              const Equ_Min = Math.round(BTC_Price * (1-Math.exp(-0.42*(6.66)))  *21000000/19980000)
+              const Equ_Max = Math.round(BTC_Price * (1-Math.exp(-0.42*(10.3)))  *21000000/19780000)
               
               // Display the Bitcoin price in the HTML
               document.getElementById("fdvButton").innerText = `Refresh`;
               document.getElementById("fdvButton").className = `btn_Pro`;
               document.getElementById("fdvButton").innerColor = `yellow`;
-              document.getElementById("fdvButton").innerText = `(Min - Max)\n (${Equ_Min/20000000} $ - ${Equ_Max/19780000} $) \n `;
+              document.getElementById("fdvButton").innerText = `(Min - Max)\n (${Equ_Min} $ - ${Equ_Max} $) \n @ ${now} `;
               // document.getElementById("trd").innerText = `Pres ctrl and `;
           } catch (error) {
               console.error("Error fetching data:", error);
