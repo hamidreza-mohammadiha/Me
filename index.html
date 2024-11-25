@@ -173,7 +173,7 @@ Sincerely, -->
 
 
           <strong><h2 id="btc"></h2></strong>
-          <a id="btcButton" class="btn_Home" ><p><h2>Bitcoin (<span style="color: #3498db;">$</span>) </h2></p></a><br>
+          <a id="btcButton" class="btn_Home" ><p>click to see <br><h2>Bitcoin Equilibrium </h2> <br> (<span style="color: #3498db;">$</span>)</p></a><br>
 
           <!-- <strong><p id="ton"></p></strong>
           <a id="TONNOT" class="btn_Home" > Click to see <strong>TON / NOT</strong> ratio </a> -->
@@ -182,8 +182,9 @@ Sincerely, -->
             <img SRC="playgun.png">
           </div> -->
 
-          <strong><h3 id="fdv"></h3></strong>
-          <a id="fdvButton" class="btn_Home" ><strong> <h2>Equilibrium</h2> Price</strong></a><br>
+          <p id="fdv"></p>
+          <h2 id="fdvButton" class="btn_Bro" ><strong></strong></h2><br>
+
           
           <p></p>
           <!-- <span><p>Chill out .. </p></span> -->
@@ -195,10 +196,10 @@ Sincerely, -->
             </span>
           
 
-          <strong><p id="trd"></p></strong>
           <br>
           <p>press <strong>CTRL</strong> and check </p>
           <strong><a id="trdButton" class="btn_Bro" href="https://www.tradingview.com/chart/i8XwVZk7/?symbol=BITSTAMP%3ABTCUSD" ><strong> <h2>Trading View</h2></strong></a><br></strong>
+          <strong><p id="trd"></p></strong>
 
         </div>
 
@@ -246,32 +247,43 @@ Sincerely, -->
       
       // Add event listener to button to call the function on click
       document.getElementById("btcButton").addEventListener("click", getBitcoinPrice);
+      document.getElementById("btcButton").addEventListener("click", getfdvPrice);
+
     </script>
 
     <script>
       async function getfdvPrice() {
-          const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
-          
+          const key1 = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT";
+          const key2 = "https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT";
+  
           try {
-              const response = await fetch(key);
-              const data = await response.json();
+              const response1 = await fetch(key1);
+              const data1 = await response1.json();
 
-              const BTC_Price = Math.round(data.price);
+              const response2 = await fetch(key2);
+              const data2 = await response2.json();
+
+              const BTC_Price = Math.round(data1.price);
+              const ETH_Price = Math.round(data2.price);
+
               const now = new Date();
-              const BT =(BTC_Price+((190000*4629)/(83600) * (10.3*Math.sin(2*Math.PI/10.3))/2*Math.PI))/2
-              const Equ_Min = Math.round(BT * (1-Math.exp(-0.42*(7)))/(1-Math.exp(-0.42*(10.3))))
-              const Equ_Max = Math.round(BT * (1-Math.exp(-0.42*(21)))/(1-Math.exp(-0.42*(10.3))))
+
+              const BT =((175000*4629)/(83600) * (10.3*Math.sin(2*Math.PI/10.3))/2*Math.PI)
+              const ET = 21*ETH_Price/BTC_Price
+
+              const Equ_Min = Math.round(1/ET * BT * (1-Math.exp(-0.42*(3)))/(1-Math.exp(-0.42*(10.3))))
+              const Equ_Max = Math.round(1/ET * BT * (1-Math.exp(-0.42*(21)))/(1-Math.exp(-0.42*(10.3))))
               
               // Display the Bitcoin price in the HTML
-              document.getElementById("fdvButton").innerText = `Refresh`;
+              // document.getElementById("fdvButton").innerText = `Refresh`;
               document.getElementById("fdvButton").className = `btn_Pro`;
               document.getElementById("fdvButton").innerColor = `yellow`;
               // document.getElementById("fdvButton").innerText = ` ${BT} `;
-              document.getElementById("fdv").innerText = ` ( ${Equ_Min} - ${Equ_Max} ) \n @ ${now} \n Valid for 1.8 T$ < Market Cap < 2.0 T$ `;
+              document.getElementById("fdv").innerText = ` ( ${Equ_Min} ...  ${(Equ_Max+Equ_Min)/2}  ... ${Equ_Max} ) \n \n Valid for \n 1.4 T$ < Market Cap < 2.1 T$ \n  \n if \n BTC / ETH = ${BTC_Price/ETH_Price} ~ 21   \n Altseason is on the way!   `;
               // document.getElementById("trd").innerText = `Pres ctrl and `;
           } catch (error) {
               console.error("Error fetching data:", error);
-              document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
+              document.getElementById("fdv").innerText = "Oops!";
               // fetchBTCMarketCap();
           }
 
@@ -315,7 +327,7 @@ Sincerely, -->
       
       
       // Add event listener to button to call the function on click
-      document.getElementById("fdvButton").addEventListener("click", getfdvPrice);
+      document.getElementById("btcButton").addEventListener("click", getfdvPrice);
       
     </script>
 
