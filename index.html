@@ -273,13 +273,14 @@ Sincerely, -->
 
               const Equ_Min = Math.round(1/ET * BT * (1-Math.exp(-0.42*(3)))/(1-Math.exp(-0.42*(10.3))))
               const Equ_Max = Math.round(1/ET * BT * (1-Math.exp(-0.42*(21)))/(1-Math.exp(-0.42*(10.3))))
+              const BTCETH = Math.round(BTC_Price/ETH_Price)
               
               // Display the Bitcoin price in the HTML
               // document.getElementById("fdvButton").innerText = `Refresh`;
               document.getElementById("fdvButton").className = `btn_Pro`;
               document.getElementById("fdvButton").innerColor = `yellow`;
               // document.getElementById("fdvButton").innerText = ` ${BT} `;
-              document.getElementById("fdv").innerText = ` ( ${Equ_Min} ...  ${(Equ_Max+Equ_Min)/2}  ... ${Equ_Max} ) \n \n Valid for \n 1.4 T$ < Market Cap < 2.1 T$ \n  \n if \n BTC / ETH = ${BTC_Price/ETH_Price} ~ 21   \n Altseason is on the way!   `;
+              document.getElementById("fdv").innerText = ` ( ${Equ_Min} ...  ${(Equ_Max+Equ_Min)/2}  ... ${Equ_Max} ) \n  \n if \n BTC / ETH = ${BTCETH} ~ 21   \n Altseason is on the way!   `;
               // document.getElementById("trd").innerText = `Pres ctrl and `;
           } catch (error) {
               console.error("Error fetching data:", error);
