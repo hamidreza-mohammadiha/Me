@@ -173,7 +173,7 @@ Sincerely, -->
 
 
           <strong><h2 id="btc"></h2></strong>
-          <a id="btcButton" class="btn_Home" ><p>click to see <br><h2>Bitcoin Equilibrium </h2> <br> (<span style="color: #3498db;">$</span>)</p></a><br>
+          <a id="btcButton" class="btn_Home" ><p>click to see <br><h2>Bitcoin Equilibrium </h2></p></a><br>
 
           <!-- <strong><p id="ton"></p></strong>
           <a id="TONNOT" class="btn_Home" > Click to see <strong>TON / NOT</strong> ratio </a> -->
@@ -195,11 +195,10 @@ Sincerely, -->
               </audio> -->
             </span>
           
-
           <br>
-          <p>press <strong>CTRL</strong> and check </p>
+          <!-- <p>press <strong>CTRL</strong> and check </p>
           <strong><a id="trdButton" class="btn_Bro" href="https://www.tradingview.com/chart/i8XwVZk7/?symbol=BITSTAMP%3ABTCUSD" ><strong> <h2>Trading View</h2></strong></a><br></strong>
-          <strong><p id="trd"></p></strong>
+          <strong><p id="trd"></p></strong> -->
 
         </div>
 
@@ -273,14 +272,14 @@ Sincerely, -->
 
               const Equ_Min = Math.round(1/ET * BT * (1-Math.exp(-0.42*(3)))/(1-Math.exp(-0.42*(10.3))))
               const Equ_Max = Math.round(1/ET * BT * (1-Math.exp(-0.42*(21)))/(1-Math.exp(-0.42*(10.3))))
-              const BTCETH = Math.round(BTC_Price/ETH_Price)
+              const BTCETH = BTC_Price/ETH_Price
               
               // Display the Bitcoin price in the HTML
               // document.getElementById("fdvButton").innerText = `Refresh`;
               document.getElementById("fdvButton").className = `btn_Pro`;
               document.getElementById("fdvButton").innerColor = `yellow`;
               // document.getElementById("fdvButton").innerText = ` ${BT} `;
-              document.getElementById("fdv").innerText = ` ( ${Equ_Min} ...  ${(Equ_Max+Equ_Min)/2}  ... ${Equ_Max} ) \n  \n if \n BTC / ETH = ${BTCETH} ~ 21   \n Altseason is on the way!   `;
+              document.getElementById("fdv").innerText = ` ( ${Equ_Min} ...  ${(Equ_Max+Equ_Min)/2}  ... ${Equ_Max} ) \n  \n if \n BTC / ETH = ${BTCETH} \n ~ 21   \n Altseason is on the way!   `;
               // document.getElementById("trd").innerText = `Pres ctrl and `;
           } catch (error) {
               console.error("Error fetching data:", error);
