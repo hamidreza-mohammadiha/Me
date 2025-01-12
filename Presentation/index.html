@@ -268,7 +268,6 @@
           document.getElementById("btcButton").innerColor = `yellow`;
           document.getElementById("btcButton").className = `btn_Pro`;
           document.getElementById("btc").innerText = `BTC: ${BTC_Price} $ `;
-          submitBtcprice()
       } catch (error) {
           console.error("Error fetching data:", error);
           document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
@@ -374,6 +373,9 @@
   
   // Add event listener to button to call the function on click
   document.getElementById("btcButton").addEventListener("click", getfdvPrice);
+  document.getElementById("btcButton").addEventListener("click", submitBtcprice);
+  
+
 
 
 
