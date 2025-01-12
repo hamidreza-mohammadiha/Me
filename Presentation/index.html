@@ -257,9 +257,11 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
     </script>
 
 <script>
+  const BTC_Price = 100000;   
+  
   async function getBitcoinPrice() {
       const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
-      
+   
       try {
           const response = await fetch(key);
           const data = await response.json();
@@ -279,7 +281,6 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
 
       const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
 
-      // const BTC_Price = 123;
         fetch(apiEndpoint, {
             method: 'POST',
             mode: 'cors',
