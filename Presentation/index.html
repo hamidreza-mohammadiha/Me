@@ -277,6 +277,25 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
           document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
       }
 
+      const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
+
+      const name = BTC_Price
+        fetch(apiEndpoint, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `name=${encodeURIComponent(name)}`
+        }).then(response => response.text())
+          .then(text => {
+            document.getElementById('save').innerText = `Saved!`;
+            // alert(text); // Display the response text from Google Apps Script
+          })
+          .catch(error => console.error('Error:', error));
+
+
+
   }
 
   
