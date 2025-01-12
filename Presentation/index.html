@@ -279,7 +279,7 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
 
       const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
 
-      const name = BTC_Price;
+      var name = BTC_Price;
         fetch(apiEndpoint, {
             method: 'POST',
             mode: 'cors',
