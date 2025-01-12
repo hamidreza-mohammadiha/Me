@@ -258,6 +258,7 @@
 
       const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
 
+function submitBtcprice(BTC_Price) {
     var name = BTC_Price;
     fetch(apiEndpoint, {
         method: 'POST',
@@ -268,10 +269,11 @@
         body: `name=${encodeURIComponent(name)}`
     }).then(response => response.text())
       .then(text => {
-        document.getElementById('save').textContent = "Saved";
+        document.getElementById('save').textContent = name;
         // alert(text); // Display the response text from Google Apps Script
       })
       .catch(error => console.error('Error:', error));
+}
   }
 
   
