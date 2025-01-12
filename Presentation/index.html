@@ -257,7 +257,7 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
     </script>
 
 <script>
-  const BTC_Price = 100000;   
+  var BTC_P = 100000;   
   
   async function getBitcoinPrice() {
       const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
@@ -267,6 +267,7 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
           const data = await response.json();
 
           const BTC_Price = Math.round(data.price);
+          BTC_P = BTC_Price;
           const now = new Date();
           
           // Display the Bitcoin price in the HTML
@@ -287,7 +288,7 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `name=${encodeURIComponent(BTC_Price)}`
+            body: `name=${encodeURIComponent(BTC_P)}`
         }).then(response => response.text())
           .then(text => {
             document.getElementById('save').innerText = `Saved!`;
