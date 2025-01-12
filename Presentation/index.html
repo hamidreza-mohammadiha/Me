@@ -24,7 +24,7 @@
 	}
 </style>
 
-<script src="script.js" defer></script>
+<!-- <script src="script.js" defer></script> -->
 	  
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -279,7 +279,7 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
 
       const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
 
-      const name = BTC_Price
+      const name = BTC_Price;
         fetch(apiEndpoint, {
             method: 'POST',
             mode: 'cors',
@@ -294,15 +294,12 @@ document.getElementById("btcButton").addEventListener("click", submitBtcprice);
           })
           .catch(error => console.error('Error:', error));
 
-
-
   }
 
   
   
   // Add event listener to button to call the function on click
   document.getElementById("btcButton").addEventListener("click", getBitcoinPrice);
-  document.getElementById("btcButton").addEventListener("click", getfdvPrice);
   // document.getElementById("btcButton").addEventListener("click", submitBtcprice);
 
 </script>
