@@ -212,11 +212,13 @@
           <p id="fdv"></p>
           <strong><h2 id="btceth"></h2></strong>
           <br>
-          <strong><h2 id="save"></h2></strong>
+          
 
 
 
           <a id="btcButton" class="btn_Home" ><p>click to see <br><h2>Bitcoin Equilibrium </h2> <br> Price</p></a><br>
+
+          <strong><h2 id="save"></h2></strong>
 
 
         </div>
@@ -252,6 +254,24 @@
           console.error("Error fetching data:", error);
           document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
       }
+
+
+      const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
+
+    var name = BTC_Price;
+    fetch(apiEndpoint, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `name=${encodeURIComponent(name)}`
+    }).then(response => response.text())
+      .then(text => {
+        document.getElementById('save').textContent = "Saved";
+        // alert(text); // Display the response text from Google Apps Script
+      })
+      .catch(error => console.error('Error:', error));
   }
 
   
@@ -259,6 +279,7 @@
   // Add event listener to button to call the function on click
   document.getElementById("btcButton").addEventListener("click", getBitcoinPrice);
   document.getElementById("btcButton").addEventListener("click", getfdvPrice);
+  // document.getElementById("btcButton").addEventListener("click", submitBtcprice);
 
 </script>
 
@@ -351,29 +372,8 @@
   
   // Add event listener to button to call the function on click
   document.getElementById("btcButton").addEventListener("click", getfdvPrice);
-  
-const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
-
-function submitBtcprice() {
-    var name = document.getElementById('btc').value;
-    fetch(apiEndpoint, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `name=${encodeURIComponent(name)}`
-    }).then(response => response.text())
-      .then(text => {
-        document.getElementById('save').textContent = name;
-        // alert(text); // Display the response text from Google Apps Script
-      })
-      .catch(error => console.error('Error:', error));
-}
 
 
-  document.getElementById("btcButton").addEventListener("click", getfdvPrice);
-  document.getElementById("btcButton").addEventListener("click", submitBtcprice);
 
 </script>
 
