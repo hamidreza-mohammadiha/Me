@@ -74,6 +74,9 @@ body {
 img {
   width: 600px;
 }
+#draft {
+  display: none;
+}
 a {
   color: #FFE66D;
 }
