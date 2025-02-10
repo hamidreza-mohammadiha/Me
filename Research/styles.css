@@ -72,7 +72,7 @@ body {
   font-size: 100%;
 }
 img {
-  width: 300px;
+  width: 600px;
 }
 a {
   color: #FFE66D;
@@ -310,5 +310,9 @@ footer {
     	font-size: 42px;
 		line-height: 1;
   }
+
+  img {
+    width: 300px;
 	
+}
 }
