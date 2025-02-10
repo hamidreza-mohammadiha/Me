@@ -82,6 +82,10 @@ img {
   display: none;
 }
 
+#first {
+  display: none;
+}
+
 a {
   color: #FFE66D;
 }
