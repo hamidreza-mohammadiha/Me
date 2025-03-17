@@ -129,7 +129,7 @@ h2 {
 }
 
 .content-wrap .btn_Pro {
-  background: rgba(236, 240, 189, 0.884);
+  background: rgb(4, 215, 234);
   color: #000000;
   text-decoration: none;
   padding: 8px;
@@ -139,8 +139,8 @@ h2 {
   margin: 5px 5px;
 }
 .content-wrap .btn_Pro:hover {
-  background: rgba(7, 185, 212, 0.884);
-  color: #fbf3f3;
+  background: rgba(3, 108, 245, 0.8);
+  color: #F7FFF7;
 }
 
 content-wrap a {
