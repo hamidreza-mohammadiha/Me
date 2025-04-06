@@ -93,6 +93,22 @@ h2 {
   font-size: 45px;
 }
 
+.moving-image {
+  position: absolute;
+  top: 1000px;
+  transform: translateY(-50%);
+  animation: moveRight 5s linear infinite;
+}
+
+@keyframes moveRight {
+  0% {
+      left: -100px; /* Start off-screen left */
+  }
+  100% {
+      left: 100vw; /* Move to right edge of viewport */
+  }
+}
+
 .content-wrap {
   max-width: 800px;
   width: 85%;
