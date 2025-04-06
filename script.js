@@ -60,3 +60,4 @@ document.addEventListener('DOMContentLoaded', function() {
   
     setInterval(updateClocks, 1000); // Update every second
   });
+  
