@@ -99,7 +99,7 @@ h2 {
   transform: translateY(-50%);
   --midpoint: 50%;
   --amplitude: 16.5%;
-  animation: harmonicMotion 3.14s linear infinite;
+  animation: harmonicMotion 5s linear infinite;
 }
 
 @keyframes harmonicMotion {
