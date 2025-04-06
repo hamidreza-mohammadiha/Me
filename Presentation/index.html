@@ -46,13 +46,29 @@
           </div>
       </header>
 
+      <script>  
+        function toggleContent_1() {  
+          var content = document.getElementById("defi");  
+          
+          if (content.style.display === "none") {  
+            content.style.display = "block";  
+          } else {  
+            content.style.display = "none";  
+          }  
+        } 
+        </script>
+
+   
+
       <section class="content-wrap">
 
+    
         <br>
-        <h2 style="font-size: xx-large;"> What do we mean by Decentralized Finance (DeFi), and how !? </h2><br>
+        <a onclick="toggleContent_1()"><h2 style="font-size: xx-large;"> ➤ What do we mean by Decentralized Finance (DeFi), and how !? </h2><br></a>
 
-        <img style="width: 100%;" src="../Images/defi1.png">
-
+        <img style="width: 66%;" src="../Images/defi1.png">
+      
+      <div id="defi">
 
         <br>
         <p>
@@ -108,7 +124,7 @@
         <!-- <img style="width: 88%;" src="/Images/defi ecosystem.jfif"> -->
         <img style="width: 88%;" src="https://www.solulab.com/wp-content/uploads/2021/10/Use-Cases-of-a-DeFi-Ecosystem.jpg">
 
-
+      </div>
 
 
 
@@ -204,6 +220,8 @@
             <li><a href="https://hamidreza-mohammadiha.github.io/Work/">Pages</a></li>
       
           </ul>
+          <p id="time">...</p>
+          <br>
 
           <strong><h2 id="btc"></h2></strong>
           <strong><h2 id="eth"></h2></strong>
