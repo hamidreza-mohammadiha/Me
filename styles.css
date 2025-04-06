@@ -97,15 +97,23 @@ h2 {
   position: absolute;
   top: 1000px;
   transform: translateY(-50%);
-  animation: moveRight 5s linear infinite;
+  --midpoint: 50%;
+  --amplitude: 16.5%;
+  animation: harmonicMotion 3.14s linear infinite;
 }
 
-@keyframes moveRight {
-  0% {
-      left: -100px; /* Start off-screen left */
+@keyframes harmonicMotion {
+  0%, 100% {
+    left: calc(var(--midpoint) - var(--amplitude));
   }
-  100% {
-      left: 100vw; /* Move to right edge of viewport */
+  25% {
+    left: var(--midpoint);
+  }
+  50% {
+    left: calc(var(--midpoint) + var(--amplitude));
+  }
+  75% {
+    left: var(--midpoint);
   }
 }
 
