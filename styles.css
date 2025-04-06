@@ -111,7 +111,7 @@ h2 {
   margin: 5px 5px;
 }
 .content-wrap .btn_Home:hover {
-  background: rgba(47,48,97,80%);
+  background: rgb(4, 215, 234);
 }
 
 .content-wrap .btn {
@@ -129,8 +129,8 @@ h2 {
 }
 
 .content-wrap .btn_Pro {
-  background: rgb(4, 215, 234);
-  color: #000000;
+  background: #2F3061;
+  color: #ffffff;
   text-decoration: none;
   padding: 8px;
   border-radius: 10px;
