@@ -95,7 +95,7 @@ h2 {
 
 .moving-image {
   position: absolute;
-  top: 1000px;
+  top: 900px;
   transform: translateY(-50%);
   --midpoint: 50%;
   --amplitude: 16.5%;
