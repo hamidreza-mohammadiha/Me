@@ -88,6 +88,10 @@ h2 {
   font-size: 45px;
 }
 
+#SOP {
+  display: none;
+}
+
 .content-wrap {
   max-width: 800px;
   width: 85%;
