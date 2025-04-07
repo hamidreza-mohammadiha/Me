@@ -97,7 +97,7 @@ h2 {
   position: absolute;
   top: 965px;
   transform: translateY(-50%);
-  --midpoint: 50%;
+  --midpoint: 40%;
   --amplitude: 1.5%;
   animation: harmonicMotion 8s linear infinite;
 }
