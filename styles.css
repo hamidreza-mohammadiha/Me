@@ -95,14 +95,14 @@ h2 {
 
 .moving-image {
   position: absolute;
-  top: 950px;
+  top: 965px;
   transform: translateY(-50%);
   --midpoint: 50%;
-  --amplitude: 16.5%;
+  --amplitude: 1.5%;
   animation: harmonicMotion 5s linear infinite;
 }
 
-/* @keyframes harmonicMotion {
+@keyframes harmonicMotion {
   0%, 100% {
     left: calc(var(--midpoint) - var(--amplitude));
   }
@@ -115,7 +115,7 @@ h2 {
   75% {
     left: var(--midpoint);
   }
-} */
+}
 
 .content-wrap {
   max-width: 800px;
