@@ -95,22 +95,29 @@ h2 {
 
 .moving-image {
   position: absolute;
-  top: 965px;
-  transform: translateY(-50%);
-  --midpoint: 42%;
-  --amplitude: 0.5%;
-  animation: harmonicMotion 8s linear infinite;
+  left: 66%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for exact horizontal centering */
+  --midpoint: 88%;
+  --amplitude: 28%;
+  animation: harmonicMotionup 8s linear infinite;
 }
 
-.moving-btn{
-  position: relative;
-  transform: translateY(-50%);
-  --midpoint: 0%;
-  --amplitude: 5.5%;
-  animation: harmonicMotion 8s linear infinite;
+@keyframes harmonicMotionup {
+  0%, 100% {
+    top: calc(var(--midpoint) - var(--amplitude));
+  }
+  25% {
+    top: var(--midpoint);
+  }
+  50% {
+    top: calc(var(--midpoint) + var(--amplitude));
+  }
+  75% {
+    top: var(--midpoint);
+  }
 }
 
-@keyframes harmonicMotion {
+@keyframes harmonicMotionleft {
   0%, 100% {
     left: calc(var(--midpoint) - var(--amplitude));
   }
@@ -124,6 +131,16 @@ h2 {
     left: var(--midpoint);
   }
 }
+
+.moving-btn{
+  position: relative;
+  transform: translateY(-50%);
+  --midpoint: 0%;
+  --amplitude: 5.5%;
+  animation: harmonicMotionleft 8s linear infinite;
+}
+
+
 
 .content-wrap {
   max-width: 800px;
@@ -318,7 +335,7 @@ footer {
   }
 
   img {
-    width: 210px;
+    width: 240px;
   }
 }
 
