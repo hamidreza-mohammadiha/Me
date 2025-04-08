@@ -98,7 +98,7 @@ h2 {
   left: 66%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust for exact horizontal centering */
   --midpoint: 88%;
-  --amplitude: 28%;
+  --amplitude: 2.8%;
   animation: harmonicMotionup 8s linear infinite;
 }
 
