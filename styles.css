@@ -97,8 +97,16 @@ h2 {
   position: absolute;
   top: 965px;
   transform: translateY(-50%);
-  --midpoint: 40%;
-  --amplitude: 1.5%;
+  --midpoint: 42%;
+  --amplitude: 0.5%;
+  animation: harmonicMotion 8s linear infinite;
+}
+
+.moving-btn{
+  position: relative;
+  transform: translateY(-50%);
+  --midpoint: 0%;
+  --amplitude: 5.5%;
   animation: harmonicMotion 8s linear infinite;
 }
 
