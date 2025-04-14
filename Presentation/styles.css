@@ -90,6 +90,10 @@ h2 {
   display: none;
 }
 
+#prd {
+  display: none;
+}
+
 .content-wrap {
   max-width: 800px;
   width: 85%;
