@@ -74,6 +74,8 @@ body {
 img {
   width: 400px;
 }
+
+
 a {
   color: #FFE66D;
 }
@@ -97,7 +99,7 @@ h2 {
   position: absolute;
   left: 66%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust for exact horizontal centering */
-  --midpoint: 88%;
+  --midpoint: 58%;
   --amplitude: 2.8%;
   animation: harmonicMotionup 8s linear infinite;
 }
@@ -359,7 +361,7 @@ footer {
   }
 
   img {
-    width: 180px;
+    width: 210px;
   }
 	
 }
