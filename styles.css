@@ -97,10 +97,10 @@ h2 {
 
 .moving-image {
   position: absolute;
-  left: 66%; /* Center horizontally */
+  left: 67%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust for exact horizontal centering */
   --midpoint: 58%;
-  --amplitude: 2.8%;
+  --amplitude: 14%;
   animation: harmonicMotionup 8s linear infinite;
 }
 
