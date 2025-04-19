@@ -30,6 +30,17 @@ body {
   line-height: 1.5;
 }
 
+a {
+  color: #09004e;
+}
+
+a:hover {
+  text-decoration: none;
+  font-size: 95%;
+}
+
+
+
 
 #clock {
   font-size: 2em;
@@ -78,6 +89,10 @@ img {
   display: none;
 }
 
+#draft1 {
+  display: none;
+}
+
 #other {
   display: none;
 }
@@ -86,12 +101,7 @@ img {
   display: none;
 }
 
-a {
-  color: #FFE66D;
-}
-a:hover {
-  text-decoration: none;
-}
+
 h1, h2 {
   font-family: 'Caveat', cursive;
   font-weight: 400;
@@ -252,7 +262,10 @@ footer {
 .contact-list a {
   padding: 5px;
   display: inline-block;
+  color: #b5b205;
 }
+
+
 
 
 /* Responsive
