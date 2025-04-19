@@ -75,12 +75,13 @@ img {
   width: 400px;
 }
 
-
 a {
   color: #FFE66D;
 }
 a:hover {
   text-decoration: none;
+  font-size: 95%;
+  
 }
 h1, h2 {
   font-family: 'Caveat', cursive;
@@ -99,7 +100,7 @@ h2 {
   position: absolute;
   left: 67%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust for exact horizontal centering */
-  --midpoint: 58%;
+  --midpoint: 68%;
   --amplitude: 14%;
   animation: harmonicMotionup 8s linear infinite;
 }

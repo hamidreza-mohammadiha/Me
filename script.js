@@ -56,10 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Display all times
         document.getElementById('time').innerHTML = `
-            ${londonTime}<br>
             ${istanbulTime}<br>
             ${tehranTime}<br>
-            ${yerevanTime}<br>
             ${dubaiTime}
         `;
     }
