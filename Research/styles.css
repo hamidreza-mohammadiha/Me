@@ -101,6 +101,14 @@ img {
   display: none;
 }
 
+#Q {
+  display: block;
+}
+
+#Q :hover {
+  color: #F7FFF7;
+}
+
 
 h1, h2 {
   font-family: 'Caveat', cursive;
