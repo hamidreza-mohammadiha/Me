@@ -225,6 +225,10 @@ header {
 footer {
   background: #343434;
   color: #F7FFF7;
+	
+  a {
+    color: rgb(4, 215, 234) ;
+  }
 }
 .contact-list {
   list-style-type: none;
