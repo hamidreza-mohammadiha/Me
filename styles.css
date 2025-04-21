@@ -100,7 +100,7 @@ h2 {
   position: absolute;
   left: 67%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust for exact horizontal centering */
-  --midpoint: 76%;
+  --midpoint: 80%;
   --amplitude: 0.5%;
   animation: harmonicMotionup 1s linear infinite;
 }
@@ -149,7 +149,7 @@ h2 {
   max-width: 800px;
   width: 85%;
   margin: 0 auto;
-  padding: 60px 0;
+  padding: 20px 0;
 }
 
 .content-wrap .btn_Home {
