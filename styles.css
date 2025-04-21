@@ -100,9 +100,9 @@ h2 {
   position: absolute;
   left: 67%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust for exact horizontal centering */
-  --midpoint: 68%;
-  --amplitude: 14%;
-  animation: harmonicMotionup 8s linear infinite;
+  --midpoint: 76%;
+  --amplitude: 0.5%;
+  animation: harmonicMotionup 1s linear infinite;
 }
 
 @keyframes harmonicMotionup {
@@ -139,8 +139,8 @@ h2 {
   position: relative;
   transform: translateY(-50%);
   --midpoint: 0%;
-  --amplitude: 5.5%;
-  animation: harmonicMotionleft 8s linear infinite;
+  --amplitude: 0.5%;
+  animation: harmonicMotionleft 1s linear infinite;
 }
 
 
