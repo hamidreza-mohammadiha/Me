@@ -90,7 +90,7 @@ img {
 }
 
 #draft1 {
-  display: none;
+  display: block;
 }
 
 #other {
