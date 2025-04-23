@@ -35,8 +35,9 @@ a {
 }
 
 a:hover {
-  text-decoration: none;
+  text-decoration: underline;
   font-size: 95%;
+  cursor: pointer;
 }
 
 
@@ -98,7 +99,7 @@ img {
 }
 
 #first {
-  display: none;
+  display: block;
 }
 
 #Q {
