@@ -139,8 +139,24 @@ h2 {
   position: relative;
   transform: translateY(-50%);
   --midpoint: 0%;
-  --amplitude: 0.5%;
+  --amplitude: 1%;
   animation: harmonicMotionleft 1s linear infinite;
+}
+
+.moving-btn1{
+  position: relative;
+  transform: translateY(-50%);
+  --midpoint: 0%;
+  --amplitude: 0.5%;
+  animation: harmonicMotionleft 1.1s linear infinite;
+}
+
+.moving-btn2{
+  position: relative;
+  transform: translateY(-50%);
+  --midpoint: 0%;
+  --amplitude: 0.5%;
+  animation: harmonicMotionleft 0.9s linear infinite;
 }
 
 
