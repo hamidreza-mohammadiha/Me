@@ -58,6 +58,18 @@
         } 
         </script>
 
+<script>  
+  function toggleContent_11() {  
+    var content = document.getElementById("defi_pic");  
+    
+    if (content.style.display === "none") {  
+      content.style.display = "block";  
+    } else {  
+      content.style.display = "none";  
+    }  
+  } 
+  </script>
+
       <script>  
         function toggleContent_2() {  
           var content = document.getElementById("prd");  
@@ -70,13 +82,25 @@
         } 
         </script>
 
+  <script>  
+    function toggleContent_22() {  
+      var content = document.getElementById("prd_pic");  
+      
+      if (content.style.display === "none") {  
+        content.style.display = "block";  
+      } else {  
+        content.style.display = "none";  
+      }  
+    } 
+    </script>
+
    
 
       <section class="content-wrap">
 
-        <a><h2 style="font-size: xx-large;">  <span style="color: #FFE66D;">➤ </span> How a Product should write down? </h2><br></a>
+        <a onclick="toggleContent_22()" ><h2 style="font-size: x-large;">  <span style="color: #FFE66D;">➤ </span> How a Product should be write down? </h2><br></a>
 
-        <img onclick="toggleContent_2()" style="width: 88%;" src="strategy-hierarchy.png"> 
+        <img id="prd_pic" onclick="toggleContent_2()" style="width: 88%;" src="strategy-hierarchy.png"> 
 
       <div id="prd">
         <!-- <p> starting point ...</p> -->
@@ -177,18 +201,14 @@
 
 
         <br>
+        <!-- <p>-------------------------------------------------------------------------------------------------------</p> -->
         <br>
-        <br>
-        <br>
-        <p>-------------------------------------------------------------------------------------------------------</p>
-        <br>
-        <br>
-        <br>
+
   
 
     
         
-        <a onclick="toggleContent_1()"><h2 style="font-size: xx-large;">  <span style="color: #FFE66D;">➤ </span> What do we mean by Decentralized Finance (DeFi), and how !? </h2><br></a>
+        <a onclick="toggleContent_11()"><h2 style="font-size: x-large;">  <span style="color: #FFE66D;">➤ </span> What do we mean by Decentralized Finance (DeFi), and how !? </h2><br></a>
 
       
       <div id="defi">
@@ -245,11 +265,14 @@
 
 
         <!-- <img style="width: 88%;" src="/Images/defi ecosystem.jfif"> -->
-        <img style="width: 88%;" src="https://www.solulab.com/wp-content/uploads/2021/10/Use-Cases-of-a-DeFi-Ecosystem.jpg">
+        <img  style="width: 88%;" src="../Images/defi1.png">
 
       </div>
 
-      <img style="width: 88%;" src="../Images/defi1.png">
+      
+
+      <img onclick="toggleContent_1" id="defi_pic" style="width: 88%;" src="https://www.solulab.com/wp-content/uploads/2021/10/Use-Cases-of-a-DeFi-Ecosystem.jpg">
+
 
 
       

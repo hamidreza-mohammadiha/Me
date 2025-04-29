@@ -90,7 +90,15 @@ h2 {
   display: none;
 }
 
+#defi_pic {
+  display: none;
+}
+
 #prd {
+  display: none;
+}
+
+#prd_pic {
   display: none;
 }
 
@@ -224,6 +232,10 @@ header {
 footer {
   background: #343434;
   color: #F7FFF7;
+
+  a {
+    color: #FFE66D;
+  }
 }
 .contact-list {
   list-style-type: none;
