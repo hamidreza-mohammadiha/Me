@@ -73,6 +73,7 @@ a {
 a:hover {
   text-decoration: none;
   font-size: 95%;
+  cursor: pointer;
 }
 h1, h2 {
   font-family: 'Caveat', cursive;

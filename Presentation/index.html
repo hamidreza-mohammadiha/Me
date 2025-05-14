@@ -74,7 +74,7 @@
 
       <section class="content-wrap">
 
-        <a><h2 style="font-size: x-large;">  <span onclick="toggleContent_2()" style="color: #FFE66D;">➤ </span> How a Product should be write down? </h2><br></a>
+        <a><h2 style="font-size: x-large;">  <span onclick="toggleContent_2()" style="color: #FFE66D;">➤ </span> How a Product should be write down? </h2></a>
 
 
       <div id="prd">
@@ -82,7 +82,6 @@
         <img  style="width: 88%;" src="strategy-hierarchy.png"> 
 
         <!-- <p> starting point ...</p> -->
-         <br>
          <p>Great products aren’t just built—they’re documented. Clear, comprehensive documentation bridges vision and execution, ensuring every stakeholder—from developers to designers—aligns with the product’s purpose, functionality, and user needs. In this presentation, we’ll explore the four pillars of effective product documentation:</p>
          <br>
 
@@ -190,7 +189,7 @@
 
     
         
-        <a ><h2 style="font-size: x-large;">  <span onclick="toggleContent_1()" style="color: #FFE66D;">➤ </span> What do we mean by Decentralized Finance (DeFi), and how !? </h2><br></a>
+        <a ><h2 style="font-size: x-large;">  <span onclick="toggleContent_1()" style="color: #FFE66D;">➤ </span> What do we mean by Decentralized Finance (DeFi), and how !? </h2></a>
 
 
 
@@ -435,7 +434,7 @@ setInterval(() => {
           const ETH_Price = Math.round(data2.price);
           BTC_P = BTC_Price;
           ETH_P = ETH_Price;
-          BTCETH = BTC_Price/ETH_Price;
+          BTCETH = BTC_P/ETH_P;
           const now = new Date();
           
           // Display the Bitcoin price in the HTML
@@ -503,6 +502,22 @@ setInterval(() => {
           const Equ_Min = Math.round(BTC_Price * (1-Math.exp(-0.42*(7)))/(1-Math.exp(-0.42*(14))))
           const Equ_Max = Math.round(BTC_Price * (1-Math.exp(-0.42*(14)))/(1-Math.exp(-0.42*(7))))
           const BTCETH = BTC_Price/ETH_Price
+
+          const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
+
+          fetch(apiEndpoint, {
+              method: 'POST',
+              mode: 'cors',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: `name=${encodeURIComponent(BTCETH)}`
+          }).then(response => response.text())
+            .then(text => {
+              document.getElementById('save').innerText = `Saved!`;
+              // alert(text); // Display the response text from Google Apps Script
+            })
+            .catch(error => console.error('Error:', error));
           
           // Display the Bitcoin price in the HTML
           // document.getElementById("fdvButton").innerText = `Refresh`;
