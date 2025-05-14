@@ -74,11 +74,13 @@
 
       <section class="content-wrap">
 
-        <a><h2 style="font-size: x-large;">  <span style="color: #FFE66D;">➤ </span> How a Product should be write down? </h2><br></a>
+        <a><h2 style="font-size: x-large;">  <span onclick="toggleContent_2()" style="color: #FFE66D;">➤ </span> How a Product should be write down? </h2><br></a>
 
-        <img onclick="toggleContent_2()" style="width: 88%;" src="strategy-hierarchy.png"> 
 
       <div id="prd">
+
+        <img  style="width: 88%;" src="strategy-hierarchy.png"> 
+
         <!-- <p> starting point ...</p> -->
          <br>
          <p>Great products aren’t just built—they’re documented. Clear, comprehensive documentation bridges vision and execution, ensuring every stakeholder—from developers to designers—aligns with the product’s purpose, functionality, and user needs. In this presentation, we’ll explore the four pillars of effective product documentation:</p>
@@ -188,13 +190,15 @@
 
     
         
-        <a ><h2 style="font-size: x-large;">  <span style="color: #FFE66D;">➤ </span> What do we mean by Decentralized Finance (DeFi), and how !? </h2><br></a>
+        <a ><h2 style="font-size: x-large;">  <span onclick="toggleContent_1()" style="color: #FFE66D;">➤ </span> What do we mean by Decentralized Finance (DeFi), and how !? </h2><br></a>
 
-	            <img onclick="toggleContent_1()" style="width: 88%;" src="../Images/defi1.png">
 
 
       
       <div id="defi">
+
+        <img style="width: 88%;" src="../Images/defi1.png">
+
 
         <br>
         <p>
@@ -416,14 +420,22 @@ setInterval(() => {
   var BTC_P = 100000;   
   
   async function getBitcoinPrice() {
-      const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
+      const key1 = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
+      const key2 = "https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT"; // replace "MyKey" with the actual API URL or key
+
    
       try {
-          const response = await fetch(key);
-          const data = await response.json();
+          const response1 = await fetch(key1);
+          const data1 = await response.json();
 
-          const BTC_Price = Math.round(data.price);
+          const response2 = await fetch(key2);
+          const data2 = await response.json();
+
+          const BTC_Price = Math.round(data1.price);
+          const ETH_Price = Math.round(data2.price);
           BTC_P = BTC_Price;
+          ETH_P = ETH_Price;
+          BTCETH = BTC_Price/ETH_Price;
           const now = new Date();
           
           // Display the Bitcoin price in the HTML
@@ -444,7 +456,7 @@ setInterval(() => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `name=${encodeURIComponent(BTC_P)}`
+            body: `name=${encodeURIComponent(BTCETH)}`
         }).then(response => response.text())
           .then(text => {
             document.getElementById('save').innerText = `Saved!`;
