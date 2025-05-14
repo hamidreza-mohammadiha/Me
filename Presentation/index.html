@@ -419,19 +419,19 @@ setInterval(() => {
   var BTC_P = 100000;   
   
   async function getBitcoinPrice() {
-      const key1 = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
-      const key2 = "https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT"; // replace "MyKey" with the actual API URL or key
+      const key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"; // replace "MyKey" with the actual API URL or key
+      // const key2 = "https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT"; // replace "MyKey" with the actual API URL or key
 
    
       try {
-          const response1 = await fetch(key1);
-          const data1 = await response.json();
+          const response1 = await fetch(key);
+          const data = await response.json();
 
-          const response2 = await fetch(key2);
-          const data2 = await response.json();
+          // const response2 = await fetch(key2);
+          // const data2 = await response.json();
 
-          const BTC_Price = Math.round(data1.price);
-          const ETH_Price = Math.round(data2.price);
+          const BTC_Price = Math.round(data.price);
+          // const ETH_Price = Math.round(data2.price);
           BTC_P = BTC_Price;
           ETH_P = ETH_Price;
           BTCETH = BTC_P/ETH_P;
@@ -447,21 +447,21 @@ setInterval(() => {
           document.getElementById("btc").innerText = "Error fetching Bitcoin price.";
       }
 
-      const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
+      // const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
 
-        fetch(apiEndpoint, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `name=${encodeURIComponent(BTCETH)}`
-        }).then(response => response.text())
-          .then(text => {
-            document.getElementById('save').innerText = `Saved!`;
-            // alert(text); // Display the response text from Google Apps Script
-          })
-          .catch(error => console.error('Error:', error));
+      //   fetch(apiEndpoint, {
+      //       method: 'POST',
+      //       mode: 'cors',
+      //       headers: {
+      //           'Content-Type': 'application/x-www-form-urlencoded',
+      //       },
+      //       body: `name=${encodeURIComponent(BTCETH)}`
+      //   }).then(response => response.text())
+      //     .then(text => {
+      //       document.getElementById('save').innerText = `Saved!`;
+      //       // alert(text); // Display the response text from Google Apps Script
+      //     })
+      //     .catch(error => console.error('Error:', error));
 
   }
 
