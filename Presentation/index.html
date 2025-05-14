@@ -424,7 +424,7 @@ setInterval(() => {
 
    
       try {
-          const response1 = await fetch(key);
+          const response = await fetch(key);
           const data = await response.json();
 
           // const response2 = await fetch(key2);
@@ -524,6 +524,7 @@ setInterval(() => {
           // document.getElementById("fdvButton").className = `btn_Pro`;
           // document.getElementById("fdvButton").innerColor = `yellow`;
           // document.getElementById("fdvButton").innerText = ` ${BT} `;
+          document.getElementById("btc").innerText = `BTC: ${BTC_Price} $ `;
           document.getElementById("eth").innerText = `ETH: ${ETH_Price} $ `;
           // document.getElementById("xrp").innerText = `USDT: ${XRP_Price} $ `;
 
