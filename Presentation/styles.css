@@ -270,10 +270,10 @@ footer {
   }
 }
 
-  #Tim {
+  /* #Tim {
     width: 460px;
     height: 360px;
-  }
+  } */
 
 @media screen and (max-width: 749px) {
 	
@@ -295,10 +295,10 @@ footer {
   }
 }
 
-  #Tim {
+  /* #Tim {
     width: 360px;
     height: 260px;
-  }
+  } */
 
 @media screen and (max-width: 420px) {
   
@@ -320,8 +320,8 @@ footer {
   }
 
   #Tim {
-    width: 260px;
-    height: 100px;
+    width: 280px;
+    height: 200px;
   }
 	
 }
