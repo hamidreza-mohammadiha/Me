@@ -345,16 +345,16 @@
           <p id="time">...</p>
           <br>
 
-          <strong><h2 id="btc"></h2></strong>
-          <strong><h2 id="eth"></h2></strong>
-          <strong><h2 id="xrp"></h2></strong>
+          <strong><h2 style="font-size: x-large;" id="btc"></h2></strong>
+          <strong><h2 style="font-size: x-large;" id="eth"></h2></strong>
+          <strong><h2 style="font-size: x-large;" id="xrp"></h2></strong>
           <p id="fdv"></p>
-          <strong><h2 id="btceth"></h2></strong>
+          <strong><h2 style="font-size: x-large;" id="btceth"></h2></strong>
           <br>
 
 
 
-          <a id="btcButton" class="btn_Home" ><p>click to see <br><h2>Bitcoin Equilibrium </h2> <br> Price</p></a>
+          <a id="btcButton" class="btn_Home" ><p>click to Reinforce <br><h2>Bitcoin Equilibrium </h2> <br></p></a>
           <br>
           <br>
 
@@ -501,6 +501,7 @@ setInterval(() => {
           const Equ_Min = Math.round(BTC_Price * (1-Math.exp(-0.42*(7)))/(1-Math.exp(-0.42*(14))))
           const Equ_Max = Math.round(BTC_Price * (1-Math.exp(-0.42*(14)))/(1-Math.exp(-0.42*(7))))
           const BTCETH = BTC_Price/ETH_Price
+          const btceth = Math.round(BTCETH)
 
           const apiEndpoint = 'https://script.google.com/macros/s/AKfycbwloVWbjb0WbjkwOD0_oWKHeIDxa_1luEjSQOIfLNIbdxfoeBeZjXxcG7uvSok5L8eM/exec';
 
@@ -527,7 +528,7 @@ setInterval(() => {
           document.getElementById("eth").innerText = `ETH: ${ETH_Price} $ `;
           // document.getElementById("xrp").innerText = `USDT: ${XRP_Price} $ `;
 
-          document.getElementById("fdv").innerText = ` Bitcoin's Mathematical Equilibrium: \n ( ${Equ_Min} ...  ${(Equ_Max+Equ_Min)/2}  ... ${Equ_Max} ) \n `;
+          document.getElementById("fdv").innerText = ` BTC / ETH Range: \n ( ${6.29} ... ${11.1} ...   ${btceth}  ... ${58.8} ... ${629} ) \n `;
           document.getElementById("btceth").innerText = `BTC / ETH = ${BTCETH} \n `;
 
           // document.getElementById("trd").innerText = `Pres ctrl and `;
