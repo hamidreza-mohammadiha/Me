@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crypto Ratio Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    #ratioChart { max-width: 800px; margin: 20px auto; }
+    .container { text-align: center; padding: 20px; }
+    button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div>
+      <button id="btcButton">Refresh</button>
+      <span id="saveStatus">Ready</span>
+    </div>
+    <div id="btc">BTC: Loading...</div>
+    <div id="eth">ETH: Loading...</div>
+    <div id="btceth">BTC/ETH: -</div>
+    <div id="fdv">Ratio Range: (6.29 ... 11.1 ... ? ... 58.8 ... 629)</div>
+    <canvas id="ratioChart" width="800" height="400"></canvas>
+  </div>
+
+  <script>
+    // Configuration
+    const API_ENDPOINT = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+    const MAX_DATA_POINTS = 100;
+    const REFRESH_INTERVAL = 21000; // 21 seconds
+
+    // State management
+    let priceData = JSON.parse(localStorage.getItem('btcEthRatios')) || [];
+    let chartInstance = null;
+
+    // DOM Elements
+    const btcButton = document.getElementById('btcButton');
+    const saveStatus = document.getElementById('saveStatus');
+    const btcDisplay = document.getElementById('btc');
+    const ethDisplay = document.getElementById('eth');
+    const btcEthDisplay = document.getElementById('btceth');
+    const fdvDisplay = document.getElementById('fdv');
+
+    // Initialize chart
+    function initChart() {
+      const ctx = document.getElementById('ratioChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: Array.from({length: priceData.length}, (_, i) => i + 1),
+          datasets: [{
+            label: 'BTC/ETH Ratio',
+            data: priceData,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+
+    // Update chart with new data
+    function updateChart() {
+      if (!chartInstance) return;
+      
+      chartInstance.data.labels = Array.from({length: priceData.length}, (_, i) => i + 1);
+      chartInstance.data.datasets[0].data = priceData;
+      chartInstance.update();
+    }
+
+    // Save data to localStorage and Google Sheets
+    async function saveRatio(ratio) {
+      // Update local storage
+      priceData.push(ratio);
+      if (priceData.length > MAX_DATA_POINTS) {
+        priceData.shift();
+      }
+      localStorage.setItem('btcEthRatios', JSON.stringify(priceData));
+      
+      // Save to Google Sheets
+      try {
+        saveStatus.textContent = 'Saving...';
+        const response = await fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+          body: `ratio=${encodeURIComponent(ratio)}`
+        });
+        
+        if (response.ok) {
+          saveStatus.textContent = 'Saved!';
+          updateChart();
+        } else {
+          saveStatus.textContent = 'Save failed';
+        }
+      } catch (error) {
+        console.error('Save error:', error);
+        saveStatus.textContent = 'Error saving';
+      }
+    }
+
+    // Main function to fetch prices and update UI
+    async function updatePrices() {
+      try {
+        const [btcRes, ethRes] = await Promise.all([
+          fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
+          fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT')
+        ]);
+
+        const btcData = await btcRes.json();
+        const ethData = await ethRes.json();
+
+        const btcPrice = parseFloat(btcData.price).toFixed(2);
+        const ethPrice = parseFloat(ethData.price).toFixed(2);
+        const ratio = (btcPrice / ethPrice).toFixed(4);
+
+        // Update displays
+        btcDisplay.textContent = `BTC: $${btcPrice}`;
+        ethDisplay.textContent = `ETH: $${ethPrice}`;
+        btcEthDisplay.textContent = `BTC/ETH: ${ratio}`;
+        fdvDisplay.innerHTML = `Ratio Range:<br>(6.29 ... 11.1 ... <strong>${ratio}</strong> ... 58.8 ... 629)`;
+
+        // Save if ratio changed significantly
+        if (!priceData.length || Math.abs(ratio - priceData[priceData.length-1]) > 0.01) {
+          await saveRatio(ratio);
+        }
+      } catch (error) {
+        console.error('Price fetch error:', error);
+        btcDisplay.textContent = 'Error loading prices';
+        saveStatus.textContent = 'Fetch failed';
+      }
+    }
+
+    // Initialize
+    btcButton.addEventListener('click', updatePrices);
+    setInterval(updatePrices, REFRESH_INTERVAL);
+    
+    // Initial load
+    window.addEventListener('DOMContentLoaded', () => {
+      if (priceData.length) initChart();
+      updatePrices();
+    });
+  </script>
+</body>
+</html>
