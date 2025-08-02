@@ -133,14 +133,14 @@ h2 {
   background: #f7931a;
   color: #000000;
   text-decoration: none;
-  padding: 8px;
-  border-radius: 7px;
+  padding: 2px;
+  border-radius: 66px;
   display: inline-block;
   padding: 5px 5px;
-  margin: 5px 5px;
+  margin: 1px 1px;
 }
 .content-wrap .btn_Pro:hover {
-  background: rgba(1, 213, 65, 0.8);
+  background: rgba(49, 230, 230, 0.8);
 }
 
 content-wrap a {
