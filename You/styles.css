@@ -84,13 +84,13 @@ a:hover {
   
 }
 h1, h2 {
-  font-family: 'Caveat', cursive;
-  font-weight: 400;
+  font-family: 'Caveat';
+  font-weight: 300;
   margin: 0;
 }
 h1 {
   font-size: 100px;
-  line-height: 1;
+  line-height: 0.5;
 }
 h2 {
   font-size: 45px;
