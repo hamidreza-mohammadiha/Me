@@ -51,7 +51,7 @@
     h1 {
       font-size: 3.5rem;
       font-weight: 600;
-      letter-spacing: 1px;
+      letter-spacing: 1.4px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
@@ -226,24 +226,26 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      margin: 10px 0;
       background: white;
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
     }
 
     th, td {
-      padding: 15px;
-      text-align: left;
-      border: 1px solid #e0e7ff;
+      padding: 2px;
       text-align: center;
+      border: 1px solid #e0e7ff;
+      /* text-align: center; */
     }
 
     th {
       background: linear-gradient(135deg, #d7c7e9 0%, #b7d0fc 100%);
       color: white;
       font-weight: 600;
+      padding: 2px;
     }
 
     tr:nth-child(even) {
@@ -269,20 +271,21 @@
     }
 
     #resetBtn {
-      background: #e74c3c;
+      background: #970505cc;
       color: white;
       border: none;
-      border-radius: 8px;
-      padding: 12px 25px;
-      font-size: 1rem;
-      font-weight: 600;
+      border-radius: 24px;
+      padding: 15px 15px;
+      font-size: 1.2rem;
+      font-weight: 300;
+      font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-top: 20px;
+      margin-top: 45px;
     }
 
     #resetBtn:hover {
-      background: #c0392b;
+      background: #166103;
       transform: translateY(-2px);
     }
 
@@ -316,7 +319,8 @@
   <main>
     <header>
       <div class="content-wrap">
-        <h1>Zahra  Kazemzadeh</h1>
+        <h1 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Zahra  Kazemzadeh</h1>
+        <!-- <h1 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: x-larger;"> 🎂</h1> -->
         <!-- <h1>Kazemzadeh</h1> -->
 
       </div>
@@ -328,13 +332,11 @@
         <br>
         <h2 style="font-size: larger;">— Shooshoo</h2>
       </p> -->
-      <br>
       
-      <img width="28%" SRC="../You/hbd2.png">
 
       <br><br>
 
-      <h2 style="font-size: xx-large;">My To-Do List</h2>
+               <h2 style="font-size: xx-large;">Titarmitoni ?</h2>
       <div id="board">
         <div class="column" data-stage="todo">
           <h3>To Do</h3>
@@ -346,6 +348,7 @@
         </div>
         <div class="column" data-stage="done">
           <h3>Done</h3>
+          
           <div class="task-list" id="done-list"></div>
         </div>
       </div>
@@ -359,10 +362,30 @@
         </select>
         <button id="addBtn">Add Task</button>
       </div>
+              <button id="resetBtn">Reset All Tasks </button>
       <br><br><br>
+       <img width="10%" style="opacity: 29%;" SRC="../You/hbd2.png">     
+      <br>
+    </section>
+    
+    <footer>
+      <div class="content-wrap">
+         <img width="29%" SRC="../Images/ship 1.png">
+                 <p id="time">Current time will appear here</p>
+        <h2 style="color: #d7c7e9;">Let's Keep in Touch!</h2>
+        <ul class="contact-list">
+          <li><a href="mailto:Zahra.kazemzade96@Gmail.com">Email</a></li>
+          <li><a href="https://www.linkedin.com/in/zahra-kazemzade/" target="_blank">Linkedin </a></li>
+          <li><a href="https://t.me/ZAHRA96812" target="_blank">Telegram</a></li>
+          <li><a href="https://www.instagram.com/zahraa.k.b?igsh=MTRsMDljYjk1YXR5NQ==">Instagram</a></li>
+        </ul>
 
-      <h2 style="font-size: xx-large;">Our Books:</h2><br>
-      <table>
+
+
+
+                <!-- <h2 style="font-size: xx-large; color: #d7c7e9;">Library</h2>
+
+        <table>
         <thead>
           <tr>
             <th><h2 style="font-size: x-large; color: #061031;">Fiction</h2></th>
@@ -403,24 +426,8 @@
             </td>
           </tr>
         </tbody>
-      </table>
-      <br><br><br>
-    </section>
-    
-    <footer>
-      <div class="content-wrap">
-        <h2 style="color: #d7c7e9;">Let's Keep in Touch!</h2>
-                <br>
-        <ul class="contact-list">
-          <li><a href="mailto:Zahra.kazemzade96@Gmail.com">Email</a></li>
-          <li><a href="https://www.linkedin.com/in/zahra-kazemzade/" target="_blank">Linkedin </a></li>
-          <li><a href="https://t.me/ZAHRA96812" target="_blank">Telegram</a></li>
-          <li><a href="https://www.instagram.com/zahraa.k.b?igsh=MTRsMDljYjk1YXR5NQ==">Instagram</a></li>
-        </ul>
-        <img width="88%" SRC="../Images/ship 1.png">
-        <p id="time">Current time will appear here</p>
-        <button id="resetBtn">Reset All Tasks</button>
-      </div>
+      </table> -->
+        
     </footer>
   </main>
 
