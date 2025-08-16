@@ -50,7 +50,7 @@
 
     h1 {
       font-size: 3.5rem;
-      font-weight: 600;
+      font-weight: 400;
       letter-spacing: 1.4px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
@@ -319,7 +319,7 @@
   <main>
     <header>
       <div class="content-wrap">
-        <h1 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Zahra  Kazemzadeh</h1>
+        <h1 style="color: #d7c7e9;">Zahra  Kazemzadeh</h1>
         <!-- <h1 style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: x-larger;"> 🎂</h1> -->
         <!-- <h1>Kazemzadeh</h1> -->
 
@@ -363,9 +363,20 @@
         <button id="addBtn">Add Task</button>
       </div>
               <button id="resetBtn">Reset All Tasks </button>
-      <br><br><br>
-       <img width="10%" style="opacity: 29%;" SRC="../You/hbd2.png">     
-      <br>
+       <img src="../You/hbd2.png" class="background-image">
+
+      <style>
+      .background-image {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 50%;
+          z-index: -1;
+          width: 10%;
+      }
+      </style>    
+      <br><br>
     </section>
     
     <footer>
