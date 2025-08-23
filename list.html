@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Follow Playlist</title>
+</head>
+<body style="margin:0; font-family:sans-serif; background:#fafafa; color:#333;">
+  <div style="padding:20px; max-width:900px; margin:0 auto;">
+    <h1 style="margin-bottom:20px; text-align:center;">🎧 My Exciting Follow Playlist</h1>
+
+    <!-- Add Interface -->
+    <div style="margin-bottom:25px; text-align:center;">
+      <input id="input-source" placeholder="Add a title or author..." 
+             style="padding:10px; width:60%; border:1px solid #ccc; border-radius:6px; font-size:16px;"/>
+      <button id="btn-add" style="padding:10px 16px; margin-left:5px; border:none; background:#4CAF50; color:white; border-radius:6px; cursor:pointer; font-size:15px;">➕ Add</button>
+    </div>
+
+    <!-- Fiction Section -->
+    <section style="margin-bottom:30px;">
+      <h2 style="display:flex; justify-content:space-between; align-items:center;">
+        Fiction 
+        <button id="btn-reset-fiction" style="padding:4px 10px; border:none; background:#f44336; color:white; border-radius:4px; cursor:pointer;">Reset</button>
+      </h2>
+      <div id="fiction-list" style="display:grid; gap:10px;"></div>
+    </section>
+
+    <!-- References Section -->
+    <section>
+      <h2 style="display:flex; justify-content:space-between; align-items:center;">
+        References 
+        <button id="btn-reset-ref" style="padding:4px 10px; border:none; background:#f44336; color:white; border-radius:4px; cursor:pointer;">Reset</button>
+      </h2>
+      <div id="ref-list" style="display:grid; gap:10px;"></div>
+    </section>
+  </div>
+
+  <script>
+    // Initial data
+    let fiction = [
+      "Madame Bovary — Gustave Flaubert",
+      "Notes from Underground — Fyodor Dostoevsky",
+      "The Merchant of Venice — William Shakespeare",
+      "Jacques the Fatalist — Denis Diderot"
+    ];
+
+    let references = [
+      "Fooled by Randomness — Nassim Nicholas Taleb",
+      "Life 3.0 — Max Tegmark",
+      "A Beautiful Math — Tom Siegfried",
+      "The Art of Game Design: The Book of Lenses — Jesse Schell",
+      "Theory of Games and Economic Behavior — Neumann & Morgenstern",
+      "The Right Game — Brandenburger & Nalebuff",
+      "Reinforcement Learning: An Introduction — Sutton & Barto",
+      "The Art of Strategy — Dixit & Nalebuff",
+      "Introduction to Stochastic Dynamic Programming — Sheldon Ross",
+      "Economics: A Very Short Introduction — Partha Dasgupta",
+      "Game Theory — Maschler, Solan & Zamir",
+      "Macroeconomics — N. Gregory Mankiw"
+    ];
+
+    const input = document.getElementById('input-source');
+    const btnAdd = document.getElementById('btn-add');
+    const fictionList = document.getElementById('fiction-list');
+    const refList = document.getElementById('ref-list');
+
+    const fictionAuthors = ["flaubert", "dostoevsky", "shakespeare", "diderot"];
+
+    // Render function
+    function renderList(container, list) {
+      container.innerHTML = '';
+      if (list.length === 0) {
+        container.innerHTML = '<p style="color:#777;">Empty list. Add something above!</p>';
+        return;
+      }
+      list.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.textContent = item;
+        card.style.padding = '12px';
+        card.style.background = '#fff';
+        card.style.border = '1px solid #ddd';
+        card.style.borderRadius = '8px';
+        card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+        card.style.cursor = 'pointer';
+        card.style.transition = 'background 0.5s ease';
+
+        card.addEventListener('click', () => {
+          if (confirm("Remove this item?\n\n" + item)) {
+            list.splice(index, 1);
+            renderAll();
+          }
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function renderAll() {
+      renderList(fictionList, fiction);
+      renderList(refList, references);
+    }
+
+    // Add new item
+    btnAdd.addEventListener('click', () => {
+      const val = input.value.trim();
+      if (val) {
+        const lower = val.toLowerCase();
+        if (fictionAuthors.some(a => lower.includes(a))) {
+          fiction.unshift(val);
+          flashEffect(fictionList.firstChild);
+        } else {
+          references.unshift(val);
+          flashEffect(refList.firstChild);
+        }
+        input.value = '';
+        renderAll();
+      } else {
+        alert("Please enter a title or author.");
+      }
+    });
+
+    input.addEventListener('keyup', (e) => {
+      if (e.key === "Enter") btnAdd.click();
+    });
+
+    // Reset buttons
+    document.getElementById('btn-reset-fiction').addEventListener('click', () => {
+      if (confirm('Clear all Fiction items?')) {
+        fiction = [];
+        renderAll();
+      }
+    });
+    document.getElementById('btn-reset-ref').addEventListener('click', () => {
+      if (confirm('Clear all Reference items?')) {
+        references = [];
+        renderAll();
+      }
+    });
+
+    // Flash animation when adding
+    function flashEffect(el) {
+      if (!el) return;
+      el.style.background = '#fffa90';
+      setTimeout(() => { el.style.background = '#fff'; }, 600);
+    }
+
+    // Initial render
+    renderAll();
+  </script>
+</body>
+</html>
