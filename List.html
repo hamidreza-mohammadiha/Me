@@ -5,36 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>My Follow Playlist</title>
 </head>
-<body style="margin:0; font-family:sans-serif; background:#f5f5f5; color:#333;">
-  <div style="padding:20px; max-width:800px; margin:0 auto;">
-    <h1 style="margin-bottom:20px;">📚 Follow Playlist</h1>
+<body style="margin:0; font-family:sans-serif; background:#fafafa; color:#333;">
+  <div style="padding:20px; max-width:900px; margin:0 auto;">
+    <h1 style="margin-bottom:20px; text-align:center;">🎧 My Exciting Follow Playlist</h1>
 
-    <!-- Add & Reset Interface -->
-    <div style="margin-bottom:20px;">
+    <!-- Add Interface -->
+    <div style="margin-bottom:25px; text-align:center;">
       <input id="input-source" placeholder="Add a title or author..." 
-             style="padding:8px; width:70%; border:1px solid #ccc; border-radius:4px;"/>
-      <button id="btn-add" style="padding:8px; margin-left:5px; border:none; background:#4CAF50; color:white; border-radius:4px; cursor:pointer;">Add</button>
-      <button id="btn-reset" style="padding:8px; margin-left:10px; border:none; background:#f44336; color:white; border-radius:4px; cursor:pointer;">Reset</button>
+             style="padding:10px; width:60%; border:1px solid #ccc; border-radius:6px; font-size:16px;"/>
+      <button id="btn-add" style="padding:10px 16px; margin-left:5px; border:none; background:#4CAF50; color:white; border-radius:6px; cursor:pointer; font-size:15px;">➕ Add</button>
     </div>
 
-    <!-- Playlist Section -->
+    <!-- Fiction Section -->
+    <section style="margin-bottom:30px;">
+      <h2 style="display:flex; justify-content:space-between; align-items:center;">
+        Fiction 
+        <button id="btn-reset-fiction" style="padding:4px 10px; border:none; background:#f44336; color:white; border-radius:4px; cursor:pointer;">Reset</button>
+      </h2>
+      <div id="fiction-list" style="display:grid; gap:10px;"></div>
+    </section>
+
+    <!-- References Section -->
     <section>
-      <h2 style="margin-bottom:10px;">To Read</h2>
-      <div id="read-list" style="display:grid; gap:8px;"></div>
+      <h2 style="display:flex; justify-content:space-between; align-items:center;">
+        References 
+        <button id="btn-reset-ref" style="padding:4px 10px; border:none; background:#f44336; color:white; border-radius:4px; cursor:pointer;">Reset</button>
+      </h2>
+      <div id="ref-list" style="display:grid; gap:10px;"></div>
     </section>
   </div>
 
-  <!-- Inline JavaScript -->
   <script>
-    // Initial book list (your Library items)
-    let books = [
+    // Initial data
+    let fiction = [
       "Madame Bovary — Gustave Flaubert",
-      "Fooled by Randomness — Nassim Nicholas Taleb",
       "Notes from Underground — Fyodor Dostoevsky",
-      "Life 3.0 — Max Tegmark",
       "The Merchant of Venice — William Shakespeare",
+      "Jacques the Fatalist — Denis Diderot"
+    ];
+
+    let references = [
+      "Fooled by Randomness — Nassim Nicholas Taleb",
+      "Life 3.0 — Max Tegmark",
       "A Beautiful Math — Tom Siegfried",
-      "Jacques the Fatalist — Denis Diderot",
       "The Art of Game Design: The Book of Lenses — Jesse Schell",
       "Theory of Games and Economic Behavior — Neumann & Morgenstern",
       "The Right Game — Brandenburger & Nalebuff",
@@ -46,34 +59,35 @@
       "Macroeconomics — N. Gregory Mankiw"
     ];
 
-    const container = document.getElementById('read-list');
     const input = document.getElementById('input-source');
     const btnAdd = document.getElementById('btn-add');
-    const btnReset = document.getElementById('btn-reset');
+    const fictionList = document.getElementById('fiction-list');
+    const refList = document.getElementById('ref-list');
 
-    // Render playlist
-    function renderList() {
+    const fictionAuthors = ["flaubert", "dostoevsky", "shakespeare", "diderot"];
+
+    // Render function
+    function renderList(container, list) {
       container.innerHTML = '';
-      if (books.length === 0) {
-        container.innerHTML = '<p style="color:#777;">No items in the playlist. Add something above!</p>';
+      if (list.length === 0) {
+        container.innerHTML = '<p style="color:#777;">Empty list. Add something above!</p>';
         return;
       }
-      books.forEach((item, index) => {
+      list.forEach((item, index) => {
         const card = document.createElement('div');
         card.textContent = item;
-        card.style.padding = '10px';
+        card.style.padding = '12px';
         card.style.background = '#fff';
-        card.style.border = '1px solid #ccc';
-        card.style.borderRadius = '6px';
-        card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+        card.style.border = '1px solid #ddd';
+        card.style.borderRadius = '8px';
+        card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
         card.style.cursor = 'pointer';
-        card.title = "Click to remove this item";
+        card.style.transition = 'background 0.5s ease';
 
-        // Allow removing an item by clicking on it
         card.addEventListener('click', () => {
           if (confirm("Remove this item?\n\n" + item)) {
-            books.splice(index, 1);
-            renderList();
+            list.splice(index, 1);
+            renderAll();
           }
         });
 
@@ -81,33 +95,57 @@
       });
     }
 
-    // Add button event
+    function renderAll() {
+      renderList(fictionList, fiction);
+      renderList(refList, references);
+    }
+
+    // Add new item
     btnAdd.addEventListener('click', () => {
       const val = input.value.trim();
       if (val) {
-        books.unshift(val);  // add new item at top
+        const lower = val.toLowerCase();
+        if (fictionAuthors.some(a => lower.includes(a))) {
+          fiction.unshift(val);
+          flashEffect(fictionList.firstChild);
+        } else {
+          references.unshift(val);
+          flashEffect(refList.firstChild);
+        }
         input.value = '';
-        renderList();
+        renderAll();
       } else {
-        alert("Please enter a title or author first.");
+        alert("Please enter a title or author.");
       }
     });
 
-    // Reset button event
-    btnReset.addEventListener('click', () => {
-      if (confirm('Clear all playlist items?')) {
-        books = [];
-        renderList();
-      }
-    });
-
-    // Enter key triggers add
     input.addEventListener('keyup', (e) => {
       if (e.key === "Enter") btnAdd.click();
     });
 
+    // Reset buttons
+    document.getElementById('btn-reset-fiction').addEventListener('click', () => {
+      if (confirm('Clear all Fiction items?')) {
+        fiction = [];
+        renderAll();
+      }
+    });
+    document.getElementById('btn-reset-ref').addEventListener('click', () => {
+      if (confirm('Clear all Reference items?')) {
+        references = [];
+        renderAll();
+      }
+    });
+
+    // Flash animation when adding
+    function flashEffect(el) {
+      if (!el) return;
+      el.style.background = '#fffa90';
+      setTimeout(() => { el.style.background = '#fff'; }, 600);
+    }
+
     // Initial render
-    renderList();
+    renderAll();
   </script>
 </body>
 </html>
