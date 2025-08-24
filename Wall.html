@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📚 My Library Wall</title>
+  <title>📚 My Library Wall V0.1</title>
+       <link href="https://fonts.googleapis.com/css?family=Caveat|Montserrat:400,600&display=swap" rel="stylesheet">
+
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Caveat;
       background: #f5f7fa;
       margin: 0;
       padding: 20px;
@@ -19,8 +21,9 @@
       background: white;
       border-radius: 12px;
       padding: 15px;
-      margin: 15px;
+      margin: 15px auto;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 500px;
     }
     .book-card h3 {
       margin: 0 0 8px;
@@ -42,76 +45,79 @@
       align-items: center;
       cursor: grab;
     }
-    .note.dragging {
-      opacity: 0.5;
-    }
-    .note-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    .note.dragging { opacity: 0.5; }
+    .note-actions { display: flex; gap: 8px; align-items: center; }
     .note button {
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      font-size: 1rem;
+      border: none; background: transparent;
+      cursor: pointer; font-size: 1rem;
     }
-    .star {
-      color: #f1c40f;
-      cursor: pointer;
-    }
-    .delete {
-      color: #e74c3c;
-    }
-    .add-note {
-      display: flex;
-      gap: 5px;
-      margin-top: 10px;
-    }
+    .star { color: #f1c40f; cursor: pointer; }
+    .delete { color: #e74c3c; }
+    .add-note { display: flex; gap: 5px; margin-top: 10px; }
     .add-note input {
-      flex: 1;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 6px;
     }
     .add-note button {
-      background: #3498db;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 12px;
-      cursor: pointer;
+      background: #3498db; color: white;
+      border: none; border-radius: 6px;
+      padding: 6px 12px; cursor: pointer;
     }
+    table { display: none; } /* hide original tables */
   </style>
 </head>
 <body>
   <h1>📚 My Library Wall</h1>
+
+  <!-- Your original HTML tables (hidden but used for source) -->
+  <div id="source">
+    <table>
+      <thead>
+        <tr><th>Fiction</th><th>Non-Fiction</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a><p><strong style="color: #2F3061;">Madame Bovary </strong><br><i>Novel by Gustave Flaubert</i></p></a></td>
+          <td><a><p><strong style="color: #2F3061;">Fooled by Randomness:</strong><br>The Hidden Role of Chance...<br><i>Nassim Nicholas Taleb</i></p></a></td>
+        </tr>
+        <tr>
+          <td><a><p><strong style="color: #2F3061;">Notes from Underground</strong><br><i>Novel by Fyodor Dostoevsky</i></p></a></td>
+          <td><a><p><strong style="color: #2F3061;">Life 3.0:</strong><br>Being Human in the Age of AI<br><i>Max Tegmark</i></p></a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>My References:</h2>
+    <table>
+      <thead>
+        <tr><th>Mathematics</th><th>Business</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a><p><strong style="color: #2F3061;">Theory of Games and Economic Behavior</strong><br><i>Von Neumann & Morgenstern</i></p></a></td>
+          <td><a><p><strong style="color: #2F3061;">The Right Game:</strong><br>Use Game Theory to Shape Strategy<br><i>Brandenburger & Nalebuff</i></p></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Where we render book cards -->
   <div id="library"></div>
 
   <script>
     const libraryDiv = document.getElementById("library");
 
-    // Fetch books from your Library page
-    fetch("https://hamidreza-mohammadiha.github.io/Me/Library/")
-      .then(res => res.text())
-      .then(html => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
-        const links = [...doc.querySelectorAll("a[href$='.pdf']")];
+    // Parse all <a> inside your provided tables
+    document.querySelectorAll("#source a").forEach(a => {
+      const title = a.innerText.trim().replace(/\s+/g, " ").split("\n")[0]; // first line = title
+      createBookCard(title, a.innerHTML.trim());
+    });
 
-        links.forEach(link => {
-          const title = link.textContent.trim();
-          const href = link.href;
-          createBookCard(title, href);
-        });
-      });
-
-    function createBookCard(title, href) {
+    function createBookCard(title, innerHTML) {
       const card = document.createElement("div");
       card.className = "book-card";
 
       card.innerHTML = `
-        <h3><a href="${href}" target="_blank">${title}</a></h3>
+        <h3>${innerHTML}</h3>
         <div class="notes" id="notes-${title}"></div>
         <div class="add-note">
           <input type="text" placeholder="Add a note..." />
@@ -125,11 +131,9 @@
       const input = card.querySelector("input");
       const addBtn = card.querySelector("button");
 
-      // Load notes
       let notes = JSON.parse(localStorage.getItem("notes_" + title)) || [];
       renderAllNotes(notes, notesDiv, title);
 
-      // Add note
       addBtn.addEventListener("click", () => {
         const text = input.value.trim();
         if (!text) return;
@@ -140,25 +144,19 @@
         input.value = "";
       });
 
-      // Drag container events
       notesDiv.addEventListener("dragover", e => {
         e.preventDefault();
         const afterElement = getDragAfterElement(notesDiv, e.clientY);
         const dragging = document.querySelector(".dragging");
         if (dragging) {
-          if (afterElement == null) {
-            notesDiv.appendChild(dragging);
-          } else {
-            notesDiv.insertBefore(dragging, afterElement);
-          }
+          if (!afterElement) notesDiv.appendChild(dragging);
+          else notesDiv.insertBefore(dragging, afterElement);
         }
       });
 
       notesDiv.addEventListener("drop", () => {
         const newOrder = [...notesDiv.querySelectorAll(".note span")].map(el => {
-          const text = el.textContent;
-          const starred = el.dataset.starred === "true";
-          return { text, starred };
+          return { text: el.textContent, starred: el.dataset.starred === "true" };
         });
         notes = newOrder;
         saveNotes(title, notes);
@@ -167,13 +165,8 @@
 
     function renderAllNotes(notes, container, bookTitle) {
       container.innerHTML = "";
-
-      // starred notes first
-      const sortedNotes = [...notes].sort((a, b) => b.starred - a.starred);
-
-      sortedNotes.forEach(note => {
-        renderNote(note, container, bookTitle, notes);
-      });
+      const sorted = [...notes].sort((a, b) => b.starred - a.starred);
+      sorted.forEach(note => renderNote(note, container, bookTitle, notes));
     }
 
     function renderNote(note, container, bookTitle, notes) {
@@ -189,14 +182,12 @@
         </div>
       `;
 
-      // Delete
       div.querySelector(".delete").addEventListener("click", () => {
         notes = notes.filter(n => n.text !== note.text);
         saveNotes(bookTitle, notes);
         renderAllNotes(notes, container, bookTitle);
       });
 
-      // Star toggle
       div.querySelector(".star").addEventListener("click", () => {
         const idx = notes.findIndex(n => n.text === note.text);
         if (idx !== -1) {
@@ -206,13 +197,8 @@
         }
       });
 
-      // Drag start/end
-      div.addEventListener("dragstart", () => {
-        div.classList.add("dragging");
-      });
-      div.addEventListener("dragend", () => {
-        div.classList.remove("dragging");
-      });
+      div.addEventListener("dragstart", () => div.classList.add("dragging"));
+      div.addEventListener("dragend", () => div.classList.remove("dragging"));
 
       container.appendChild(div);
     }
@@ -222,15 +208,12 @@
     }
 
     function getDragAfterElement(container, y) {
-      const draggableElements = [...container.querySelectorAll(".note:not(.dragging)")];
-      return draggableElements.reduce((closest, child) => {
+      const els = [...container.querySelectorAll(".note:not(.dragging)")];
+      return els.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-          return { offset: offset, element: child };
-        } else {
-          return closest;
-        }
+        if (offset < 0 && offset > closest.offset) return { offset, element: child };
+        else return closest;
       }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
   </script>
