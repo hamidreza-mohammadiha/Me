@@ -1,113 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>My Follow Playlist</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 My Library Wall</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2F3061;
+    }
+    .book-card {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .book-card h3 {
+      margin: 0 0 8px;
+      color: #3498db;
+    }
+    .notes {
+      margin-top: 10px;
+      min-height: 50px;
+    }
+    .note {
+      background: #eef2ff;
+      border-left: 4px solid #3498db;
+      border-radius: 6px;
+      padding: 8px;
+      margin: 5px 0;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: grab;
+    }
+    .note.dragging {
+      opacity: 0.5;
+    }
+    .note-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .note button {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .star {
+      color: #f1c40f;
+      cursor: pointer;
+    }
+    .delete {
+      color: #e74c3c;
+    }
+    .add-note {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .add-note input {
+      flex: 1;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .add-note button {
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body style="margin:0; font-family:sans-serif; background:#f5f5f5; color:#333;">
-  <div style="padding:20px; max-width:800px; margin:0 auto;">
-    <h1 style="margin-bottom:20px;">📚 Follow Playlist</h1>
+<body>
+  <h1>📚 My Library Wall</h1>
+  <div id="library"></div>
 
-    <!-- Add & Reset Interface -->
-    <div style="margin-bottom:20px;">
-      <input id="input-source" placeholder="Add a title or author..." 
-             style="padding:8px; width:70%; border:1px solid #ccc; border-radius:4px;"/>
-      <button id="btn-add" style="padding:8px; margin-left:5px; border:none; background:#4CAF50; color:white; border-radius:4px; cursor:pointer;">Add</button>
-      <button id="btn-reset" style="padding:8px; margin-left:10px; border:none; background:#f44336; color:white; border-radius:4px; cursor:pointer;">Reset</button>
-    </div>
-
-    <!-- Playlist Section -->
-    <section>
-      <h2 style="margin-bottom:10px;">To Read</h2>
-      <div id="read-list" style="display:grid; gap:8px;"></div>
-    </section>
-  </div>
-
-  <!-- Inline JavaScript -->
   <script>
-    // Initial book list (your Library items)
-    let books = [
-      "Madame Bovary — Gustave Flaubert",
-      "Fooled by Randomness — Nassim Nicholas Taleb",
-      "Notes from Underground — Fyodor Dostoevsky",
-      "Life 3.0 — Max Tegmark",
-      "The Merchant of Venice — William Shakespeare",
-      "A Beautiful Math — Tom Siegfried",
-      "Jacques the Fatalist — Denis Diderot",
-      "The Art of Game Design: The Book of Lenses — Jesse Schell",
-      "Theory of Games and Economic Behavior — Neumann & Morgenstern",
-      "The Right Game — Brandenburger & Nalebuff",
-      "Reinforcement Learning: An Introduction — Sutton & Barto",
-      "The Art of Strategy — Dixit & Nalebuff",
-      "Introduction to Stochastic Dynamic Programming — Sheldon Ross",
-      "Economics: A Very Short Introduction — Partha Dasgupta",
-      "Game Theory — Maschler, Solan & Zamir",
-      "Macroeconomics — N. Gregory Mankiw"
-    ];
+    const libraryDiv = document.getElementById("library");
 
-    const container = document.getElementById('read-list');
-    const input = document.getElementById('input-source');
-    const btnAdd = document.getElementById('btn-add');
-    const btnReset = document.getElementById('btn-reset');
+    // Fetch books from your Library page
+    fetch("https://hamidreza-mohammadiha.github.io/Me/Library/")
+      .then(res => res.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+        const links = [...doc.querySelectorAll("a[href$='.pdf']")];
 
-    // Render playlist
-    function renderList() {
-      container.innerHTML = '';
-      if (books.length === 0) {
-        container.innerHTML = '<p style="color:#777;">No items in the playlist. Add something above!</p>';
-        return;
-      }
-      books.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.textContent = item;
-        card.style.padding = '10px';
-        card.style.background = '#fff';
-        card.style.border = '1px solid #ccc';
-        card.style.borderRadius = '6px';
-        card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
-        card.style.cursor = 'pointer';
-        card.title = "Click to remove this item";
-
-        // Allow removing an item by clicking on it
-        card.addEventListener('click', () => {
-          if (confirm("Remove this item?\n\n" + item)) {
-            books.splice(index, 1);
-            renderList();
-          }
+        links.forEach(link => {
+          const title = link.textContent.trim();
+          const href = link.href;
+          createBookCard(title, href);
         });
+      });
 
-        container.appendChild(card);
+    function createBookCard(title, href) {
+      const card = document.createElement("div");
+      card.className = "book-card";
+
+      card.innerHTML = `
+        <h3><a href="${href}" target="_blank">${title}</a></h3>
+        <div class="notes" id="notes-${title}"></div>
+        <div class="add-note">
+          <input type="text" placeholder="Add a note..." />
+          <button>Add</button>
+        </div>
+      `;
+
+      libraryDiv.appendChild(card);
+
+      const notesDiv = card.querySelector(".notes");
+      const input = card.querySelector("input");
+      const addBtn = card.querySelector("button");
+
+      // Load notes
+      let notes = JSON.parse(localStorage.getItem("notes_" + title)) || [];
+      renderAllNotes(notes, notesDiv, title);
+
+      // Add note
+      addBtn.addEventListener("click", () => {
+        const text = input.value.trim();
+        if (!text) return;
+        const newNote = { text, starred: false };
+        notes.push(newNote);
+        saveNotes(title, notes);
+        renderAllNotes(notes, notesDiv, title);
+        input.value = "";
+      });
+
+      // Drag container events
+      notesDiv.addEventListener("dragover", e => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(notesDiv, e.clientY);
+        const dragging = document.querySelector(".dragging");
+        if (dragging) {
+          if (afterElement == null) {
+            notesDiv.appendChild(dragging);
+          } else {
+            notesDiv.insertBefore(dragging, afterElement);
+          }
+        }
+      });
+
+      notesDiv.addEventListener("drop", () => {
+        const newOrder = [...notesDiv.querySelectorAll(".note span")].map(el => {
+          const text = el.textContent;
+          const starred = el.dataset.starred === "true";
+          return { text, starred };
+        });
+        notes = newOrder;
+        saveNotes(title, notes);
       });
     }
 
-    // Add button event
-    btnAdd.addEventListener('click', () => {
-      const val = input.value.trim();
-      if (val) {
-        books.unshift(val);  // add new item at top
-        input.value = '';
-        renderList();
-      } else {
-        alert("Please enter a title or author first.");
-      }
-    });
+    function renderAllNotes(notes, container, bookTitle) {
+      container.innerHTML = "";
 
-    // Reset button event
-    btnReset.addEventListener('click', () => {
-      if (confirm('Clear all playlist items?')) {
-        books = [];
-        renderList();
-      }
-    });
+      // starred notes first
+      const sortedNotes = [...notes].sort((a, b) => b.starred - a.starred);
 
-    // Enter key triggers add
-    input.addEventListener('keyup', (e) => {
-      if (e.key === "Enter") btnAdd.click();
-    });
+      sortedNotes.forEach(note => {
+        renderNote(note, container, bookTitle, notes);
+      });
+    }
 
-    // Initial render
-    renderList();
+    function renderNote(note, container, bookTitle, notes) {
+      const div = document.createElement("div");
+      div.className = "note";
+      div.draggable = true;
+
+      div.innerHTML = `
+        <span data-starred="${note.starred}">${note.text}</span>
+        <div class="note-actions">
+          <button class="star">${note.starred ? "⭐" : "☆"}</button>
+          <button class="delete">✖</button>
+        </div>
+      `;
+
+      // Delete
+      div.querySelector(".delete").addEventListener("click", () => {
+        notes = notes.filter(n => n.text !== note.text);
+        saveNotes(bookTitle, notes);
+        renderAllNotes(notes, container, bookTitle);
+      });
+
+      // Star toggle
+      div.querySelector(".star").addEventListener("click", () => {
+        const idx = notes.findIndex(n => n.text === note.text);
+        if (idx !== -1) {
+          notes[idx].starred = !notes[idx].starred;
+          saveNotes(bookTitle, notes);
+          renderAllNotes(notes, container, bookTitle);
+        }
+      });
+
+      // Drag start/end
+      div.addEventListener("dragstart", () => {
+        div.classList.add("dragging");
+      });
+      div.addEventListener("dragend", () => {
+        div.classList.remove("dragging");
+      });
+
+      container.appendChild(div);
+    }
+
+    function saveNotes(title, notes) {
+      localStorage.setItem("notes_" + title, JSON.stringify(notes));
+    }
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll(".note:not(.dragging)")];
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
   </script>
 </body>
 </html>
