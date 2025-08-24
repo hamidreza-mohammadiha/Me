@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Follow Playlist</title>
+</head>
+<body style="margin:0; font-family:sans-serif; background:#f5f5f5; color:#333;">
+  <div style="padding:20px; max-width:800px; margin:0 auto;">
+    <h1 style="margin-bottom:20px;">📚 Follow Playlist</h1>
+
+    <!-- Add & Reset Interface -->
+    <div style="margin-bottom:20px;">
+      <input id="input-source" placeholder="Add a title or author..." 
+             style="padding:8px; width:70%; border:1px solid #ccc; border-radius:4px;"/>
+      <button id="btn-add" style="padding:8px; margin-left:5px; border:none; background:#4CAF50; color:white; border-radius:4px; cursor:pointer;">Add</button>
+      <button id="btn-reset" style="padding:8px; margin-left:10px; border:none; background:#f44336; color:white; border-radius:4px; cursor:pointer;">Reset</button>
+    </div>
+
+    <!-- Playlist Section -->
+    <section>
+      <h2 style="margin-bottom:10px;">To Read</h2>
+      <div id="read-list" style="display:grid; gap:8px;"></div>
+    </section>
+  </div>
+
+  <!-- Inline JavaScript -->
+  <script>
+    // Initial book list (your Library items)
+    let books = [
+      "Madame Bovary — Gustave Flaubert",
+      "Fooled by Randomness — Nassim Nicholas Taleb",
+      "Notes from Underground — Fyodor Dostoevsky",
+      "Life 3.0 — Max Tegmark",
+      "The Merchant of Venice — William Shakespeare",
+      "A Beautiful Math — Tom Siegfried",
+      "Jacques the Fatalist — Denis Diderot",
+      "The Art of Game Design: The Book of Lenses — Jesse Schell",
+      "Theory of Games and Economic Behavior — Neumann & Morgenstern",
+      "The Right Game — Brandenburger & Nalebuff",
+      "Reinforcement Learning: An Introduction — Sutton & Barto",
+      "The Art of Strategy — Dixit & Nalebuff",
+      "Introduction to Stochastic Dynamic Programming — Sheldon Ross",
+      "Economics: A Very Short Introduction — Partha Dasgupta",
+      "Game Theory — Maschler, Solan & Zamir",
+      "Macroeconomics — N. Gregory Mankiw"
+    ];
+
+    const container = document.getElementById('read-list');
+    const input = document.getElementById('input-source');
+    const btnAdd = document.getElementById('btn-add');
+    const btnReset = document.getElementById('btn-reset');
+
+    // Render playlist
+    function renderList() {
+      container.innerHTML = '';
+      if (books.length === 0) {
+        container.innerHTML = '<p style="color:#777;">No items in the playlist. Add something above!</p>';
+        return;
+      }
+      books.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.textContent = item;
+        card.style.padding = '10px';
+        card.style.background = '#fff';
+        card.style.border = '1px solid #ccc';
+        card.style.borderRadius = '6px';
+        card.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+        card.style.cursor = 'pointer';
+        card.title = "Click to remove this item";
+
+        // Allow removing an item by clicking on it
+        card.addEventListener('click', () => {
+          if (confirm("Remove this item?\n\n" + item)) {
+            books.splice(index, 1);
+            renderList();
+          }
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    // Add button event
+    btnAdd.addEventListener('click', () => {
+      const val = input.value.trim();
+      if (val) {
+        books.unshift(val);  // add new item at top
+        input.value = '';
+        renderList();
+      } else {
+        alert("Please enter a title or author first.");
+      }
+    });
+
+    // Reset button event
+    btnReset.addEventListener('click', () => {
+      if (confirm('Clear all playlist items?')) {
+        books = [];
+        renderList();
+      }
+    });
+
+    // Enter key triggers add
+    input.addEventListener('keyup', (e) => {
+      if (e.key === "Enter") btnAdd.click();
+    });
+
+    // Initial render
+    renderList();
+  </script>
+</body>
+</html>
