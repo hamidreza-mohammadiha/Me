@@ -77,7 +77,106 @@
         <br>
         <a  class="btn_Home" href="https://drive.google.com/file/d/1CDbNhPLXgqz2TJstdmUMdTxt3b_2wpsI/view?usp=sharing"> <span class="moving-btn">  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp My Full CV .pdf &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp </span></a>
 
+        <br><br>
 
+        <section>
+
+          <br><br><br>
+          
+  <h2 style="font-size: xx-large;">🚀 Career Goals</h2>
+  <br>
+  <div class="roadmap">
+
+    <!-- Example Goals -->
+    <!-- <div class="goal" data-progress="66" data-status="In Progress">
+      <h3 style="font-family: Caveat;">🎓 PhD Preparation</h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span class="status"></span>
+    </div> -->
+
+    <div class="goal" data-progress="75" data-status="in-progress">
+      <h3 style="font-family: Caveat;"><span class="moving-btn1">🎓</span> &nbsp &nbsp Industrial Engineering &nbsp &nbsp  <span class="moving-btn2">🎓</span></h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+    <div class="goal" data-progress="66" data-status="in-progress">
+      <h3 style="font-family: Caveat;"> <span class="moving-btn2">💾</span> &nbsp &nbsp  Data-Driven Programming  &nbsp &nbsp <span class="moving-btn1">💾</span> </h3>
+      <div class="progress-bar"><div class="fill"></div><span ></span></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+    <div class="goal" data-progress="33" data-status="planned">
+      <h3 style="font-family: Caveat;"> <span class="moving-btn1">🎮</span>  &nbsp &nbsp  Serious Game Design  &nbsp &nbsp <span class="moving-btn2">🎮</span></h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+    <div class="goal" data-progress="25" data-status="planned">
+      <h3 style="font-family: Caveat;"> <span class="moving-btn2">📈</span> &nbsp &nbsp Blockchain & DeFi Research  &nbsp &nbsp <span class="moving-btn1">📈</span></h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+
+
+  </div>
+</section>
+
+  <style>
+    .roadmap {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .goal {
+      background: white;
+      padding: 0.2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .goal h3 {
+      margin: 0 0 8px;
+    }
+    .progress-bar {
+      background: #eee;
+      border-radius: 5px;
+      height: 14px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1a365d, #4a90e2);
+      width: 0;
+      transition: width 0.5s ease-in-out;
+    }
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .status.planned { background: #1a365d; color: white; }
+    .status.in-progress { background: #4a90e2; color: white; }
+    .status.completed { background: #28a745; color: white; }
+  </style>
+
+<script>
+  // Auto-update progress bars & statuses
+  document.querySelectorAll('.goal').forEach(goal => {
+    const progress = goal.getAttribute('data-progress');
+    const status = goal.getAttribute('data-status');
+
+    // Update bar width
+    goal.querySelector('.fill').style.width = progress + "%";
+
+    // Update status text & class
+    // const statusSpan = goal.querySelector('.status');
+    // statusSpan.textContent = status;
+    // statusSpan.classList.add(status.toLowerCase().replace(" ", "-"));
+  });
+</script>
         
         <!-- <a class="btn_Pro" href="https://hamidreza-mohammadiha.github.io/Me/Notes">My Writings</a>
         <br> 
