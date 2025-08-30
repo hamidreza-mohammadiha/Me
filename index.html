@@ -94,25 +94,25 @@
     </div> -->
 
     <div class="goal" data-progress="75" data-status="in-progress">
-      <h3 style="font-family: Caveat;"><span class="moving-btn1">🎓</span> &nbsp &nbsp Industrial Engineering &nbsp &nbsp  <span class="moving-btn2">⚙️</span></h3>
+      <h3 style="font-family: Caveat;"><span class="moving-btn1"></span> &nbsp &nbsp Industrial Engineering &nbsp &nbsp  <span class="moving-btn2"><br>🎓</span></h3>
       <div class="progress-bar"><div class="fill"></div></div>
       <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
     </div>
 
     <div class="goal" data-progress="66" data-status="in-progress">
-      <h3 style="font-family: Caveat;"> <span class="moving-btn2">💾</span> &nbsp &nbsp  Data Science Programming  &nbsp &nbsp <span class="moving-btn1">🎲</span> </h3>
+      <h3 style="font-family: Caveat;"> <span class="moving-btn2"></span> &nbsp &nbsp  Data Science Programming  &nbsp &nbsp <span class="moving-btn1"><br>📈</span> </h3>
       <div class="progress-bar"><div class="fill"></div><span ></span></div>
       <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
     </div>
 
     <div class="goal" data-progress="33" data-status="planned">
-      <h3 style="font-family: Caveat;"> <span class="moving-btn1">🎮</span>  &nbsp &nbsp  Serious Game Design  &nbsp &nbsp <span class="moving-btn2">🖥️</span></h3>
+      <h3 style="font-family: Caveat;"> <span class="moving-btn1"></span>  &nbsp &nbsp  Serious Game Design  &nbsp &nbsp <span class="moving-btn2"><br>🎮 </span></h3>
       <div class="progress-bar"><div class="fill"></div></div>
       <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
     </div>
 
     <div class="goal" data-progress="25" data-status="planned">
-      <h3 style="font-family: Caveat;"> <span class="moving-btn2">🧮</span> &nbsp &nbsp Blockchain & DeFi Research  &nbsp &nbsp <span class="moving-btn1">📈</span></h3>
+      <h3 style="font-family: Caveat;"> <span class="moving-btn2"></span> &nbsp &nbsp Blockchain & DeFi Research  &nbsp &nbsp <span class="moving-btn1"><br>🧮</span></h3>
       <div class="progress-bar"><div class="fill"></div></div>
       <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
     </div>
@@ -120,6 +120,40 @@
 
 
   </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const goals = document.querySelectorAll(".goal");
+
+  goals.forEach(goal => {
+    const progress = parseInt(goal.dataset.progress, 10);
+    const status = goal.dataset.status;
+    const fill = goal.querySelector(".fill");
+    const statusSpan = goal.querySelector(".status");
+
+    let direction = 1; // start moving right
+    let current = progress;
+
+    setInterval(() => {
+      // alternate between -5% and +5% of base progress
+      const variation = direction > 0 ? 3 : -3;
+      const animatedProgress = Math.max(0, Math.min(100, progress + variation));
+
+      fill.style.width = animatedProgress + "%";
+
+      if (statusSpan) {
+        statusSpan.textContent = `(${animatedProgress}%) - ${status}`;
+      }
+
+      // flip direction for next tick
+      direction *= -1;
+    }, 500); // every second
+  });
+});
+</script>
+
+    
+  
 </section>
 
   <style>
