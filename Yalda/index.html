@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S6603DML53"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-S6603DML53');
+</script>
+
+<style>
+	#price-bar {
+		width: 100%;
+		height: 50px;
+		background-color: #3498db;
+		color: #ffffff;
+		text-align: center;
+		line-height: 50px;
+		font-size: 24px;
+	}
+</style>
+
+<script src="script.js" defer></script>
+	  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H. Reza</title>
+     <link href="https://fonts.googleapis.com/css?family=Caveat|Montserrat:400,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+	  
+  </head>
+  <body>
+    <main>
+      <!-- *** ABOUT / PROFILE *** -->
+      <header>
+        <div class="content-wrap">
+          <h1>Yalda</h1>
+		      <h1>Mohammadiha</h1>
+          <h2 style="color: rgb(4, 215, 234);">A New Play </h2>
+
+
+        </div>
+      </header>
+
+      <section class="content-wrap">
+
+        <!-- <br>
+        <span class="moving-btn1"><a style="position: static; left: 2%"  class="btn_Home" href="https://hamidreza-mohammadiha.github.io/Me/Portfolio"> &nbsp &nbsp My Portfolio &nbsp &nbsp</a></span>
+        <i style="position: relative; left: 5%;" > is What I've Done .. </i><br>
+        <br>   
+        <br> 
+        <span class="moving-btn2"><a   class="btn_Home" href="https://hamidreza-mohammadiha.github.io/Me/Research"> &nbsp &nbsp My Research &nbsp &nbsp </a></span>
+        <i style="position: relative; left: 5%;"> is What I Explore .. </i><br>
+	      <br>
+        <br>
+        <span class="moving-btn1" ><a  class="btn_Home" href="https://hamidreza-mohammadiha.github.io/Me/Library"> &nbsp &nbsp &nbsp My Library  &nbsp &nbsp &nbsp</a> </span>
+        <i style="position: relative; left: 5%;"> is What I Read .. </i><br>
+        <br>
+        <br>
+        <span class="moving-btn2"><a  class="btn_Home" href="https://hamidreza-mohammadiha.github.io/Me/Class"> &nbsp &nbsp &nbsp &nbsp My Class  &nbsp &nbsp &nbsp &nbsp</a></span>
+        <i style="position: relative; left: 5%;"> is What I Teach ...</i><br>
+        <br><br><br> -->
+        <h2 style="font-size: xx-large;">Ages:  <div id="Years"> </div></h2>
+
+        <a  class="btn_Pro" href="#"> <span class="moving-btn">  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp My CV .pdf &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp </span></a>
+
+        <br><br>
+
+        <section>
+
+          <br><br><br>
+          
+  <h2 style="font-size: xx-large;">🚀 Career Goals</h2>
+  <br>
+  <div class="roadmap">
+
+    <!-- Example Goals -->
+    <!-- <div class="goal" data-progress="66" data-status="In Progress">
+      <h3 style="font-family: Caveat;">🎓 PhD Preparation</h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span class="status"></span>
+    </div> -->
+
+    <div class="goal" data-progress="75" data-status="in-progress">
+      <h3 style="font-family: Segoe UI;"><span class="moving-btn1"></span> &nbsp &nbsp مهندسی و علوم کامپیوتر &nbsp &nbsp  <span class="moving-btn2"><br>🎓</span></h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+    <div class="goal" data-progress="66" data-status="in-progress">
+      <h3 style="font-family: Segoe UI;"> <span class="moving-btn2"></span> &nbsp &nbsp  مهندسی صنایع و سیستم  &nbsp &nbsp <span class="moving-btn1"><br>🎓</span> </h3>
+      <div class="progress-bar"><div class="fill"></div><span ></span></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+    <div class="goal" data-progress="33" data-status="planned">
+      <h3 style="font-family: Segoe UI;"> <span class="moving-btn1"></span>  &nbsp &nbsp  اقتصاد و مدیریت کسب و کار  &nbsp &nbsp <span class="moving-btn2"><br>🎓 </span></h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+    <div class="goal" data-progress="25" data-status="planned">
+      <h3 style="font-family: Segoe UI;"> <span class="moving-btn2"></span> &nbsp &nbsp طراحی صنعتی و معماری داخلی  &nbsp &nbsp <span class="moving-btn1"><br>🎓</span></h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+
+
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const goals = document.querySelectorAll(".goal");
+
+  goals.forEach(goal => {
+    const progress = parseInt(goal.dataset.progress, 10);
+    const status = goal.dataset.status;
+    const fill = goal.querySelector(".fill");
+    const statusSpan = goal.querySelector(".status");
+
+    let direction = 1; // start moving right
+    let current = progress;
+
+    setInterval(() => {
+      // alternate between -5% and +5% of base progress
+      const variation = direction > 0 ? 3 : -3;
+      const animatedProgress = Math.max(0, Math.min(100, progress + variation));
+
+      fill.style.width = animatedProgress + "%";
+
+      if (statusSpan) {
+        statusSpan.textContent = `(${animatedProgress}%) - ${status}`;
+      }
+
+      // flip direction for next tick
+      direction *= -1;
+    }, 500); // every second
+  });
+});
+</script>
+
+    
+  
+</section>
+
+  <style>
+    .roadmap {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .goal {
+      background: white;
+      padding: 0.2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .goal h3 {
+      margin: 0 0 8px;
+    }
+    .progress-bar {
+      background: #eee;
+      border-radius: 5px;
+      height: 14px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1a365d, #4a90e2);
+      width: 0;
+      transition: width 0.5s ease-in-out;
+    }
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .status.planned { background: #1a365d; color: white; }
+    .status.in-progress { background: #4a90e2; color: white; }
+    .status.completed { background: #28a745; color: white; }
+  </style>
+
+<script>
+  // Auto-update progress bars & statuses
+  document.querySelectorAll('.goal').forEach(goal => {
+    const progress = goal.getAttribute('data-progress');
+    const status = goal.getAttribute('data-status');
+
+    // Update bar width
+    goal.querySelector('.fill').style.width = progress + "%";
+
+    // Update status text & class
+    // const statusSpan = goal.querySelector('.status');
+    // statusSpan.textContent = status;
+    // statusSpan.classList.add(status.toLowerCase().replace(" ", "-"));
+  });
+</script>
+        
+        <br>
+        
+          
+      </section>
+      
+      <!-- *****************  CONTACT INFO / SOCIAL MEDIA  ***************** -->
+      <footer>
+        <div class="content-wrap">
+
+          <h2>Let's Keep in Touch!</h2><br>
+          <!-- <span class="moving-btn2"><a   class="btn_Pro" href="Blog.html">  &nbsp &nbsp &nbsp &nbsp &nbsp My Blog &nbsp &nbsp &nbsp &nbsp &nbsp </a></span> -->
+
+
+
+          <!-- Social media and contact links. Add or remove any networks. -->
+          <ul class="contact-list">
+            <li><a href="mailto:YaldaMohammadiha@Gmail.com">Email</a></li>
+            <li><a href="#" target="_blank">Linkedin&nbsp;</a></li>
+            <li><a href="https://t.me/YYalldaaa" target="_blank">Telegram</a></li>
+            <li><a href="#">Pages</a></li>
+            <li></li>
+
+          </ul>
+
+          <!-- <img width="250px"  SRC="Images/MeMe.png"> -->
+
+          <p style="font-size: 88%;" id="time"></p>
+
+        </div>
+
+  </footer>
+    </main>
+		    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script>
+      var typed = new Typed(".auto-type", {
+        strings: [ " ▶ ", "⚔️", "🍗","💤",  "📖", "📜", "💻","💤" , "🎨", "🍻" ,"💤", "🔎", "🧠", "🎮" ,"💤"],
+        teypespeed: 150,
+        backspeed: 50,
+        loop: true
+      })
+    </script>
+
+  </body>
+</html>
