@@ -244,6 +244,12 @@
         .status-offline {
             background-color: var(--bad);
         }
+        
+        .api-status {
+            font-size: 12px;
+            margin-top: 10px;
+            color: var(--muted);
+        }
     </style>
 </head>
 <body>
@@ -368,7 +374,7 @@
                             <line x1="12" y1="20" x2="12" y2="4"></line>
                             <line x1="6" y1="20" x2="6" y2="14"></line>
                         </svg>
-                        Real-time Market Data (Nobitex API)
+                        Real-time Market Data
                         <span class="status-indicator status-live" id="statusIndicator"></span>
                     </h2>
                     
@@ -382,7 +388,7 @@
                         </thead>
                         <tbody id="marketData">
                             <tr>
-                                <td>XAUTUSDT</td>
+                                <td>Gold (XAUTUSDT)</td>
                                 <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
@@ -410,13 +416,14 @@
                     </table>
                     
                     <p class="last-updated">Last updated: <span id="lastUpdated">—</span></p>
+                    <p class="api-status" id="apiStatus">API: Testing connection...</p>
                     <button class="btn-secondary" id="refreshData">Refresh Market Data</button>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <p>Educational tool only. Not financial advice. Data from Nobitex API.</p>
+            <p>Educational tool only. Not financial advice. Data from various APIs.</p>
         </div>
     </div>
 
@@ -429,6 +436,7 @@
         const calculateButton = document.getElementById('calcAlloc');
         const refreshButton = document.getElementById('refreshData');
         const statusIndicator = document.getElementById('statusIndicator');
+        const apiStatusElement = document.getElementById('apiStatus');
         
         // Store previous values for change calculation
         let previousValues = JSON.parse(localStorage.getItem('cryptoPreviousValues')) || {};
@@ -463,18 +471,22 @@
             return `<span class="${changeClass}">${changeSymbol}${change.toFixed(2)}%</span>`;
         }
         
-        // Fetch market data from Nobitex API
+        // Fetch market data from APIs with CORS proxy
         async function fetchMarketData() {
             statusIndicator.classList.remove('status-offline');
             statusIndicator.classList.add('status-live');
+            apiStatusElement.textContent = "API: Connecting...";
             
             try {
-                // Fetch data from Nobitex API for multiple currencies
+                // Using a CORS proxy to bypass CORS restrictions
+                const corsProxy = "https://cors-anywhere.herokuapp.com/";
+                
+                // Fetch data from multiple APIs
                 const [xautData, btcData, ethData, xrpData] = await Promise.all([
-                    fetch('https://apiv2.nobitex.ir/market/stats?srcCurrency=xaut&dstCurrency=usdt').then(res => res.json()),
-                    fetch('https://apiv2.nobitex.ir/market/stats?srcCurrency=btc&dstCurrency=usdt').then(res => res.json()),
-                    fetch('https://apiv2.nobitex.ir/market/stats?srcCurrency=eth&dstCurrency=usdt').then(res => res.json()),
-                    fetch('https://apiv2.nobitex.ir/market/stats?srcCurrency=xrp&dstCurrency=usdt').then(res => res.json())
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=xaut&dstCurrency=usdt`, 5000),
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=btc&dstCurrency=usdt`, 5000),
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=eth&dstCurrency=usdt`, 5000),
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=xrp&dstCurrency=usdt`, 5000)
                 ]);
                 
                 // Extract values from API responses
@@ -501,15 +513,32 @@
                 
                 // Update last updated timestamp
                 lastUpdatedElement.textContent = new Date().toLocaleTimeString();
+                apiStatusElement.textContent = "API: Connected successfully";
                 
             } catch (error) {
                 console.error('Error fetching market data:', error);
                 statusIndicator.classList.remove('status-live');
                 statusIndicator.classList.add('status-offline');
+                apiStatusElement.textContent = "API: Using fallback data";
                 
                 // Use mock data as fallback
                 useMockData();
             }
+        }
+        
+        // Helper function to add timeout to fetch requests
+        function fetchWithTimeout(url, timeout) {
+            return Promise.race([
+                fetch(url).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                }),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timeout')), timeout)
+                )
+            ]);
         }
         
         // Use mock data when APIs fail
@@ -524,13 +553,13 @@
             };
             
             // Update market data table
-            // updateMarketTable(mockData);
+            updateMarketTable(mockData);
             
             // Store values for next comparison
             localStorage.setItem('cryptoPreviousValues', JSON.stringify(mockData));
             
             // Update last updated timestamp
-            lastUpdatedElement.textContent = new Date().toLocaleTimeString() + " (Mock Data)";
+            lastUpdatedElement.textContent = new Date().toLocaleTimeString() + " (Fallback Data)";
         }
         
         // Update market data table
