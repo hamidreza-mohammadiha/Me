@@ -3,15 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Weekly Crypto Decision Tree</title>
+  <title>Weekly Crypto Decision Tree · From Gold to Entry/Exit</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root{
       --bg:#0f1220; --panel:#151935; --muted:#9aa4bf; --text:#e8ecff; --accent:#7aa2ff; --ok:#4ade80; --warn:#f59e0b; --bad:#ef4444; --line:#2a2f52;
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text);}
+    body{margin:0; font-family: 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text);}
     h1{font-size:22px; margin:16px 0}
+    h2{font-size:18px; margin:12px 0; color:#7aa2ff}
+    h3{font-size:16px; margin:10px 0; color:#e8ecff}
     .wrap{max-width:1400px; margin:0 auto; padding:12px}
     .board{display:grid; grid-template-columns: 1fr; gap:20px}
     @media(min-width:800px){.board{grid-template-columns: 350px 1fr}}
@@ -22,18 +25,49 @@
     select:focus, input:focus{border-color:var(--accent)}
     .btn{background:linear-gradient(90deg,#6d8cff,#7aa2ff); color:#05122a; border:none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700; margin:5px 0;}
     .btn:active{transform:translateY(1px)}
+    .btn-secondary{background:linear-gradient(90deg,#2a2f52,#3a3f62); color:#e8ecff; border:none; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600; margin:5px 0;}
     .out{white-space:pre-wrap; font-family: monospace; background:#0b0f26; border:1px dashed #2a2f52; border-radius:12px; padding:10px; font-size:13px}
     .footer{opacity:.8; font-size:12px; margin-top:8px}
     .tree-container{width:100%; height:400px; background:#0b0f26; border-radius:16px; padding:10px}
     .chart-container{width:100%; height:300px; background:#0b0f26; border-radius:16px; margin-top:12px;}
+    .price-bar{display:flex; justify-content:space-around; background:#151935; padding:10px; border-radius:12px; margin:10px 0; flex-wrap:wrap}
+    .price-item{text-align:center; padding:5px 10px}
+    .price-label{font-size:12px; color:#9aa4bf}
+    .price-value{font-size:16px; font-weight:bold}
+    .ratio-value{font-size:18px; color:#7aa2ff; font-weight:bold}
+    .tradingview-widget{width:100%; height:400px; margin:20px 0; border-radius:16px; overflow:hidden}
+    .tab-container{margin:15px 0}
+    .tab{display:inline-block; padding:8px 16px; background:#151935; border-radius:8px; margin-right:5px; cursor:pointer}
+    .tab.active{background:#7aa2ff; color:#05122a}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
   </style>
 </head>
 <body>
 <div class="wrap">
   <div class="title">
     <h1>Weekly Crypto Decision Tree · From Gold to Entry/Exit</h1>
+    <div class="price-bar">
+      <div class="price-item">
+        <div class="price-label">BTC</div>
+        <div class="price-value" id="btcPrice">Loading...</div>
+      </div>
+      <div class="price-item">
+        <div class="price-label">ETH</div>
+        <div class="price-value" id="ethPrice">Loading...</div>
+      </div>
+      <div class="price-item">
+        <div class="price-label">BTC/ETH Ratio</div>
+        <div class="ratio-value" id="btcEthRatio">Loading...</div>
+      </div>
+      <div class="price-item">
+        <div class="price-label">Market Cap</div>
+        <div class="price-value" id="marketCap">Loading...</div>
+      </div>
+    </div>
     <button class="btn" id="updateTree">Update Tree</button>
     <button class="btn" id="calcAlloc">Calculate Allocation</button>
+    <button class="btn-secondary" id="refreshPrices">Refresh Prices</button>
   </div>
 
   <div class="board">
@@ -71,12 +105,45 @@
 
     <!-- RIGHT: Tree and Outputs -->
     <section class="panel">
-      <h3>2) Decision Tree</h3>
-      <div class="tree-container" id="tree"></div>
-
-      <h3>Weekly Summary</h3>
-      <div id="summary" class="out"></div>
-      <div class="chart-container" id="pie"></div>
+      <div class="tab-container">
+        <div class="tab active" data-tab="tree">Decision Tree</div>
+        <div class="tab" data-tab="charts">Market Charts</div>
+        <div class="tab" data-tab="summary">Weekly Summary</div>
+      </div>
+      
+      <div class="tab-content active" id="tree-tab">
+        <h3>Decision Tree</h3>
+        <div class="tree-container" id="tree"></div>
+      </div>
+      
+      <div class="tab-content" id="charts-tab">
+        <h3>BTC Dominance Chart</h3>
+        <div class="tradingview-widget">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <div class="tradingview-widget-copyright">
+              <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"></a>
+            </div>
+          </div>
+        </div>
+        
+        <h3>USDT Dominance Chart</h3>
+        <div class="tradingview-widget">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <div class="tradingview-widget-copyright">
+              <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="summary-tab">
+        <h3>Weekly Summary</h3>
+        <div id="summary" class="out"></div>
+        <div class="chart-container" id="pie"></div>
+      </div>
+      
       <div class="footer">Educational tool only. Not financial advice.</div>
     </section>
   </div>
@@ -84,6 +151,36 @@
 
 <script>
 let svgTree;
+let priceChart;
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+  buildTree();
+  setupTabs();
+  fetchCryptoPrices();
+  initializeTradingViewWidgets();
+  
+  // Set up event listeners
+  document.getElementById('updateTree').addEventListener('click', buildTree);
+  document.getElementById('calcAlloc').addEventListener('click', calculateAllocation);
+  document.getElementById('refreshPrices').addEventListener('click', fetchCryptoPrices);
+});
+
+function setupTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      // Remove active class from all tabs and contents
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      // Add active class to clicked tab and corresponding content
+      tab.classList.add('active');
+      const tabName = tab.getAttribute('data-tab');
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+    });
+  });
+}
 
 function buildTree(){
   document.getElementById('tree').innerHTML="";
@@ -158,6 +255,39 @@ function decisionColor(name){
   return "#7aa2ff";
 }
 
+async function fetchCryptoPrices() {
+  try {
+    // Fetch BTC and ETH prices
+    const [btcResponse, ethResponse, marketCapResponse] = await Promise.all([
+      fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
+      fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT'),
+      fetch('https://api.coingecko.com/api/v3/global')
+    ]);
+    
+    const btcData = await btcResponse.json();
+    const ethData = await ethResponse.json();
+    const marketCapData = await marketCapResponse.json();
+    
+    const btcPrice = parseFloat(btcData.price).toLocaleString('en-US', {maximumFractionDigits: 2});
+    const ethPrice = parseFloat(ethData.price).toLocaleString('en-US', {maximumFractionDigits: 2});
+    const btcEthRatio = (parseFloat(btcData.price) / parseFloat(ethData.price)).toFixed(2);
+    const marketCap = Math.round(marketCapData.data.total_market_cap.usd / 1e12).toFixed(2) + 'T';
+    
+    // Update the UI
+    document.getElementById('btcPrice').textContent = `$${btcPrice}`;
+    document.getElementById('ethPrice').textContent = `$${ethPrice}`;
+    document.getElementById('btcEthRatio').textContent = btcEthRatio;
+    document.getElementById('marketCap').textContent = `$${marketCap}`;
+    
+  } catch (error) {
+    console.error('Error fetching crypto prices:', error);
+    document.getElementById('btcPrice').textContent = 'Error';
+    document.getElementById('ethPrice').textContent = 'Error';
+    document.getElementById('btcEthRatio').textContent = 'Error';
+    document.getElementById('marketCap').textContent = 'Error';
+  }
+}
+
 function calculateAllocation(){
   const gold = document.getElementById('gold').value;
   const total = document.getElementById('total').value;
@@ -186,6 +316,25 @@ function calculateAllocation(){
   const values=[weights[0]*equity, weights[1]*equity, weights[2]*equity, weights[3]*equity];
   const labels=["Gold","BTC","ETH","Altcoins"];
 
+  // Generate summary text
+  const summaryText = `Based on your inputs:
+- Gold Trend: ${gold}
+- Total Market Cap: ${total}
+- USDT Dominance: ${usdtd}
+- Bitcoin Trend: ${btc}
+- Ethereum Strength: ${eth}
+- Total3: ${total3}
+- Others Dominance: ${othersd}
+
+Recommended Allocation:
+- Gold: ${(weights[0]*100).toFixed(1)}% ($${values[0].toFixed(2)})
+- BTC: ${(weights[1]*100).toFixed(1)}% ($${values[1].toFixed(2)})
+- ETH: ${(weights[2]*100).toFixed(1)}% ($${values[2].toFixed(2)})
+- Altcoins: ${(weights[3]*100).toFixed(1)}% ($${values[3].toFixed(2)})
+`;
+
+  document.getElementById('summary').textContent = summaryText;
+  
   drawPie(labels, values);
 }
 
@@ -214,10 +363,46 @@ function drawPie(labels, values){
     .style('text-anchor','middle').style('fill','#fff').style('font-size','12px');
 }
 
-// Events
-buildTree();
-document.getElementById('updateTree').addEventListener('click', buildTree);
-document.getElementById('calcAlloc').addEventListener('click', calculateAllocation);
+function initializeTradingViewWidgets() {
+  // BTC Dominance Widget
+  new TradingView.widget({
+    "autosize": true,
+    "symbol": "CRYPTOCAP:BTC.D",
+    "interval": "D",
+    "timezone": "Etc/UTC",
+    "theme": "dark",
+    "style": "1",
+    "locale": "en",
+    "toolbar_bg": "#151935",
+    "enable_publishing": false,
+    "hide_top_toolbar": false,
+    "hide_side_toolbar": true,
+    "allow_symbol_change": true,
+    "container_id": "charts-tab .tradingview-widget:first-child .tradingview-widget-container__widget",
+    "backgroundColor": "#0b0f26",
+    "gridColor": "rgba(255, 255, 255, 0.1)"
+  });
+
+  // USDT Dominance Widget
+  new TradingView.widget({
+    "autosize": true,
+    "symbol": "CRYPTOCAP:USDT.D",
+    "interval": "D",
+    "timezone": "Etc/UTC",
+    "theme": "dark",
+    "style": "1",
+    "locale": "en",
+    "toolbar_bg": "#151935",
+    "enable_publishing": false,
+    "hide_top_toolbar": false,
+    "hide_side_toolbar": true,
+    "allow_symbol_change": true,
+    "container_id": "charts-tab .tradingview-widget:last-child .tradingview-widget-container__widget",
+    "backgroundColor": "#0b0f26",
+    "gridColor": "rgba(255, 255, 255, 0.1)"
+  });
+}
 </script>
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </body>
 </html>
