@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weekly Crypto Decision Tree</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    :root{
+      --bg:#0f1220; --panel:#151935; --muted:#9aa4bf; --text:#e8ecff; --accent:#7aa2ff; --ok:#4ade80; --warn:#f59e0b; --bad:#ef4444; --line:#2a2f52;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text); line-height:1.5;}
+    h1{font-size:26px; margin:16px 0; font-weight:600;}
+    .wrap{max-width:1400px; margin:0 auto; padding:16px}
+    .board{display:grid; grid-template-columns: 360px 1fr; gap:20px}
+    .panel{background:var(--panel); border:1px solid #22284d; border-radius:18px; padding:16px; box-shadow:0 10px 24px rgba(0,0,0,.25)}
+    .muted{color:var(--muted); font-size:12px}
+    label{display:block; font-size:13px; margin:8px 0 4px; color:#c7cff5}
+    select, input[type="number"]{width:100%; background:#0e1230; border:1px solid #2a2f52; color:var(--text); border-radius:10px; padding:8px 10px; outline:none}
+    select:focus, input:focus{border-color:var(--accent)}
+    .btn{background:linear-gradient(90deg,#6d8cff,#7aa2ff); color:#05122a; border:none; padding:10px 16px; border-radius:12px; cursor:pointer; font-weight:700; transition:all .2s ease}
+    .btn:hover{filter:brightness(1.1)}
+    .btn:active{transform:translateY(1px)}
+    .out{white-space:pre-wrap; font-family: monospace; background:#0b0f26; border:1px dashed #2a2f52; border-radius:12px; padding:10px; font-size:13px; margin-top:8px}
+    .footer{opacity:.75; font-size:12px; margin-top:10px; text-align:center}
+    .tree-container{width:100%; height:600px; background:#0b0f26; border-radius:16px; padding:10px}
+    svg{font-family:system-ui, sans-serif}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="title" style="display:flex; justify-content:space-between; align-items:center">
+    <h1>Weekly Crypto Decision Tree · From Gold to Entry/Exit</h1>
+    <button class="btn" id="copyPlan">Copy Plan</button>
+  </div>
+
+  <div class="board">
+    <!-- LEFT: Inputs -->
+    <section class="panel">
+      <h3>1) Analytical Inputs</h3>
+      <label>1. Global Gold Trend</label>
+      <select id="gold"><option value="sideways">Sideways</option><option value="up">Up</option><option value="down">Down</option></select>
+
+      <label>2. Total Market Cap</label>
+      <select id="total"><option value="sideways">Sideways</option><option value="up">Up</option><option value="down">Down</option></select>
+
+      <label>3. USDT Dominance (USDT.D)</label>
+      <select id="usdtd"><option value="sideways">Sideways</option><option value="up">Up (Risk-off)</option><option value="down">Down (Risk-on)</option></select>
+
+      <label>4. Bitcoin Trend</label>
+      <select id="btc"><option value="range">Range</option><option value="up">Up</option><option value="down">Down</option><option value="breakout">Breakout Up</option><option value="breakdown">Breakdown Down</option></select>
+
+      <label>5. Ethereum Strength (ETH vs BTC)</label>
+      <select id="eth"><option value="neutral">Neutral</option><option value="strong">Strong</option><option value="weak">Weak</option></select>
+
+      <label>6. Total3 (Excluding BTC & ETH)</label>
+      <select id="total3"><option value="sideways">Sideways</option><option value="up">Up</option><option value="down">Down</option></select>
+
+      <label>7. Others Dominance</label>
+      <select id="othersd"><option value="sideways">Sideways</option><option value="up">Up</option><option value="down">Down</option></select>
+
+      <label>ATR/Stop Loss Distance (%)</label>
+      <input id="atrp" type="number" step="0.1" min="0" value="3">
+      <label>Total Equity (USDT)</label>
+      <input id="equity" type="number" step="1" min="0" value="1000">
+      <label>Target Risk per Trade (%)</label>
+      <input id="riskp" type="number" step="0.1" min="0" value="1">
+    </section>
+
+    <!-- RIGHT: Tree -->
+    <section class="panel">
+      <h3>2) Decision Tree</h3>
+      <div class="tree-container" id="tree"></div>
+
+      <h3>Weekly Summary</h3>
+      <div id="summary" class="out"></div>
+      <div class="footer">Educational tool only · Not financial advice</div>
+    </section>
+  </div>
+</div>
+
+<script>
+function buildTree(){
+  const data = {
+    name: "Market Analysis",
+    children: [
+      { name: "Gold", children: [{name:"Up"},{name:"Down"},{name:"Sideways"}]},
+      { name: "Total Market Cap", children: [{name:"Up"},{name:"Down"},{name:"Sideways"}]},
+      { name: "USDT.D", children: [{name:"Up (Risk-off)"},{name:"Down (Risk-on)"}]},
+      { name: "Bitcoin", children: [{name:"Up"},{name:"Down"},{name:"Breakout"},{name:"Breakdown"}]},
+      { name: "Ethereum", children: [{name:"Strong"},{name:"Weak"}]},
+      { name: "Total3", children: [{name:"Up"},{name:"Down"}]},
+      { name: "Others Dominance", children: [{name:"Up"},{name:"Down"}]},
+      { name: "Decision", children: [
+        {name:"Choose Crypto (Long/Short)"},
+        {name:"Leverage & Margin"},
+        {name:"Entry Point"},
+        {name:"Exit Point"}
+      ]}
+    ]
+  };
+
+  const width = document.getElementById('tree').clientWidth;
+  const height = document.getElementById('tree').clientHeight;
+
+  const svg = d3.select("#tree").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const g = svg.append("g").attr("transform","translate(50,40)");
+
+  const treeLayout = d3.tree().size([height-80, width-180]);
+  const root = d3.hierarchy(data);
+  treeLayout(root);
+
+  // Links
+  g.selectAll('.link')
+    .data(root.links())
+    .enter()
+    .append('path')
+    .attr('class','link')
+    .attr('fill','none')
+    .attr('stroke','#7aa2ff')
+    .attr('stroke-width',1.5)
+    .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+
+  // Nodes
+  g.selectAll('.node')
+    .data(root.descendants())
+    .enter()
+    .append('circle')
+    .attr('cx', d=>d.y)
+    .attr('cy', d=>d.x)
+    .attr('r',6)
+    .attr('fill', d => d.children ? '#4ade80' : '#f59e0b');
+
+  // Labels
+  g.selectAll('.label')
+    .data(root.descendants())
+    .enter()
+    .append('text')
+    .attr('x', d=>d.y+10)
+    .attr('y', d=>d.x+4)
+    .attr('fill','#e8ecff')
+    .style('font-size','12px')
+    .text(d=>d.data.name);
+}
+
+buildTree();
+</script>
+</body>
+</html>
