@@ -10,33 +10,30 @@
       --bg:#0f1220; --panel:#151935; --muted:#9aa4bf; --text:#e8ecff; --accent:#7aa2ff; --ok:#4ade80; --warn:#f59e0b; --bad:#ef4444; --line:#2a2f52;
     }
     *{box-sizing:border-box}
-    body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text); line-height:1.5;}
-    h1{font-size:22px; margin:12px 0; font-weight:600;}
+    body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:var(--text);}
+    h1{font-size:22px; margin:16px 0}
     .wrap{max-width:1400px; margin:0 auto; padding:12px}
-    .board{display:grid; grid-template-columns: 1fr 2fr; gap:20px}
-    @media(max-width:768px){.board{grid-template-columns:1fr}}
-    .panel{background:var(--panel); border:1px solid #22284d; border-radius:18px; padding:16px; box-shadow:0 10px 24px rgba(0,0,0,.25)}
-    label{display:block; font-size:13px; margin:8px 0 4px; color:#c7cff5}
-    select, input[type="number"]{width:100%; background:#0e1230; border:1px solid #2a2f52; color:var(--text); border-radius:10px; padding:8px 10px; outline:none}
+    .board{display:grid; grid-template-columns: 1fr; gap:20px}
+    @media(min-width:800px){.board{grid-template-columns: 350px 1fr}}
+    .panel{background:var(--panel); border:1px solid #22284d; border-radius:16px; padding:14px; box-shadow:0 10px 24px rgba(0,0,0,.25)}
+    .muted{color:var(--muted); font-size:12px}
+    label{display:block; font-size:13px; margin-bottom:6px; color:#c7cff5}
+    select, input[type="number"]{width:100%; background:#0e1230; border:1px solid #2a2f52; color:var(--text); border-radius:10px; padding:8px 10px; outline:none; margin-bottom:8px}
     select:focus, input:focus{border-color:var(--accent)}
-    .btn{background:linear-gradient(90deg,#6d8cff,#7aa2ff); color:#05122a; border:none; padding:10px 16px; border-radius:12px; cursor:pointer; font-weight:700; transition:all .2s ease; margin-top:10px;}
-    .btn:hover{filter:brightness(1.1)}
+    .btn{background:linear-gradient(90deg,#6d8cff,#7aa2ff); color:#05122a; border:none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700; margin:5px 0;}
     .btn:active{transform:translateY(1px)}
-    .out{white-space:pre-wrap; font-family: monospace; background:#0b0f26; border:1px dashed #2a2f52; border-radius:12px; padding:10px; font-size:13px; margin-top:8px}
-    .footer{opacity:.75; font-size:12px; margin-top:10px; text-align:center}
-    .tree-container{width:100%; height:400px; background:#0b0f26; border-radius:16px; padding:10px; overflow:auto}
-    svg{font-family:system-ui, sans-serif}
-    #piechart{width:100%; height:300px; margin-top:20px}
+    .out{white-space:pre-wrap; font-family: monospace; background:#0b0f26; border:1px dashed #2a2f52; border-radius:12px; padding:10px; font-size:13px}
+    .footer{opacity:.8; font-size:12px; margin-top:8px}
+    .tree-container{width:100%; height:400px; background:#0b0f26; border-radius:16px; padding:10px}
+    .chart-container{width:100%; height:300px; background:#0b0f26; border-radius:16px; margin-top:12px;}
   </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="title" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px">
+  <div class="title">
     <h1>Weekly Crypto Decision Tree · From Gold to Entry/Exit</h1>
-    <div>
-      <button class="btn" id="copyPlan">Copy Plan</button>
-      <button class="btn" id="calcAlloc">Calculate Allocation</button>
-    </div>
+    <button class="btn" id="updateTree">Update Tree</button>
+    <button class="btn" id="calcAlloc">Calculate Allocation</button>
   </div>
 
   <div class="board">
@@ -72,24 +69,24 @@
       <input id="riskp" type="number" step="0.1" min="0" value="1">
     </section>
 
-    <!-- RIGHT: Tree + Charts -->
+    <!-- RIGHT: Tree and Outputs -->
     <section class="panel">
       <h3>2) Decision Tree</h3>
       <div class="tree-container" id="tree"></div>
 
       <h3>Weekly Summary</h3>
       <div id="summary" class="out"></div>
-
-      <h3>Asset Allocation</h3>
-      <div id="piechart"></div>
-
-      <div class="footer">Educational tool only · Not financial advice</div>
+      <div class="chart-container" id="pie"></div>
+      <div class="footer">Educational tool only. Not financial advice.</div>
     </section>
   </div>
 </div>
 
 <script>
+let svgTree;
+
 function buildTree(){
+  document.getElementById('tree').innerHTML="";
   const data = {
     name: "Market Analysis",
     children: [
@@ -116,35 +113,31 @@ function buildTree(){
     .attr("width", width)
     .attr("height", height);
 
-  const g = svg.append("g").attr("transform","translate(50,40)");
+  svgTree = svg.append("g").attr("transform","translate(40,40)");
 
-  const treeLayout = d3.tree().size([height-80, width-180]);
+  const treeLayout = d3.tree().size([height-80, width-160]);
   const root = d3.hierarchy(data);
   treeLayout(root);
 
-  g.selectAll('.link')
+  svgTree.selectAll('.link')
     .data(root.links())
-    .enter()
-    .append('path')
-    .attr('class','link')
+    .enter().append('path')
     .attr('fill','none')
     .attr('stroke','#7aa2ff')
     .attr('stroke-width',1.5)
     .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
 
-  g.selectAll('.node')
+  svgTree.selectAll('.node')
     .data(root.descendants())
-    .enter()
-    .append('circle')
+    .enter().append('circle')
     .attr('cx', d=>d.y)
     .attr('cy', d=>d.x)
     .attr('r',6)
-    .attr('fill', d => d.children ? '#4ade80' : '#f59e0b');
+    .attr('fill', d=> decisionColor(d.data.name));
 
-  g.selectAll('.label')
+  svgTree.selectAll('.label')
     .data(root.descendants())
-    .enter()
-    .append('text')
+    .enter().append('text')
     .attr('x', d=>d.y+10)
     .attr('y', d=>d.x+4)
     .attr('fill','#e8ecff')
@@ -152,58 +145,79 @@ function buildTree(){
     .text(d=>d.data.name);
 }
 
+function decisionColor(name){
+  if(["Choose Crypto (Long/Short)","Leverage & Margin","Entry Point","Exit Point"].includes(name)){
+    return "#4ade80";
+  }
+  if(name.toLowerCase().includes("down") || name.toLowerCase().includes("risk")){
+    return "#ef4444";
+  }
+  if(name.toLowerCase().includes("up") || name.toLowerCase().includes("strong")){
+    return "#22c55e";
+  }
+  return "#7aa2ff";
+}
+
+function calculateAllocation(){
+  const gold = document.getElementById('gold').value;
+  const total = document.getElementById('total').value;
+  const usdtd = document.getElementById('usdtd').value;
+  const btc = document.getElementById('btc').value;
+  const eth = document.getElementById('eth').value;
+  const total3 = document.getElementById('total3').value;
+  const othersd = document.getElementById('othersd').value;
+  const equity = +document.getElementById('equity').value;
+
+  // Financial logic heuristic:
+  let goldW=0.2, btcW=0.3, ethW=0.25, altW=0.25;
+
+  if(gold==="up") goldW+=0.1; else if(gold==="down") goldW-=0.1;
+  if(total==="up") {btcW+=0.05; ethW+=0.05; altW+=0.1;} else if(total==="down") {goldW+=0.05; btcW-=0.05; altW-=0.05;}
+  if(usdtd.includes("up")) {goldW+=0.1; altW-=0.1;} else if(usdtd.includes("down")) {altW+=0.1;}
+  if(btc==="up"||btc==="breakout") btcW+=0.1; if(btc==="down"||btc==="breakdown") btcW-=0.1;
+  if(eth==="strong") ethW+=0.1; if(eth==="weak") ethW-=0.1;
+  if(total3==="up") altW+=0.1; if(total3==="down") altW-=0.1;
+  if(othersd==="up") altW+=0.05; if(othersd==="down") altW-=0.05;
+
+  let weights=[goldW, btcW, ethW, altW];
+  const sum=weights.reduce((a,b)=>a+b,0);
+  weights=weights.map(w=>w/sum);
+
+  const values=[weights[0]*equity, weights[1]*equity, weights[2]*equity, weights[3]*equity];
+  const labels=["Gold","BTC","ETH","Altcoins"];
+
+  drawPie(labels, values);
+}
+
+function drawPie(labels, values){
+  document.getElementById('pie').innerHTML="";
+  const width=document.getElementById('pie').clientWidth;
+  const height=document.getElementById('pie').clientHeight;
+  const radius=Math.min(width,height)/2-20;
+
+  const svg=d3.select('#pie').append('svg').attr('width',width).attr('height',height)
+    .append('g').attr('transform',`translate(${width/2},${height/2})`);
+
+  const color=d3.scaleOrdinal().domain(labels).range(["#facc15","#22c55e","#3b82f6","#a855f7"]);
+
+  const pie=d3.pie();
+  const data_ready=pie(values);
+
+  svg.selectAll('path').data(data_ready).enter().append('path')
+    .attr('d',d3.arc().innerRadius(0).outerRadius(radius))
+    .attr('fill',(d,i)=>color(labels[i]))
+    .attr('stroke','#0f1220').style('stroke-width','2px');
+
+  svg.selectAll('text').data(data_ready).enter().append('text')
+    .text((d,i)=>labels[i]+": $"+values[i].toFixed(0))
+    .attr('transform',d=>`translate(${d3.arc().innerRadius(0).outerRadius(radius*0.6).centroid(d)})`)
+    .style('text-anchor','middle').style('fill','#fff').style('font-size','12px');
+}
+
+// Events
 buildTree();
-
-// Pie chart allocation
-function drawPie(allocation){
-  document.getElementById("piechart").innerHTML="";
-  const width = document.getElementById('piechart').clientWidth;
-  const height = document.getElementById('piechart').clientHeight;
-  const radius = Math.min(width, height) / 2;
-
-  const svg = d3.select("#piechart").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", `translate(${width/2},${height/2})`);
-
-  const color = d3.scaleOrdinal().domain(Object.keys(allocation)).range(["#fbbf24","#3b82f6","#8b5cf6","#10b981"]);
-
-  const pie = d3.pie().value(d=>d[1]);
-  const data_ready = pie(Object.entries(allocation));
-
-  svg.selectAll('path')
-    .data(data_ready)
-    .enter()
-    .append('path')
-    .attr('d', d3.arc().innerRadius(0).outerRadius(radius))
-    .attr('fill', d=>color(d.data[0]))
-    .style("opacity",0.8);
-
-  svg.selectAll('text')
-    .data(data_ready)
-    .enter()
-    .append('text')
-    .text(d => `${d.data[0]}: $${d.data[1]}`)
-    .attr("transform", d=>`translate(${d3.arc().innerRadius(0).outerRadius(radius).centroid(d)})`)
-    .style("text-anchor","middle")
-    .style("font-size",12);
-}
-
-// Allocation button logic
-function calcAlloc(){
-  const equity = +document.getElementById('equity').value || 1000;
-  // Simple heuristic split: Gold 20%, BTC 40%, ETH 25%, Alts 15%
-  const allocation = {
-    Gold: Math.round(equity*0.2),
-    BTC: Math.round(equity*0.4),
-    ETH: Math.round(equity*0.25),
-    Altcoins: Math.round(equity*0.15)
-  };
-  drawPie(allocation);
-}
-
-document.getElementById("calcAlloc").addEventListener("click", calcAlloc);
+document.getElementById('updateTree').addEventListener('click', buildTree);
+document.getElementById('calcAlloc').addEventListener('click', calculateAllocation);
 </script>
 </body>
 </html>
