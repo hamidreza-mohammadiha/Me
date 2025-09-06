@@ -143,6 +143,18 @@
             transform: translateY(0);
         }
         
+        .btn-secondary {
+            background: linear-gradient(90deg, #2a2f52, #3a3f62);
+            color: var(--text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
         .market-data {
             margin-top: 30px;
         }
@@ -211,13 +223,34 @@
             text-align: right;
             margin-top: 10px;
         }
+        
+        .loading {
+            opacity: 0.7;
+            font-style: italic;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-live {
+            background-color: var(--ok);
+        }
+        
+        .status-offline {
+            background-color: var(--bad);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Crypto Decision Assistant</h1>
-            <p class="subtitle">Weekly analysis from gold trends to entry/exit points</p>
+            <p class="subtitle">Real-time market analysis with allocation recommendations</p>
         </header>
         
         <div class="datetime">
@@ -335,7 +368,8 @@
                             <line x1="12" y1="20" x2="12" y2="4"></line>
                             <line x1="6" y1="20" x2="6" y2="14"></line>
                         </svg>
-                        Market Data
+                        Real-time Market Data
+                        <span class="status-indicator status-live" id="statusIndicator"></span>
                     </h2>
                     
                     <table class="data-table">
@@ -348,50 +382,51 @@
                         </thead>
                         <tbody id="marketData">
                             <tr>
-                                <td>Gold</td>
-                                <td>Loading...</td>
+                                <td>Gold (XAUTUSDT)</td>
+                                <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
                             <tr>
                                 <td>Total Market Cap</td>
-                                <td>Loading...</td>
+                                <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
                             <tr>
                                 <td>BTCUSDT</td>
-                                <td>Loading...</td>
+                                <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
                             <tr>
                                 <td>ETHUSDT</td>
-                                <td>Loading...</td>
+                                <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
                             <tr>
-                                <td>BTCETH</td>
-                                <td>Loading...</td>
+                                <td>BTCETH Ratio</td>
+                                <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
                             <tr>
-                                <td>Total3</td>
-                                <td>Loading...</td>
+                                <td>Total3 (excl. BTC & ETH)</td>
+                                <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
                             <tr>
-                                <td>Others.D</td>
-                                <td>Loading...</td>
+                                <td>Others Dominance</td>
+                                <td class="loading">Loading...</td>
                                 <td>—</td>
                             </tr>
                         </tbody>
                     </table>
                     
                     <p class="last-updated">Last updated: <span id="lastUpdated">—</span></p>
+                    <button class="btn-secondary" id="refreshData">Refresh Market Data</button>
                 </div>
             </div>
         </div>
         
         <div class="footer">
-            <p>Educational tool only. Not financial advice. Data updates every 60 seconds.</p>
+            <p>Educational tool only. Not financial advice. Data from Binance and CoinGecko APIs.</p>
         </div>
     </div>
 
@@ -402,9 +437,12 @@
         const lastUpdatedElement = document.getElementById('lastUpdated');
         const allocationSummaryElement = document.getElementById('allocationSummary');
         const calculateButton = document.getElementById('calcAlloc');
+        const refreshButton = document.getElementById('refreshData');
+        const statusIndicator = document.getElementById('statusIndicator');
         
         // Store previous values for change calculation
         let previousValues = JSON.parse(localStorage.getItem('cryptoPreviousValues')) || {};
+        let currentValues = {};
         
         // Update date and time
         function updateDateTime() {
@@ -435,44 +473,82 @@
             return `<span class="${changeClass}">${changeSymbol}${change.toFixed(2)}%</span>`;
         }
         
-        // Fetch market data
+        // Fetch market data from APIs
         async function fetchMarketData() {
+            statusIndicator.classList.remove('status-offline');
+            statusIndicator.classList.add('status-live');
+            
             try {
-                // In a real application, you would fetch from actual APIs
-                // For demonstration, we're using mock data
-                const mockData = {
-                    gold: 1950.75,
-                    totalMarketCap: 2568000000000,
-                    btcusdt: 51642.38,
-                    ethusdt: 2785.64,
-                    btceth: 18.54,
-                    total3: 985000000000,
-                    othersD: 38.4
+                // Fetch data from multiple APIs
+                const [goldData, btcData, ethData, globalData] = await Promise.all([
+                    fetch('https://api.binance.com/api/v3/ticker/price?symbol=XAUTUSDT').then(res => res.json()),
+                    fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(res => res.json()),
+                    fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(res => res.json()),
+                    fetch('https://api.coingecko.com/api/v3/global').then(res => res.json())
+                ]);
+                
+                // Extract values
+                const goldPrice = parseFloat(goldData.price);
+                const btcPrice = parseFloat(btcData.price);
+                const ethPrice = parseFloat(ethData.price);
+                const btcEthRatio = btcPrice / ethPrice;
+                const totalMarketCap = globalData.data.total_market_cap.usd;
+                
+                // Calculate BTC and ETH market cap percentages
+                const btcDominance = globalData.data.market_cap_percentage.btc;
+                const ethDominance = globalData.data.market_cap_percentage.eth;
+                
+                // Calculate derived values
+                const btcMarketCap = (btcDominance / 100) * totalMarketCap;
+                const ethMarketCap = (ethDominance / 100) * totalMarketCap;
+                const total3MarketCap = totalMarketCap - btcMarketCap - ethMarketCap;
+                const othersDominance = 100 - (btcDominance + ethDominance);
+                
+                // Prepare current values
+                currentValues = {
+                    gold: goldPrice,
+                    totalMarketCap: totalMarketCap,
+                    btcusdt: btcPrice,
+                    ethusdt: ethPrice,
+                    btceth: btcEthRatio,
+                    total3: total3MarketCap,
+                    othersD: othersDominance
                 };
                 
                 // Update market data table
-                updateMarketTable(mockData);
+                updateMarketTable(currentValues);
                 
                 // Store values for next comparison
-                localStorage.setItem('cryptoPreviousValues', JSON.stringify(mockData));
+                localStorage.setItem('cryptoPreviousValues', JSON.stringify(currentValues));
                 
                 // Update last updated timestamp
                 lastUpdatedElement.textContent = new Date().toLocaleTimeString();
+                
             } catch (error) {
                 console.error('Error fetching market data:', error);
+                statusIndicator.classList.remove('status-live');
+                statusIndicator.classList.add('status-offline');
+                
+                marketDataElement.innerHTML = `
+                    <tr>
+                        <td colspan="3" style="color: ${getComputedStyle(document.documentElement).getPropertyValue('--bad')}; text-align: center;">
+                            Error loading market data. Please try again.
+                        </td>
+                    </tr>
+                `;
             }
         }
         
         // Update market data table
         function updateMarketTable(data) {
             const rows = [
-                { measure: 'Gold', value: `$${data.gold.toFixed(2)}`, change: formatChange(data.gold, previousValues.gold) },
+                { measure: 'Gold (XAUTUSDT)', value: `$${data.gold.toFixed(2)}`, change: formatChange(data.gold, previousValues.gold) },
                 { measure: 'Total Market Cap', value: `$${formatNumber(Math.round(data.totalMarketCap / 1000000000))}B`, change: formatChange(data.totalMarketCap, previousValues.totalMarketCap) },
                 { measure: 'BTCUSDT', value: `$${formatNumber(data.btcusdt.toFixed(2))}`, change: formatChange(data.btcusdt, previousValues.btcusdt) },
                 { measure: 'ETHUSDT', value: `$${formatNumber(data.ethusdt.toFixed(2))}`, change: formatChange(data.ethusdt, previousValues.ethusdt) },
-                { measure: 'BTCETH', value: data.btceth.toFixed(2), change: formatChange(data.btceth, previousValues.btceth) },
-                { measure: 'Total3', value: `$${formatNumber(Math.round(data.total3 / 1000000000))}B`, change: formatChange(data.total3, previousValues.total3) },
-                { measure: 'Others.D', value: `${data.othersD.toFixed(1)}%`, change: formatChange(data.othersD, previousValues.othersD) }
+                { measure: 'BTCETH Ratio', value: data.btceth.toFixed(4), change: formatChange(data.btceth, previousValues.btceth) },
+                { measure: 'Total3 (excl. BTC & ETH)', value: `$${formatNumber(Math.round(data.total3 / 1000000000))}B`, change: formatChange(data.total3, previousValues.total3) },
+                { measure: 'Others Dominance', value: `${data.othersD.toFixed(2)}%`, change: formatChange(data.othersD, previousValues.othersD) }
             ];
             
             marketDataElement.innerHTML = rows.map(row => `
@@ -622,6 +698,7 @@
             setInterval(fetchMarketData, 60000); // Update every 60 seconds
             
             calculateButton.addEventListener('click', calculateAllocation);
+            refreshButton.addEventListener('click', fetchMarketData);
             
             // Calculate initial allocation
             calculateAllocation();
