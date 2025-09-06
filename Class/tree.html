@@ -481,10 +481,11 @@
             try {
                 // Fetch data from multiple APIs
                 const [goldData, btcData, ethData, globalData] = await Promise.all([
-                    fetch('https://api.binance.com/api/v3/ticker/price?symbol=XAUTUSDT').then(res => res.json()),
+                    
+                    fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT').then(res => res.json()),
                     fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(res => res.json()),
                     fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(res => res.json()),
-                    fetch('https://api.coingecko.com/api/v3/global').then(res => res.json())
+                    // fetch('https://api.coingecko.com/api/v3/global').then(res => res.json())
                 ]);
                 
                 // Extract values
