@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>7+1 Football Strategies — Live Pitch Animator</title>
+  <style>
+    :root {
+      --bg: #0a0d10;
+      --panel: #12171d;
+      --accent: #28d07b;
+      --accent-2: #2fb5ff;
+      --text: #e8f2f1;
+      --muted: #9fb0b3;
+      --danger: #ff5577;
+      --warn: #ffb020;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 70% -20%, #15222a 0%, var(--bg) 60%);
+      color: var(--text);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+    }
+
+    header, footer {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+    }
+
+    header {
+      padding: 16px clamp(16px, 4vw, 28px);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      font-size: clamp(18px, 2.4vw, 28px);
+    }
+
+    header p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    select, button, .toggle {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--panel);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    select { min-width: 200px; }
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+
+    button.primary { border-color: transparent; background: linear-gradient(180deg, var(--accent), #0fb86d); color: #072216; }
+    button.secondary { background: #0f1317; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+      padding: 16px clamp(16px, 4vw, 28px);
+      align-items: start;
+      justify-items: center; /* centers the stage */
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      header { grid-template-columns: 1fr; }
+      .controls { justify-content: center; }
+    }
+
+    .stage {
+      background: #0e1c12;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 3 / 2; /* keeps it centered & responsive */
+      display: grid;
+      place-items: center;
+      justify-self: center;
+    }
+
+    .aside {
+      background: #0f1419;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .aside h3 { margin: 0; font-size: 1.05rem; color: var(--muted); letter-spacing: 0.2px; }
+    .aside p { margin: 0; color: #cfe6e3; line-height: 1.45; }
+
+    .legend {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 14px;
+    }
+
+    .key { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 0.95rem; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--text); border: 2px solid #000; box-shadow: 0 0 0 2px rgba(255,255,255,0.1) inset; }
+    .dot.ball { background: #fff; border-color: #333; }
+    .dot.us { background: var(--accent); }
+    .dot.foe { background: #ff5c5c; }
+    .dash { flex: 0 0 18px; height: 0; border-top: 3px dashed var(--accent-2); opacity: 0.8; }
+
+    footer {
+      padding: 12px clamp(16px, 4vw, 28px);
+      color: var(--muted);
+      font-size: 0.9rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .goal-toast { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+    .goal-badge {
+      transform: scale(0.9); opacity: 0;
+      background: radial-gradient(200px 160px at 50% 50%, #fff, #ffe186 60%, rgba(255,255,255,0) 70%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      font-weight: 900; font-size: clamp(46px, 8vw, 86px); letter-spacing: 3px; text-shadow: 0 8px 40px rgba(255, 230, 100, 0.5);
+      transition: transform 400ms ease, opacity 400ms ease;
+    }
+    .goal-badge.show { transform: scale(1); opacity: 1; }
+    .notice { color: var(--warn); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>7+1 Football Strategies — Live Pitch Animator</h1>
+      <p>Select a strategy & formation, hit <strong>Play</strong>, and watch a 10s sequence that ends in a goal.</p>
+    </div>
+    <div class="controls">
+      <select id="strategy">
+        <option value="Empire">#Empire — Possession & Control</option>
+        <option value="Guerrilla">#Guerrilla — Counter-Attack</option>
+        <option value="Blitzkrieg">#Blitzkrieg — High Press</option>
+        <option value="Fortress">#Fortress — Safe Build</option>
+        <option value="Cavalry">#Cavalry — Flank Overload</option>
+        <option value="Gladiator">#Gladiator — Striker Spearhead</option>
+        <option value="Shapeshifter">#Shapeshifter — Adaptive</option>
+        <option value="Trickster">#Trickster — Chaos & Creativity</option>
+      </select>
+      <select id="formation" title="Team formation">
+        <option value="4-3-3">4-3-3</option>
+        <option value="4-4-2">4-4-2</option>
+        <option value="4-2-3-1">4-2-3-1</option>
+        <option value="4-1-4-1">4-1-4-1</option>
+        <option value="4-5-1">4-5-1</option>
+        <option value="5-3-2">5-3-2</option>
+        <option value="5-2-3">5-2-3</option>
+        <option value="3-5-2">3-5-2</option>
+      </select>
+      <button class="primary" id="playBtn">▶ Play</button>
+      <button class="secondary" id="pauseBtn">⏸ Pause</button>
+      <button class="secondary" id="resetBtn">↺ Reset</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage">
+      <svg id="pitch" viewBox="0 0 120 80" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-label="Football pitch animation">
+        <defs>
+          <pattern id="grass" width="10" height="10" patternUnits="userSpaceOnUse">
+            <rect width="10" height="10" fill="#0e611f" />
+            <rect width="10" height="5" fill="#0d5a1d" />
+          </pattern>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="0.8" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- Grass and lines -->
+        <rect x="0" y="0" width="120" height="80" fill="url(#grass)" stroke="#1f3a25" />
+        <g stroke="#cfe6e3" stroke-width="0.6" opacity="0.85">
+          <rect x="2" y="2" width="116" height="76" fill="none" />
+          <line x1="60" y1="2" x2="60" y2="78" />
+          <circle cx="60" cy="40" r="9.15" fill="none" />
+          <rect x="2" y="18" width="18" height="44" fill="none" />
+          <rect x="100" y="18" width="18" height="44" fill="none" />
+          <rect x="2" y="30" width="6" height="20" fill="none" />
+          <rect x="112" y="30" width="6" height="20" fill="none" />
+          <rect x="0.5" y="34" width="1.5" height="12" fill="none" />
+          <rect x="118" y="34" width="1.5" height="12" fill="none" />
+          <circle cx="60" cy="40" r="0.8" />
+        </g>
+
+        <!-- Dynamic layers -->
+        <g id="passPaths" stroke="var(--accent-2)" stroke-width="0.7" fill="none"></g>
+        <g id="players"></g>
+        <g id="ballLayer"></g>
+
+        <!-- Goal text -->
+        <g id="goalText" opacity="0">
+          <text x="60" y="40" text-anchor="middle" dominant-baseline="middle" font-size="18" font-weight="900" fill="#ffe186" filter="url(#glow)">GOAL!</text>
+        </g>
+      </svg>
+
+      <div class="goal-toast" aria-hidden="true">
+        <div class="goal-badge" id="goalBadge">GOAL!</div>
+      </div>
+    </section>
+
+    <aside class="aside">
+      <h3>About this demo</h3>
+      <p>This single file animates 10-second pass patterns for each of the <strong>7+1 strategies</strong>. Choose a <strong>formation</strong> to lay out 11 players; the pass path depends on the strategy and always ends with a goal to the right.</p>
+      <div class="legend" aria-label="Legend">
+        <div class="key"><span class="dot ball"></span> Ball</div>
+        <div class="key"><span class="dash"></span> Pass Path</div>
+        <div class="key"><span class="dot us"></span> Our Player (by formation)</div>
+        <div class="key"><span class="dot foe"></span> Opponent (auto-mirrored)</div>
+      </div>
+      <h3>Tip</h3>
+      <p>Switch strategies or formations while paused or after reset. The pitch scales responsively and remains centered on mobile.</p>
+      <p class="notice">Illustrative only — not tied to real tracking data.</p>
+    </aside>
+  </main>
+
+  <footer>
+    <div>Hamidreza — Arsenal Project · 7+1 Archetypes · Single-file prototype</div>
+    <div>© 2025</div>
+  </footer>
+
+  <script>
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const pitch = $('#pitch');
+    const passLayer = $('#passPaths');
+    const playersLayer = $('#players');
+    const ballLayer = $('#ballLayer');
+    const goalBadge = $('#goalBadge');
+    const goalText = $('#goalText');
+
+    const playBtn = $('#playBtn');
+    const pauseBtn = $('#pauseBtn');
+    const resetBtn = $('#resetBtn');
+    const strategySel = $('#strategy');
+    const formationSel = $('#formation');
+
+    // Ball & players
+    let rafId = null;
+    let t0 = null;
+    let paused = false;
+    let pauseAt = 0;
+    let totalDuration = 10000; // 10s
+
+    const COLORS = {
+      us: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#28d07b',
+      foe: '#ff5c5c',
+      pass: getComputedStyle(document.documentElement).getPropertyValue('--accent-2').trim() || '#2fb5ff',
+    };
+
+    function makePlayer(id, x, y, type = 'us') {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('data-id', id);
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 1.8);
+      c.setAttribute('fill', type === 'us' ? COLORS.us : COLORS.foe);
+      c.setAttribute('stroke', '#05170c'); c.setAttribute('stroke-width', '0.4');
+      g.appendChild(c);
+      playersLayer.appendChild(g);
+      return g;
+    }
+    function movePlayer(el, x, y) {
+      const c = el.firstChild; c.setAttribute('cx', x); c.setAttribute('cy', y);
+    }
+
+    // Ball
+    const ball = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    ball.setAttribute('r', 1.2);
+    ball.setAttribute('fill', '#fff');
+    ball.setAttribute('stroke', '#333');
+    ball.setAttribute('stroke-width', '0.4');
+    ballLayer.appendChild(ball);
+
+    // Helpers
+    function S(x, y){ return {x, y}; }
+
+    // FORMATIONS: 11 players (GK + 10). 120x80 grid, attacking to the RIGHT.
+    const FORMATIONS = {
+      '4-3-3': () => [
+        S(6,40),
+        S(18,20), S(18,40), S(18,60), S(26,40),
+        S(38,28), S(38,52), S(50,40),
+        S(66,20), S(66,60), S(84,40)
+      ],
+      '4-4-2': () => [
+        S(6,40),
+        S(18,22), S(18,40), S(18,58), S(26,40),
+        S(38,24), S(38,40), S(38,56), S(52,40),
+        S(84,30), S(84,50)
+      ],
+      '4-2-3-1': () => [
+        S(6,40),
+        S(18,22), S(18,58), S(26,40), S(26,40),
+        S(38,32), S(38,48),
+        S(52,24), S(52,40), S(52,56),
+        S(86,40)
+      ],
+      '4-1-4-1': () => [
+        S(6,40),
+        S(18,22), S(18,40), S(18,58), S(26,40),
+        S(36,40),
+        S(50,24), S(50,40), S(50,56), S(64,40),
+        S(86,40)
+      ],
+      '4-5-1': () => [
+        S(6,40),
+        S(18,22), S(18,40), S(18,58), S(26,40),
+        S(38,24), S(38,32), S(38,48), S(38,56), S(52,40),
+        S(86,40)
+      ],
+      '5-3-2': () => [
+        S(6,40),
+        S(14,20), S(14,60), S(22,30), S(22,50), S(26,40),
+        S(40,30), S(40,50), S(52,40),
+        S(82,32), S(82,48)
+      ],
+      '5-2-3': () => [
+        S(6,40),
+        S(14,20), S(14,60), S(22,30), S(22,50), S(26,40),
+        S(42,34), S(42,46),
+        S(64,22), S(64,58), S(86,40)
+      ],
+      '3-5-2': () => [
+        S(6,40),
+        S(18,24), S(18,56), S(26,40),
+        S(40,20), S(40,60), S(46,34), S(46,46), S(58,40),
+        S(82,32), S(82,48)
+      ],
+    };
+
+    // STRATEGIES: only the pass path/description (players come from formation)
+    const STRATS = {
+      Empire: { desc: 'Patient positional play: short passes, circulation, cutback finish.', path: [ S(14,40), S(26,28), S(26,52), S(44,46), S(44,34), S(62,30), S(74,18), S(86,26), S(96,36), S(112,40) ] },
+      Guerrilla: { desc: 'Deep block then lightning counter: release runner and finish.', path: [ S(10,46), S(10,34), S(22,40), S(38,40), S(62,32), S(88,28), S(110,36), S(112,40) ] },
+      Blitzkrieg: { desc: 'High press regain; two quick verticals and a through ball.', path: [ S(56,36), S(60,30), S(70,34), S(82,36), S(96,38), S(112,40) ] },
+      Fortress: { desc: 'Secure build, long diagonal, support, cross and tap-in.', path: [ S(14,30), S(26,40), S(38,46), S(54,40), S(74,20), S(94,30), S(106,36), S(112,40) ] },
+      Cavalry: { desc: 'Flank overload down the right; byline cutback to finish.', path: [ S(30,40), S(44,36), S(70,22), S(96,12), S(108,18), S(110,32), S(100,38), S(112,40) ] },
+      Gladiator: { desc: 'Direct to the 9’s feet, lay-off, return and finish.', path: [ S(20,40), S(52,40), S(68,40), S(60,34), S(78,40), S(90,38), S(112,40) ] },
+      Shapeshifter: { desc: 'Adaptive: center → left → switch → right → goal.', path: [ S(24,44), S(50,40), S(40,24), S(62,26), S(74,40), S(92,30), S(104,36), S(112,40) ] },
+      Trickster: { desc: 'Improvisation: zig-zags, feints, and a sudden strike.', path: [ S(30,50), S(42,30), S(54,50), S(66,28), S(78,46), S(90,34), S(104,38), S(112,40) ] }
+    };
+
+    // Animation state
+    let current = null;
+    let segments = [];
+
+    function pulseNearestPlayer(pt){
+      const all = [...playersLayer.querySelectorAll('g')].filter(g=>g.firstChild.getAttribute('fill')===COLORS.us);
+      if(!all.length) return;
+      let best=null, bestD=1e9;
+      all.forEach(g=>{
+        const c=g.firstChild; const x=+c.getAttribute('cx'), y=+c.getAttribute('cy');
+        const d=(x-pt.x)**2+(y-pt.y)**2; if(d<bestD){ bestD=d; best=g; }
+      });
+      if(best){
+        const c=best.firstChild; c.animate(
+          [{ r: 1.8 }, { r: 2.6 }, { r: 1.8 }],
+          { duration: 600, easing: 'ease-out' }
+        );
+      }
+    }
+
+    function cancelAnim(){ if(rafId){ cancelAnimationFrame(rafId); rafId=null; } }
+
+    function prepare(stratKey) {
+      cancelAnim();
+      passLayer.innerHTML = '';
+      playersLayer.innerHTML = '';
+      goalText.setAttribute('opacity','0');
+      goalBadge.classList.remove('show');
+
+      const s = STRATS[stratKey];
+      current = s;
+
+      // Our formation
+      const fKey = formationSel.value;
+      const our = (FORMATIONS[fKey] ? FORMATIONS[fKey]() : FORMATIONS['4-3-3']());
+      our.forEach((p,i)=> makePlayer('us'+i, p.x, p.y, 'us'));
+
+      // Opponents: mirror with slight jitter
+      const foes = our.map(pt => S(120-pt.x, Math.min(76, Math.max(4, pt.y + ((Math.random()-0.5)*4)))));
+      foes.forEach((p,i)=> makePlayer('foe'+i, p.x, p.y, 'foe'));
+
+      // Visualize pass path
+      for(let i=0;i<s.path.length-1;i++){
+        const a=s.path[i], b=s.path[i+1];
+        const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+        line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+        line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+        line.setAttribute('stroke', COLORS.pass);
+        line.setAttribute('stroke-dasharray','2 2');
+        line.setAttribute('opacity','0.15');
+        passLayer.appendChild(line);
+      }
+
+      // Build time segments for 10s total
+      const pts = s.path;
+      const lengths = [];
+      let totalLen = 0;
+      for(let i=0;i<pts.length-1;i++){
+        const dx=pts[i+1].x-pts[i].x, dy=pts[i+1].y-pts[i].y;
+        const len=Math.hypot(dx,dy); lengths.push(len); totalLen+=len;
+      }
+      segments = [];
+      let acc = 0;
+      for(let i=0;i<lengths.length;i++){
+        const segDur = (lengths[i]/totalLen)*totalDuration;
+        segments.push({ from: pts[i], to: pts[i+1], len: lengths[i], t0: acc, t1: acc+segDur });
+        acc += segDur;
+      }
+
+      // Ball start
+      ball.setAttribute('cx', pts[0].x);
+      ball.setAttribute('cy', pts[0].y);
+
+      pulseNearestPlayer(pts[0]);
+    }
+
+    function play(){
+      if(!current) prepare(strategySel.value);
+      if(paused){
+        paused=false;
+        t0 = performance.now() - pauseAt;
+      } else {
+        t0 = performance.now();
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function pause(){
+      if(!rafId) return;
+      paused = true;
+      pauseAt = performance.now() - t0;
+      cancelAnim();
+    }
+
+    function reset(){
+      paused = false; pauseAt = 0; t0 = null; cancelAnim();
+      prepare(strategySel.value);
+    }
+
+    function showGoal(){
+      goalText.setAttribute('opacity','1');
+      goalBadge.classList.add('show');
+      ball.animate(
+        [{ transform: 'translate(0,0)' }, { transform: 'translate(0.6px, -0.6px)' }, { transform: 'translate(-0.6px, 0.4px)' }, { transform: 'translate(0,0)' }],
+        { duration: 320, iterations: 1 }
+      );
+    }
+
+    function tick(now){
+      const elapsed = now - t0;
+      if(elapsed >= totalDuration){
+        const last = current.path[current.path.length-1];
+        ball.setAttribute('cx', last.x);
+        ball.setAttribute('cy', last.y);
+        const shot = ball.animate([{ transform: 'translate(0,0)' }, { transform: 'translate(3px, 0)' }], { duration: 260, easing: 'ease-out' });
+        shot.onfinish = showGoal;
+        cancelAnim();
+        return;
+      }
+      const t = elapsed;
+      let seg = segments.find(s => t >= s.t0 && t < s.t1);
+      if(!seg){ seg = segments[0]; }
+      const local = (t - seg.t0) / (seg.t1 - seg.t0);
+      const ease = local<0.5 ? 2*local*local : 1 - Math.pow(-2*local+2,2)/2;
+      const x = seg.from.x + (seg.to.x - seg.from.x) * ease;
+      const y = seg.from.y + (seg.to.y - seg.from.y) * ease;
+      ball.setAttribute('cx', x);
+      ball.setAttribute('cy', y);
+      if (Math.abs(local - 1) < 0.015) { pulseNearestPlayer(seg.to); }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    strategySel.addEventListener('change', () => prepare(strategySel.value));
+    formationSel.addEventListener('change', () => prepare(strategySel.value));
+    playBtn.addEventListener('click', play);
+    pauseBtn.addEventListener('click', pause);
+    resetBtn.addEventListener('click', reset);
+
+    // init
+    prepare(strategySel.value);
+  </script>
+</body>
+</html>
