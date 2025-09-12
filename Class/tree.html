@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Decision Assistant</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f1220;
+            --panel: #151935;
+            --muted: #9aa4bf;
+            --text: #e8ecff;
+            --accent: #7aa2ff;
+            --ok: #4ade80;
+            --warn: #f59e0b;
+            --bad: #ef4444;
+            --line: #2a2f52;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--line);
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+        
+        .subtitle {
+            color: var(--muted);
+            font-size: 16px;
+        }
+        
+        .datetime {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .datetime span {
+            color: rgb(4, 215, 234);
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        @media (min-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .panel {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .panel-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+        }
+        
+        .panel-title svg {
+            margin-right: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #0e1230;
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, #6d8cff, #7aa2ff);
+            color: #05122a;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(90deg, #2a2f52, #3a3f62);
+            color: var(--text);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .market-data {
+            margin-top: 30px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--line);
+        }
+        
+        .data-table th {
+            color: var(--muted);
+            font-weight: normal;
+        }
+        
+        .positive {
+            color: var(--ok);
+        }
+        
+        .negative {
+            color: var(--bad);
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+        }
+        
+        .summary {
+            background: #0b0f26;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .summary-title {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        
+        .last-updated {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: right;
+            margin-top: 10px;
+        }
+        
+        .loading {
+            opacity: 0.7;
+            font-style: italic;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .status-live {
+            background-color: var(--ok);
+        }
+        
+        .status-offline {
+            background-color: var(--bad);
+        }
+        
+        .api-status {
+            font-size: 12px;
+            margin-top: 10px;
+            color: var(--muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Crypto Decision Assistant</h1>
+            <p class="subtitle">Real-time market analysis with allocation recommendations</p>
+        </header>
+        
+        <div class="datetime">
+            <p id="time">Loading date and time...</p>
+        </div>
+        
+        <div class="dashboard">
+            <div class="panel">
+                <h2 class="panel-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+                    </svg>
+                    Market Analysis Inputs
+                </h2>
+                
+                <div class="input-group">
+                    <label for="gold">1. Global Gold Trend</label>
+                    <select id="gold">
+                        <option value="sideways">Sideways</option>
+                        <option value="up">Up</option>
+                        <option value="down">Down</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="total">2. Total Market Cap</label>
+                    <select id="total">
+                        <option value="sideways">Sideways</option>
+                        <option value="up">Up</option>
+                        <option value="down">Down</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="usdtd">3. USDT Dominance (USDT.D)</label>
+                    <select id="usdtd">
+                        <option value="sideways">Sideways</option>
+                        <option value="up">Up (Risk-off)</option>
+                        <option value="down">Down (Risk-on)</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="btc">4. Bitcoin Trend</label>
+                    <select id="btc">
+                        <option value="range">Range</option>
+                        <option value="up">Up</option>
+                        <option value="down">Down</option>
+                        <option value="breakout">Breakout Up</option>
+                        <option value="breakdown">Breakdown Down</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="eth">5. Ethereum Strength (ETH vs BTC)</label>
+                    <select id="eth">
+                        <option value="neutral">Neutral</option>
+                        <option value="strong">Strong</option>
+                        <option value="weak">Weak</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="total3">6. Total3 (Excluding BTC & ETH)</label>
+                    <select id="total3">
+                        <option value="sideways">Sideways</option>
+                        <option value="up">Up</option>
+                        <option value="down">Down</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="othersd">7. Others Dominance</label>
+                    <select id="othersd">
+                        <option value="sideways">Sideways</option>
+                        <option value="up">Up</option>
+                        <option value="down">Down</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="equity">Total Equity (USDT)</label>
+                    <input id="equity" type="number" step="1" min="0" value="10000">
+                </div>
+                
+                <button class="btn" id="calcAlloc">Calculate Allocation</button>
+            </div>
+            
+            <div class="panel">
+                <h2 class="panel-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                        <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                        <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    Allocation Results
+                </h2>
+                
+                <div class="chart-container" id="pie"></div>
+                
+                <div class="summary">
+                    <h3 class="summary-title">Recommended Allocation</h3>
+                    <div id="allocationSummary">
+                        <p>Complete the inputs and click "Calculate Allocation" to see results</p>
+                    </div>
+                </div>
+                
+                <div class="market-data">
+                    <h2 class="panel-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                        Real-time Market Data
+                        <span class="status-indicator status-live" id="statusIndicator"></span>
+                    </h2>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Measure</th>
+                                <th>Value</th>
+                                <th>Change</th>
+                            </tr>
+                        </thead>
+                        <tbody id="marketData">
+                            <tr>
+                                <td>Gold (XAUTUSDT)</td>
+                                <td class="loading">Loading...</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td>BTCUSDT</td>
+                                <td class="loading">Loading...</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td>ETHUSDT</td>
+                                <td class="loading">Loading...</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td>XRPUSDT</td>
+                                <td class="loading">Loading...</td>
+                                <td>—</td>
+                            </tr>
+                            <tr>
+                                <td>BTCETH Ratio</td>
+                                <td class="loading">Loading...</td>
+                                <td>—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p class="last-updated">Last updated: <span id="lastUpdated">—</span></p>
+                    <p class="api-status" id="apiStatus">API: Testing connection...</p>
+                    <button class="btn-secondary" id="refreshData">Refresh Market Data</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Educational tool only. Not financial advice. Data from various APIs.</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const timeElement = document.getElementById('time');
+        const marketDataElement = document.getElementById('marketData');
+        const lastUpdatedElement = document.getElementById('lastUpdated');
+        const allocationSummaryElement = document.getElementById('allocationSummary');
+        const calculateButton = document.getElementById('calcAlloc');
+        const refreshButton = document.getElementById('refreshData');
+        const statusIndicator = document.getElementById('statusIndicator');
+        const apiStatusElement = document.getElementById('apiStatus');
+        
+        // Store previous values for change calculation
+        let previousValues = JSON.parse(localStorage.getItem('cryptoPreviousValues')) || {};
+        let currentValues = {};
+        
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const dateString = now.toDateString();
+            const timeString = now.toLocaleTimeString();
+            
+            timeElement.innerHTML = `
+                <span style="color: white;">${dateString}</span>
+                <span style="color: white;"> - </span>
+                <span style="color: rgb(4, 215, 234);">${timeString}</span>
+            `;
+        }
+        
+        // Format numbers with commas
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        
+        // Format percentage change
+        function formatChange(current, previous) {
+            if (previous === 0 || previous === undefined) return '—';
+            
+            const change = ((current - previous) / previous) * 100;
+            const changeClass = change >= 0 ? 'positive' : 'negative';
+            const changeSymbol = change >= 0 ? '+' : '';
+            
+            return `<span class="${changeClass}">${changeSymbol}${change.toFixed(2)}%</span>`;
+        }
+        
+        // Fetch market data from APIs with CORS proxy
+        async function fetchMarketData() {
+            statusIndicator.classList.remove('status-offline');
+            statusIndicator.classList.add('status-live');
+            apiStatusElement.textContent = "API: Connecting...";
+            
+            try {
+                // Using a CORS proxy to bypass CORS restrictions
+                const corsProxy = "https://cors-anywhere.herokuapp.com/";
+                
+                // Fetch data from multiple APIs
+                const [xautData, btcData, ethData, xrpData] = await Promise.all([
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=xaut&dstCurrency=usdt`, 5000),
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=btc&dstCurrency=usdt`, 5000),
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=eth&dstCurrency=usdt`, 5000),
+                    fetchWithTimeout(`${corsProxy}https://apiv2.nobitex.ir/market/stats?srcCurrency=xrp&dstCurrency=usdt`, 5000)
+                ]);
+                
+                // Extract values from API responses
+                const xautPrice = parseFloat(xautData.stats['xaut-usdt'].latest);
+                const btcPrice = parseFloat(btcData.stats['btc-usdt'].latest);
+                const ethPrice = parseFloat(ethData.stats['eth-usdt'].latest);
+                const xrpPrice = parseFloat(xrpData.stats['xrp-usdt'].latest);
+                const btcEthRatio = btcPrice / ethPrice;
+                
+                // Prepare current values
+                currentValues = {
+                    xaut: xautPrice,
+                    btc: btcPrice,
+                    eth: ethPrice,
+                    xrp: xrpPrice,
+                    btceth: btcEthRatio
+                };
+                
+                // Update market data table
+                updateMarketTable(currentValues);
+                
+                // Store values for next comparison
+                localStorage.setItem('cryptoPreviousValues', JSON.stringify(currentValues));
+                
+                // Update last updated timestamp
+                lastUpdatedElement.textContent = new Date().toLocaleTimeString();
+                apiStatusElement.textContent = "API: Connected successfully";
+                
+            } catch (error) {
+                console.error('Error fetching market data:', error);
+                statusIndicator.classList.remove('status-live');
+                statusIndicator.classList.add('status-offline');
+                apiStatusElement.textContent = "API: Using fallback data";
+                
+                // Use mock data as fallback
+                useMockData();
+            }
+        }
+        
+        // Helper function to add timeout to fetch requests
+        function fetchWithTimeout(url, timeout) {
+            return Promise.race([
+                fetch(url).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                }),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timeout')), timeout)
+                )
+            ]);
+        }
+        
+        // Use mock data when APIs fail
+        function useMockData() {
+            // Mock data for demonstration
+            const mockData = {
+                xaut: 3595,
+                btc: 51642.38,
+                eth: 2785.64,
+                xrp: 0.52,
+                btceth: 18.54
+            };
+            
+            // Update market data table
+            updateMarketTable(mockData);
+            
+            // Store values for next comparison
+            localStorage.setItem('cryptoPreviousValues', JSON.stringify(mockData));
+            
+            // Update last updated timestamp
+            lastUpdatedElement.textContent = new Date().toLocaleTimeString() + " (Fallback Data)";
+        }
+        
+        // Update market data table
+        function updateMarketTable(data) {
+            const rows = [
+                { measure: 'Gold (XAUTUSDT)', value: `$${data.xaut.toFixed(2)}`, change: formatChange(data.xaut, previousValues.xaut) },
+                { measure: 'BTCUSDT', value: `$${formatNumber(data.btc.toFixed(2))}`, change: formatChange(data.btc, previousValues.btc) },
+                { measure: 'ETHUSDT', value: `$${formatNumber(data.eth.toFixed(2))}`, change: formatChange(data.eth, previousValues.eth) },
+                { measure: 'XRPUSDT', value: `$${data.xrp.toFixed(4)}`, change: formatChange(data.xrp, previousValues.xrp) },
+                { measure: 'BTCETH Ratio', value: data.btceth.toFixed(4), change: formatChange(data.btceth, previousValues.btceth) }
+            ];
+            
+            marketDataElement.innerHTML = rows.map(row => `
+                <tr>
+                    <td>${row.measure}</td>
+                    <td>${row.value}</td>
+                    <td>${row.change}</td>
+                </tr>
+            `).join('');
+            
+            // Update previous values
+            previousValues = data;
+        }
+        
+        // Calculate allocation
+        function calculateAllocation() {
+            const gold = document.getElementById('gold').value;
+            const total = document.getElementById('total').value;
+            const usdtd = document.getElementById('usdtd').value;
+            const btc = document.getElementById('btc').value;
+            const eth = document.getElementById('eth').value;
+            const total3 = document.getElementById('total3').value;
+            const othersd = document.getElementById('othersd').value;
+            const equity = +document.getElementById('equity').value;
+            
+            // Financial logic heuristic
+            let goldW = 0.2, btcW = 0.3, ethW = 0.25, altW = 0.25;
+            
+            if (gold === "up") goldW += 0.1; 
+            else if (gold === "down") goldW -= 0.1;
+            
+            if (total === "up") { 
+                btcW += 0.05; 
+                ethW += 0.05; 
+                altW += 0.1; 
+            } else if (total === "down") { 
+                goldW += 0.05; 
+                btcW -= 0.05; 
+                altW -= 0.05; 
+            }
+            
+            if (usdtd.includes("up")) { 
+                goldW += 0.1; 
+                altW -= 0.1; 
+            } else if (usdtd.includes("down")) { 
+                altW += 0.1; 
+            }
+            
+            if (btc === "up" || btc === "breakout") btcW += 0.1; 
+            if (btc === "down" || btc === "breakdown") btcW -= 0.1;
+            
+            if (eth === "strong") ethW += 0.1; 
+            if (eth === "weak") ethW -= 0.1;
+            
+            if (total3 === "up") altW += 0.1; 
+            if (total3 === "down") altW -= 0.1;
+            
+            if (othersd === "up") altW += 0.05; 
+            if (othersd === "down") altW -= 0.05;
+            
+            // Normalize weights
+            let weights = [goldW, btcW, ethW, altW];
+            const sum = weights.reduce((a, b) => a + b, 0);
+            weights = weights.map(w => w / sum);
+            
+            const values = [weights[0] * equity, weights[1] * equity, weights[2] * equity, weights[3] * equity];
+            const labels = ["Gold", "BTC", "ETH", "Altcoins"];
+            
+            // Update allocation summary
+            allocationSummaryElement.innerHTML = `
+                <div class="summary-item">
+                    <span>Gold:</span>
+                    <span>${(weights[0] * 100).toFixed(1)}% ($${values[0].toFixed(2)})</span>
+                </div>
+                <div class="summary-item">
+                    <span>BTC:</span>
+                    <span>${(weights[1] * 100).toFixed(1)}% ($${values[1].toFixed(2)})</span>
+                </div>
+                <div class="summary-item">
+                    <span>ETH:</span>
+                    <span>${(weights[2] * 100).toFixed(1)}% ($${values[2].toFixed(2)})</span>
+                </div>
+                <div class="summary-item">
+                    <span>Altcoins:</span>
+                    <span>${(weights[3] * 100).toFixed(1)}% ($${values[3].toFixed(2)})</span>
+                </div>
+            `;
+            
+            // Draw pie chart
+            drawPieChart(labels, values);
+        }
+        
+        // Draw pie chart
+        function drawPieChart(labels, values) {
+            const container = document.getElementById('pie');
+            container.innerHTML = '';
+            
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            const radius = Math.min(width, height) / 2;
+            
+            const svg = d3.select('#pie')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${width / 2}, ${height / 2})`);
+            
+            const color = d3.scaleOrdinal()
+                .domain(labels)
+                .range(["#facc15", "#22c55e", "#3b82f6", "#a855f7"]);
+            
+            const pie = d3.pie()
+                .value(d => d);
+            
+            const arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(radius);
+            
+            const arcs = svg.selectAll('arc')
+                .data(pie(values))
+                .enter()
+                .append('g')
+                .attr('class', 'arc');
+            
+            arcs.append('path')
+                .attr('d', arc)
+                .attr('fill', (d, i) => color(labels[i]))
+                .attr('stroke', '#0f1220')
+                .style('stroke-width', '2px');
+            
+            // Add labels
+            arcs.append('text')
+                .attr('transform', d => `translate(${arc.centroid(d)})`)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '12px')
+                .style('font-weight', 'bold')
+                .text((d, i) => `${labels[i]}: ${(values[i] / d3.sum(values) * 100).toFixed(1)}%`);
+        }
+        
+        // Initialize the application
+        function init() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            fetchMarketData();
+            setInterval(fetchMarketData, 60000); // Update every 60 seconds
+            
+            calculateButton.addEventListener('click', calculateAllocation);
+            refreshButton.addEventListener('click', fetchMarketData);
+            
+            // Calculate initial allocation
+            calculateAllocation();
+        }
+        
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
