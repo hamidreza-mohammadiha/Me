@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S6603DML53"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-S6603DML53');
+</script>
+
+<style>
+
+
+	#price-bar {
+		width: 100%;
+		height: 50px;
+		background-color: #3498db;
+		color: #ffffff;
+		text-align: center;
+		line-height: 50px;
+		font-size: 24px;
+	}
+
+    .carpet-gallery {
+    width: 50%;
+    max-width: 600px;
+    margin: 0 auto; /* center the section */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* space between images */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .carpet-gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    object-fit: cover;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 400px) {
+    .carpet-gallery {
+      width: 100%;
+      gap: 15px;
+    }
+  }
+</style>
+
+<script src="script.js" defer></script>
+	  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Familyp</title>
+     <link href="https://fonts.googleapis.com/css?family=Caveat|Montserrat:400,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+	  
+  </head>
+  <body>
+    <main>
+      <!-- *** ABOUT / PROFILE *** -->
+      <header>
+        <div class="content-wrap">
+          <h1 style="font-size: 240%;">Our</h1>
+		      <h1>Family</h1>
+          <h2 style="color: rgb(4, 215, 234); font-size: x-large;">Page </h2>
+
+
+        </div>
+      </header>
+
+
+      <section class="content-wrap">
+
+
+        <section class="carpet-gallery">
+        <img src="3Sis.png" alt="Iranian Carpet 1" />
+        <h2 dir="rtl" style="font-size: large; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"> قدمت:&nbsp&nbsp  <span id="Years"> </span>  &nbsp سال </h2>
+
+       <!-- Add more images as needed -->
+        </section>  
+
+
+        <br><br>
+
+
+        <div class="roadmap">
+
+          <p dir="rtl" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            داستان خانواده من
+          </p>
+
+ 
+        </div> 
+
+
+
+<br><br>
+    <h2 dir="rtl" style="font-size: large; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">🛤️ سفرهای ما </h2>
+  <br>
+
+  <!-- <br>🏞🛣️ -->
+
+    <style>
+    body {
+      font-family: Tahoma, sans-serif;
+      direction: rtl;
+      text-align: center;
+    }
+    table {
+      width: 88%;
+      margin: auto;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid #555;
+      padding: 6px 10px;
+      text-align: center;
+    }
+    th {
+      background: #f0f0f0;
+      font-family: Segoe UI;
+
+    }
+    tr:nth-child(even) {
+      background: #fafafa;
+    }
+  </style>
+
+  <table>
+  <thead>
+    <tr>
+      <th>ردیف</th>
+      <th>کشور</th>
+      <th> شهر</th>
+      <th>تاریخ</th>
+      <th>مدت</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>2</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>3</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>4</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>5</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>6</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>7</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>8</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>9</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+    <tr><td>10</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+
+    
+  </tbody>
+</table>
+<br><br>
+
+    <div class="goal" data-progress="67" data-status="planned">
+      <h3 style="font-family: Segoe UI;"> <span class="moving-btn2"></span> &nbsp &nbsp خوشبختی  &nbsp &nbsp <span class="moving-btn1"><br>🏝️</span></h3>
+      <div class="progress-bar"><div class="fill"></div></div>
+      <span style="font-family: Caveat; font-weight: lighter;" class="status"></span>
+    </div>
+
+
+</section>
+
+</body>
+
+
+
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const goals = document.querySelectorAll(".goal");
+
+  goals.forEach(goal => {
+    const progress = parseInt(goal.dataset.progress, 10);
+    const status = goal.dataset.status;
+    const fill = goal.querySelector(".fill");
+    const statusSpan = goal.querySelector(".status");
+
+    let direction = 1; // start moving right
+    let current = progress;
+
+    setInterval(() => {
+      // alternate between -5% and +5% of base progress
+      const variation = direction > 0 ? 3 : -3;
+      const animatedProgress = Math.max(0, Math.min(100, progress + variation));
+
+      fill.style.width = animatedProgress + "%";
+
+      if (statusSpan) {
+        statusSpan.textContent = `(${animatedProgress}%) - ${status}`;
+      }
+
+      // flip direction for next tick
+      direction *= -1;
+    }, 500); // every second
+  });
+});
+</script>
+
+    
+  
+</section>
+
+  <style>
+    .roadmap {
+      display: grid;
+      gap: 1.5rem;
+    }
+    .goal {
+      background: white;
+      padding: 0.2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .goal h3 {
+      margin: 0 0 8px;
+    }
+    .progress-bar {
+      background: #eee;
+      border-radius: 5px;
+      height: 14px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    .progress-bar .fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1a365d, #4a90e2);
+      width: 0;
+      transition: width 0.5s ease-in-out;
+    }
+    .status {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+    .status.planned { background: #1a365d; color: white; }
+    .status.in-progress { background: #4a90e2; color: white; }
+    .status.completed { background: #28a745; color: white; }
+  </style>
+
+<script>
+  // Auto-update progress bars & statuses
+  document.querySelectorAll('.goal').forEach(goal => {
+    const progress = goal.getAttribute('data-progress');
+    const status = goal.getAttribute('data-status');
+
+    // Update bar width
+    goal.querySelector('.fill').style.width = progress + "%";
+
+    // Update status text & class
+    // const statusSpan = goal.querySelector('.status');
+    // statusSpan.textContent = status;
+    // statusSpan.classList.add(status.toLowerCase().replace(" ", "-"));
+  });
+</script>
+        
+        <br>
+        
+          
+      </section>
+      
+      <!-- *****************  CONTACT INFO / SOCIAL MEDIA  ***************** -->
+      <footer>
+        <div class="content-wrap">
+
+          <h2 dir="ltr">Let's Keep in Touch!</h2><br>
+          <!-- <span class="moving-btn2"><a   class="btn_Pro" href="Blog.html">  &nbsp &nbsp &nbsp &nbsp &nbsp My Blog &nbsp &nbsp &nbsp &nbsp &nbsp </a></span> -->
+
+
+
+          <!-- Social media and contact links. Add or remove any networks. -->
+          <!-- <ul class="contact-list">
+            <li><a href="mailto:YaldaMohammadiha@Gmail.com">Email</a></li>
+            <li><a href="#" target="_blank">Linkedin&nbsp;</a></li>
+            <li><a href="https://t.me/YYalldaaa" target="_blank">Telegram</a></li>
+            <li><a href="#">Pages</a></li>
+            <li></li>
+
+          </ul> -->
+
+          <!-- <img width="250px"  SRC="Images/MeMe.png"> -->
+
+          <p style="font-size: 88%;" id="time"></p>
+
+        </div>
+
+  </footer>
+    </main>
+		    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script>
+      var typed = new Typed(".auto-type", {
+        strings: [ " ▶ ", "⚔️", "🍗","💤",  "📖", "📜", "💻","💤" , "🎨", "🍻" ,"💤", "🔎", "🧠", "🎮" ,"💤"],
+        teypespeed: 150,
+        backspeed: 50,
+        loop: true
+      })
+    </script>
+
+  </body>
+</html>

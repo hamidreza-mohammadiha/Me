@@ -2,11 +2,11 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     function updateAge() {
-      const birthday = new Date('2007-05-24T00:00:00Z'); // Your birthday in ISO format
+      const birthday = new Date('2017-03-21T00:00:00Z'); // Your birthday in ISO format
       const now = new Date();
       const ageInMilliseconds = now - birthday;
       const ageInSeconds = ageInMilliseconds / 1000;
-      const ageInYears = (ageInSeconds / (60*60*24*365.25))+3622
+      const ageInYears = (ageInSeconds / (60*60*24*365.25))
   
       document.getElementById('Years').innerText = ageInYears.toFixed(9); // Display age in Years
       // document.getElementById('time').innerText = now;
