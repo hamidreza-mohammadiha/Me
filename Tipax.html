@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tipax LTL — Qualification Task (Final, Enhanced)</title>
+<style>
+  /* ===== Tipax-inspired palette ===== */
+  :root{
+    --brand-orange:#F27521;   /* primary accent */
+    --brand-blue:#163A5F;     /* deep blue/nav */
+    --brand-green:#1E7D32;    /* supportive success */
+    --ink:#1f2937;
+    --muted:#6b7280;
+    --bg:#ffffff;
+    --line:#e5e7eb;
+    --chip:#f7fafc;
+    --soft:#fff7ef;           /* soft orange bg for callouts */
+  }
+
+  @page { size: A4 portrait; margin: 14mm; }
+  @media print {.toolbar{display:none!important}}
+
+  body{
+    margin:0; background:#fafafa; color:var(--ink);
+    font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, "Vazirmatn", "IRANSans", Arial, sans-serif;
+  }
+
+  .page{
+    box-sizing:border-box; width:210mm; min-height:297mm; margin:10mm auto;
+    background:var(--bg); border-radius:10px; box-shadow:0 6px 16px rgba(0,0,0,.08);
+    padding:16mm; display:flex; flex-direction:column; page-break-after:always;
+    border-top: 6px solid var(--brand-orange);
+  }
+
+  .header{ margin-bottom:8mm; }
+  .title{ margin:0; font-weight:900; color:var(--brand-blue); font-size:20px; }
+  .subtitle{ margin:3px 0 0; color:var(--muted); font-size:12.5px; }
+
+  .lead{
+    border:1px solid var(--line); border-radius:10px; padding:6mm; background:#fff;
+    direction:rtl; text-align:right; font-size:13.5px; margin-bottom:6mm;
+  }
+
+  .block{
+    border:1px solid var(--line); border-radius:10px; padding:7mm; background:#fff;
+    font-size:13.5px; margin-bottom:6mm;
+  }
+  .block h4{
+    margin:0 0 4mm; font-size:14.5px; color:var(--brand-blue); font-weight:800;
+  }
+  .block[dir="rtl"]{ text-align:right; }
+  .block[dir="ltr"]{ text-align:left; }
+
+  ul,ol{ margin:0; padding-left:18px; }
+  li{ margin:2.5mm 0; }
+
+  .callout{
+    border-left:4px solid var(--brand-orange); background:var(--soft); padding:6mm;
+    border-radius:10px; font-size:13px; margin-bottom:6mm;
+  }
+  .callout[dir="rtl"]{ text-align:right; }
+  .callout b{ color:#8a4a00; }
+
+  .example{
+    border:1px dashed var(--brand-green); background:#f6fffa; border-radius:10px; padding:6mm;
+    direction:rtl; text-align:right; font-size:13px; margin-top:4mm;
+  }
+  .example b{ color:var(--brand-green); }
+
+  .footnotes{
+    margin-top:6mm; padding-top:3mm; border-top:1px dashed var(--line);
+    font-size:10px; color:#475569; direction:rtl; text-align:right;
+  }
+  .footnotes div{ margin:2px 0; }
+
+  .footer{
+    margin-top:auto; display:flex; justify-content:center; font-size:11px; color:var(--muted);
+  }
+
+  /* small chips for visual rhythm (optional) */
+  .chip{
+    display:inline-block; padding:.18rem .55rem; border-radius:999px;
+    background:var(--chip); border:1px solid #d8e3f2; color:var(--brand-blue); font-size:11px; margin:0 .25rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== PAGE 1: Part 1 ========== -->
+<div class="page">
+  <div class="header">
+    <h1 class="title">Part 1 — Problem Understanding & Opportunity Framing</h1>
+    <p class="subtitle">Primary Users • Pain Points • LTL Opportunity • Success</p>
+  </div>
+
+  <!-- Persian (no English) -->
+  <div style="text-align:justify;" class="lead">
+    کاربران اصلی این خدمت، فروشندگان اینترنتی، کسب‌وکارهای کوچک و متوسط، شبکه‌های فروشگاهی و ارسال‌کنندگان شخصی هستند. چالش‌های رایج شامل نامشخص بودن هزینه، کمبود ظرفیت در زمان‌های شلوغ، نیاز به پرداخت امن در مقصد، و ضعف در ردیابی و زمان‌بندی دقیق است. راه‌حل حمل خُرده‌بار با کنار هم گذاشتن مرسوله‌های هم‌مسیر، استفاده از هاب‌های پردازش و مسیرهای بین‌شهری، و گزینه‌های متنوع تحویل، هزینه را پایین می‌آورد و کیفیت را بالا می‌برد. موفقیت زمانی است که سهم بازار رشد کند، هزینه هر مرسوله کمتر شود و رضایت مشتری پایدار بماند.
+  </div>
+
+  <!-- Structured (EN pro terms) -->
+  <div class="block" dir="ltr">
+    <h4>Structured Points</h4>
+    <ul>
+      <li><b>SMEs & E-commerce:</b> clear pricing, stable peak capacity, COD/secure payments.</li>
+      <li><b>Retail/Branches:</b> real-time tracking, lower damage/loss, on-time windows.</li>
+      <li><b>Individuals:</b> easy booking, transparent price, packaging/insurance, flexible delivery.</li>
+      <li><b>LTL Opportunity:</b> consolidate lanes, use automated hubs & linehaul, flexible last-mile.</li>
+      <li><b>Success:</b> market share ↑, load factor &gt;80%, cost/ship −15%, CSAT/NPS high.</li>
+    </ul>
+  </div>
+
+  <div class="callout" dir="rtl">
+    <b>نکته ظریف:<br><br></b> وقتی بارها را به موقع، در کنار هم می‌چینیم، کامیون پُر می‌شود، هزینه پایین می‌آید و وعده‌مان سرِ وقت عملی می‌شود.
+  </div>
+
+  <!-- Example in “blank” area -->
+  <div class="example">
+    <b>نمونه (ارسال گوشی هوشمند):<br><br></b> تحویل از درِ منزل، بسته‌بندی حباب‌دار + جعبه محکم، ثبت ارزش واقعی برای بیمه، انتخاب پرداخت در مقصد یا لینک آنلاین، تحویل درِ منزل یا لاکر نزدیک—همه با ردیابی لحظه‌ای.
+  </div>
+
+  <div class="footnotes">
+    <div>LTL = Less-than-Truckload</div>
+    <div>COD = Cash on Delivery</div>
+    <div>CSAT = Customer Satisfaction</div>
+    <div>NPS = Net Promoter Score</div>
+  </div>
+
+  <div class="footer"><span>1</span></div>
+</div>
+
+<!-- ========== PAGE 2: Part 2 ========== -->
+<div class="page">
+  <div class="header">
+    <h1 class="title">Part 2 — Operational Process Design</h1>
+    <p class="subtitle">Basic Model</p>
+  </div>
+
+  <div style="text-align:justify;" class="lead">
+    روند از ثبت سفارش در اپلیکیشن، مرکز تماس یا شعبه شروع می‌شود. بسته در زمان تعیین‌شده دریافت، در هاب مبدأ سنجش و دسته‌بندی می‌شود، از مسیرهای بین‌شهری عبور می‌کند و در هاب مقصد برای پخش شهری آماده می‌گردد. تحویل نهایی می‌تواند درِ منزل، لاکر یا شعبه باشد. برای موارد استثنا مسیر حل  شده و برای کیفیت، ردیابی دائمی انجام می‌شود.
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Process Flow</h4>
+    <ol>
+      <li>Booking → App / Call / Branch (declared value captured for insurance).</li>
+      <li>Pickup → scheduled window, first scan, packaging & forbidden-items check.</li>
+      <li>Origin Hub → weigh/measure, sort by destination & service class (air/ground).</li>
+      <li>Linehaul → trunk lanes targeting &gt;80% load factor; co-load where possible.</li>
+      <li>Destination Hub → cross-dock to city routes.</li>
+      <li>Last-mile → courier, smart locker, or branch; manage COD / payment link.</li>
+      <li>Exceptions → damage/short, RTS, wrong address; SLA-based resolution.</li>
+      <li>Control → tracking dashboard, OTIF, courier productivity.</li>
+    </ol>
+  </div>
+
+  <div class="callout" dir="rtl">
+    <b>تصویر ذهنی:<br><br></b> شب‌ها حرکت بین‌شهری، روزها جمع‌کردن و رساندن. نظم این ریتم یعنی سرعت، دقت و صرفه‌جویی.
+  </div>
+
+  <div class="example">
+    <b>نمونه (ارسال گوشی هوشمند):<br><br></b> بررسی سالم‌بودن پلمب، افزودن فوم/ضربه‌گیر، لیبل «شکستنی»، اسکن در مبدأ و مقصد، مسیر زمینی اقتصادی یا هوایی سریع بر اساس شهر، تحویل امن به گیرنده.
+  </div>
+
+  <div class="footnotes">
+    <div>SLA = Service Level Agreement</div>
+    <div>Load Factor = Fleet utilization %</div>
+    <div>Cross-dock = Direct transfer at hub</div>
+    <div>RTS = Return to Sender</div>
+    <div>OTIF = On-Time In-Full</div>
+  </div>
+
+  <div class="footer"><span>2</span></div>
+</div>
+
+<!-- ========== PAGE 3: Part 3 — Metrics (MVP) ========== -->
+<div class="page">
+  <div class="header">
+    <h1 class="title">Part 3 — Metrics (MVP)</h1>
+    <p class="subtitle">Launch Targets — User Experience • Cost • Efficiency</p>
+  </div>
+
+  <div style="text-align:justify;" class="lead">
+    در شروع، هدف این است: ثبت سفارش بدون دردسر، دریافت سریع، تحویل به‌موقع، و خسارت بسیار کم. با اطلاع‌رسانی روشن و ردیابی دائمی، اعتماد شکل می‌گیرد و هزینه‌ها کنترل می‌شود.
+  </div>
+
+  <!-- Sorted metric groups -->
+  <div class="block" dir="ltr">
+    <h4>User Experience (Launch)</h4>
+    <ul>
+      <li>Order completion &gt; 95% (no dead-ends in app/phone/branch).</li>
+      <li>Median booking → pickup &lt; 6 hours.</li>
+      <li>CSAT ≥ 4.5/5; NPS baseline ≥ +25.</li>
+      <li>Live tracking & proactive SMS/push notifications.</li>
+    </ul>
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Cost (Launch)</h4>
+    <ul>
+      <li>Cost per shipment −15% vs current baseline.</li>
+      <li>Claims cost &lt; 0.2% of revenue.</li>
+      <li>COD settlement fees minimized (target ≤ 1.0% effective).</li>
+    </ul>
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Efficiency (Launch)</h4>
+    <ul>
+      <li>OTIF ≥ 92% (on-time & in-full).</li>
+      <li>Damage rate &lt; 0.5%; Mis-sort &lt; 0.2%.</li>
+      <li>Courier productivity (drops/hour) ↑; Load factor ≥ 75%.</li>
+    </ul>
+  </div>
+
+  <div class="example">
+    <b>نمونه (ارسال گوشی هوشمند):<br><br></b> «ثبت ساده، دریافت همان‌روز، تحویل فردا؛ پیامک مسیر و تایید تحویل». اگر یکی از این مراحل کند شد، هشدار مدیریتی فعال می‌شود.
+  </div>
+
+  <div class="footnotes">
+    <div>CSAT = Customer Satisfaction</div>
+    <div>NPS = Net Promoter Score</div>
+    <div>OTIF = On-Time In-Full</div>
+    <div>Mis-sort = Wrong hub sort</div>
+    <div>Drops/hour = Deliveries per hour</div>
+    <div>COD = Cash on Delivery</div>
+  </div>
+
+  <div class="footer"><span>3</span></div>
+</div>
+
+<!-- ========== PAGE 4: Part 3 — Metrics (Scaling 6–12m) ========== -->
+<div class="page">
+  <div class="header">
+    <h1 class="title">Part 3 — Metrics (Scaling 6–12 Months)</h1>
+    <p class="subtitle">User Experience • Cost • Efficiency</p>
+  </div>
+
+  <div style="text-align:justify;" class="lead">
+    در مقیاس، باید خرید دوباره بالا برود، تحویل در تلاش اول موفق باشد، هزینه هر کیلو کاهش یابد و رضایت خالص افزایش پیدا کند. برنامه‌ریزی درست باعث پرشدگی بهتر و ثبات کیفیت می‌شود.
+  </div>
+
+  <!-- Sorted metric groups -->
+  <div class="block" dir="ltr">
+    <h4>User Experience (Scale)</h4>
+    <ul>
+      <li>Repeat rate &gt; 55% (SME cohorts).</li>
+      <li>NPS ≥ +45; complaint rate ↓ month-over-month.</li>
+      <li>First-attempt delivery ≥ 93%.</li>
+    </ul>
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Cost (Scale)</h4>
+    <ul>
+      <li>Cost/kg −22% vs launch.</li>
+      <li>COD settlement cycle &lt; T+2 days.</li>
+      <li>Damage cost &lt; 0.15% of revenue.</li>
+    </ul>
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Efficiency (Scale)</h4>
+    <ul>
+      <li>Load factor ≥ 85% on trunk lanes.</li>
+      <li>OTIF ≥ 96%.</li>
+      <li>Support contacts per shipment trending down.</li>
+    </ul>
+  </div>
+
+  <div class="example">
+    <b>نمونه (ارسال گوشی هوشمند):<br><br></b> پس از ۶ ماه، مرسوله‌های گوشی از مسیرهای پرتقاضا تجمیع می‌شوند؛ تحویل تلاش اول بالاتر می‌رود و خسارت تقریباً صفر می‌شود.
+  </div>
+
+  <div class="footnotes">
+    <div>First-attempt = Delivery success on first try</div>
+    <div>Cost/kg = Cost per kilogram</div>
+    <div>T+2 = Settlement within 2 days</div>
+    <div>Repeat rate = Share of returning customers</div>
+  </div>
+
+  <div class="footer"><span>4</span></div>
+</div>
+
+<!-- ========== PAGE 5: Part 4 — Creative Scenario ========== -->
+<div class="page">
+  <div class="header">
+    <h1 class="title">Part 4 — Creative Scenario</h1>
+    <p class="subtitle">Competitor Pre-Launch</p>
+  </div>
+
+  <div class="lead">
+    اگر رقیب زودتر آغاز کند، باید تفاوت فوری نشان بدهیم، قیمت هوشمند ارائه کنیم، اتصال‌های آماده برای فروشندگان داشته باشیم، ظرفیت اولیه را افزایش دهیم و حل استثنا را سریع پیش ببریم تا شروع روان و قانع‌کننده بماند.
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Response Plan</h4>
+    <ul>
+      <li>Differentiation → pickup window guarantee, free insurance, door+locker in Tehran.</li>
+      <li>Pricing → trunk lane promos, SME bundles.</li>
+      <li>Partnerships → store integrations, COD API, branded payment links.</li>
+      <li>Comms → “65-year trust” + public SLA dashboard.</li>
+      <li>Ops → surge capacity, exception strike team, competitor watch.</li>
+    </ul>
+  </div>
+
+  <div class="callout" dir="rtl">
+    <b>راه‌حل برق‌آسا:<br><br></b> قول دقیق، قیمت هوشمند و اتصال ساده—سه‌گانه‌ای که بازی را برمی‌گرداند.
+  </div>
+
+  <div class="example">
+    <b>نمونه (ارسال گوشی هوشمند):</b> پروموشن مسیرهای پُرتقاضا، تضمین دریافت عصرگاهی، و تحویل لاکر برای خریداران پرمشغله؛ پیام شفاف «خسارت جبران می‌شود».
+  </div>
+
+  <div class="footnotes">
+    <div>API = Application Programming Interface</div>
+    <div>SLA = Service Level Agreement</div>
+    <div>COD = Cash on Delivery</div>
+  </div>
+
+  <div class="footer"><span>5</span></div>
+</div>
+
+<!-- ========== PAGE 6: Conclusion + References (Unified) ========== -->
+<div class="page">
+  <div class="header">
+    <h1 class="title">Conclusion & References</h1>
+    <p class="subtitle">Summary • Author • Date • Top 5 Resources</p>
+  </div>
+
+  <div class="lead">
+ با تکیه بر ظرفیت فعلی و تجمیع هوشمند، می‌توان هزینه را کاهش داد، پرشدگی را بالا برد و زمان‌بندی را دقیق نگه داشت؛ نتیجه، رضایت پایدار و رشد مداوم است. برای هم‌راستایی با معیارهای صنعت، باید از منابع معتبر استفاده و شاخص‌ها را شفاف نگه داریم.
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Summary</h4>
+    <p style="margin:0">Hub-linehaul-last-mile + exception control + clear metrics → stronger SLA, lower unit cost, competitive edge.</p>
+  </div>
+
+  <div class="block" dir="ltr">
+    <h4>Top 5 Resources & Benchmarks</h4>
+    <ol>
+      <li>Tipax official site (FA/EN) — service catalog, style cues.</li>
+      <li>Global LTL best practice guides (3PLs) — hubs, linehaul, cross-dock, SLAs.</li>
+      <li>GS1 parcel & barcode standards — reduce mis-sort, enable accurate tracking.</li>
+      <li>World Bank Logistics Performance Index — macro benchmarks.</li>
+      <li>Carrier service guides (UPS/FedEx LTL) — OTIF, packaging, claims.</li>
+    </ol>
+  </div>
+
+  <!-- <div class="callout" dir="rtl">
+    <b>نکته عملی:</b> یک صفحه معیار داخلی بسازید؛ تعریف هر شاخص، آستانه‌ها و روند ماهانه را ثبت و هر فصل به‌روز کنید.
+  </div>
+
+  <div class="example">
+    <b>نمونه (ارسال گوشی هوشمند):</b> صفحه معیار اختصاصی «الکترونیک ظریف»: نرخ خسارت هدف ۰٫۲٪، تحویل تلاش اول ≥۹۳٪، زمان تسویه پرداخت در مقصد حداکثر دو روز کاری.
+  </div> -->
+
+  <div class="footnotes">
+    <div>SLA = Service Level Agreement</div>
+    <div>Cross-dock = Direct transfer at hub</div>
+    <div>OTIF = On-Time In-Full</div>
+    <div>GS1 = Global Standards Organization</div>
+    <div>LPI = Logistics Performance Index</div>
+  </div>
+<br><br><br><br>
+   <div  dir="ltr">
+    <!-- <h4>Summary</h4> -->
+    <p style="margin:0"><Strong>Written by:</Strong><br> Hamidreza Mohammaadiha</p>
+    <br>
+    
+  </div>
+
+  <div class="footer"><span>17 Sep 2025</span></div>
+</div>
+
+</body>
+</html>
