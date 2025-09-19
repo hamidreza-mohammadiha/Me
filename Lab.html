@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Strategies Compass — Definitions, Examples & Animated Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#121a33; --ink:#e9eefc; --muted:#9fb2e4;
+      --accent:#6ea8fe; --grid:#1c2647; --outline: rgba(255,255,255,.06);
+      --card:#0f1730;
+    }
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto,
+                   "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", sans-serif;
+      display:grid; grid-template-rows:auto auto auto 1fr; gap:14px; padding:14px;
+    }
+    header{
+      background:linear-gradient(180deg, #0f1430 0%, #0b1020 100%);
+      border:1px solid var(--grid); border-radius:16px; padding:18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 var(--outline);
+    }
+    header h1{margin:0 0 6px 0; font-size:22px; letter-spacing:.2px}
+    header p{margin:0; color:var(--muted); font-size:14px}
+
+    .desc,.panel,.card{
+      background:var(--panel); border:1px solid var(--grid); border-radius:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 var(--outline);
+    }
+    .desc{padding:14px 16px; display:grid; gap:10px}
+    .desc h2{margin:0; font-size:16px}
+    .desc p{margin:0; color:var(--muted); font-size:14px; line-height:1.55}
+    .def, blockquote{
+      margin:0; padding:10px 12px; background:var(--card); border:1px dashed #2a3563;
+      border-radius:12px; color:#cfe1ff; font-size:14px;
+    }
+    blockquote{font-style:italic}
+
+    .panel{
+      display:flex; flex-wrap:wrap; gap:14px; align-items:center; padding:12px 14px;
+    }
+    .group{display:flex; align-items:center; gap:10px}
+    .group label{font-size:14px; color:var(--muted)}
+    .value-pill{
+      background:rgba(110,168,254,.15); color:#cfe1ff; padding:4px 8px;
+      border-radius:999px; font-variant-numeric:tabular-nums;
+      border:1px solid rgba(110,168,254,.35);
+    }
+    input[type="range"]{accent-color:var(--accent)}
+    select,button{
+      background:#0f1730; border:1px solid var(--grid); color:var(--ink);
+      padding:8px 10px; border-radius:10px;
+    }
+    button:hover{border-color:var(--accent)}
+    .hint{color:var(--muted); font-size:12px}
+    .checkbox{display:flex; align-items:center; gap:8px}
+
+    /* Chart container: full width, auto height with aspect-ratio, responsive */
+    #chartWrap{
+      background:linear-gradient(180deg, #0f1430 0%, #0b1020 100%);
+      border:1px solid var(--grid); border-radius:16px;
+      box-shadow: inset 0 0 0 1px var(--outline), 0 12px 40px rgba(0,0,0,.35);
+      padding:10px;
+    }
+    #chart{
+      width:100%;
+      height:auto;                /* auto height */
+      aspect-ratio: 16 / 9;       /* keeps it nicely proportioned */
+    }
+
+    /* Strategy definition cards */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+      gap:14px;
+    }
+    .card{padding:14px 16px}
+    .card h3{margin:0 0 6px 0; font-size:16px}
+    .badge{font-size:12px; color:#b9ccff}
+    .card ul{margin:8px 0 0 16px; color:#cfe1ff}
+    .card p{margin:6px 0; color:#cfe1ff}
+
+    footer{color:var(--muted); font-size:12px; padding:4px 2px}
+    footer a{color:#a9c7ff; text-decoration:none}
+    footer a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Strategies on the Decision Compass</h1>
+    <p>Animated map of strategies across axes:
+      <strong>Individual Rationality → Collective Fairness</strong> (x),
+      <strong>Stability → Flexibility</strong> (y). Trails, Random/Wise motion,
+      Risk-Taking Index, and Equilibrium Bias included.</p>
+  </header>
+
+  <section class="desc">
+    <h2>What does “Wise” mean here?</h2>
+    <p class="def">Wise (adj.): <em>able to make sensible decisions and give good advice because of the experience and knowledge that you have</em>. — Oxford Learner’s Dictionaries</p>
+    <blockquote>“One thing about us wise guys, the hustle never ends.” — Tony Soprano</blockquote>
+    <p>Our **Wise** animation models: momentum (experience), gentle center-seeking (advice),
+       light separation (social awareness), equilibrium bias (identity), edge safety, and a tiny
+       curiosity term (hustle never ends). We also place each strategy at a **best-guess
+       equilibrium** guided by <strong>Bartle’s Taxonomy</strong> (Achiever 🏆, Killer ⚔️,
+       Socializer 🫂, Explorer 🧭) to keep their “home” reasonable.</p>
+  </section>
+
+  <div class="panel" role="region" aria-label="Controls">
+    <div class="group">
+      <label for="mode">Animation</label>
+      <select id="mode" aria-label="Animation Mode">
+        <option>Random</option>
+        <option selected>Wise</option>
+      </select>
+    </div>
+
+    <div class="group">
+      <label for="risk">Risk-Taking Index</label>
+      <input id="risk" type="range" min="25" max="75" value="50" step="1" />
+      <span id="riskVal" class="value-pill">50%</span>
+    </div>
+
+    <div class="group">
+      <label for="trailLen">Trail length</label>
+      <input id="trailLen" type="range" min="10" max="250" value="80" step="1" />
+      <span id="trailVal" class="value-pill">80</span>
+    </div>
+
+    <div class="group checkbox">
+      <input id="showTrails" type="checkbox" checked />
+      <label for="showTrails">Show trails</label>
+    </div>
+
+    <div class="group checkbox">
+      <input id="eqBias" type="checkbox" checked />
+      <label for="eqBias">Equilibrium bias</label>
+    </div>
+
+    <div class="group checkbox">
+      <input id="edgeSafe" type="checkbox" checked />
+      <label for="edgeSafe">Edge safety</label>
+    </div>
+
+    <div class="group">
+      <button id="reset">Reset positions</button>
+      <button id="pausePlay">Pause</button>
+    </div>
+
+    <div class="group">
+      <span class="hint">Wise = momentum + center + separation + equilibrium + edge + curiosity.</span>
+    </div>
+  </div>
+
+  <div id="chartWrap">
+    <div id="chart" role="img" aria-label="Animated strategies on 2D compass"></div>
+  </div>
+
+  <!-- Strategy Definitions & Examples -->
+  <section class="grid" aria-label="Strategy Definitions">
+    <!-- Empire -->
+    <article class="card" id="empire">
+      <h3>Empire 🏰👑📜 <span class="badge">Achiever-leaning 🏆 • Rational • Stable</span></h3>
+      <p><strong>Definition:</strong> Build structured dominance via planning, logistics, hierarchy, and standardization.</p>
+      <ul>
+        <li><em>Operations:</em> Enterprise resource planning (ERP) rollout, SOP unification.</li>
+        <li><em>Business:</em> Platform consolidation, M&A integration playbooks.</li>
+        <li><em>Lifestyle:</em> Routines, budgeting systems, long-term compounding habits.</li>
+      </ul>
+    </article>
+
+    <!-- Fortress -->
+    <article class="card" id="fortress">
+      <h3>Fortress 🛡️🏯🧱 <span class="badge">Socializer-friendly 🫂 • Fairness • Stable</span></h3>
+      <p><strong>Definition:</strong> Protect core assets; minimize risk; prioritize reliability, compliance, and safety nets.</p>
+      <ul>
+        <li><em>Operations:</em> Redundancy, QA hardening, incident response benchmarks.</li>
+        <li><em>Business:</em> Reg-first product design, trust & safety frameworks.</li>
+        <li><em>Lifestyle:</em> Emergency funds, health insurance, sleep hygiene boundaries.</li>
+      </ul>
+    </article>
+
+    <!-- Guerrilla -->
+    <article class="card" id="guerrilla">
+      <h3>Guerrilla 🌲🕵️‍♂️🥾 <span class="badge">Socializer/Explorer mix 🫂🧭 • Fair • Flexible</span></h3>
+      <p><strong>Definition:</strong> Small, adaptive units exploiting terrain/asymmetry; rapid iteration over heavy investment.</p>
+      <ul>
+        <li><em>Operations:</em> Skunkworks pilots, A/B tests, shadow traffic rollouts.</li>
+        <li><em>Business:</em> Niche markets, community-led growth, micro-influencer loops.</li>
+        <li><em>Lifestyle:</em> Minimal gear, high adaptability, test-learn loops for habits.</li>
+      </ul>
+    </article>
+
+    <!-- Blitzkrieg -->
+    <article class="card" id="blitzkrieg">
+      <h3>Blitzkrieg ⚡🚀🔥 <span class="badge">Killer-leaning ⚔️ • Rational • Flexible</span></h3>
+      <p><strong>Definition:</strong> Concentrated, time-boxed offensives to seize advantage before rivals can react.</p>
+      <ul>
+        <li><em>Operations:</em> War-room sprints, surge staffing for peak launches.</li>
+        <li><em>Business:</em> Limited-time offers, speed-to-market ambushes, hype windows.</li>
+        <li><em>Lifestyle:</em> Focus blocks, deadlines, sprint-then-recover cycles.</li>
+      </ul>
+    </article>
+
+    <!-- Cavalry -->
+    <article class="card" id="cavalry">
+      <h3>Cavalry 🐎🏇📯 <span class="badge">Achiever/Socializer bridge 🏆🫂 • Coordinated • Agile</span></h3>
+      <p><strong>Definition:</strong> Fast maneuver support that links units; relays, escorts, decisive flanking.</p>
+      <ul>
+        <li><em>Operations:</em> Rapid response teams, cross-functional strike squads.</li>
+        <li><em>Business:</em> Partner enablement, field sales assists, logistics escorts.</li>
+        <li><em>Lifestyle:</em> Accountability partners, study groups, rescue-time swaps.</li>
+      </ul>
+    </article>
+
+    <!-- Gladiator -->
+    <article class="card" id="gladiator">
+      <h3>Gladiator 🗡️🥊🛡️ <span class="badge">Achiever/Killer mix 🏆⚔️ • Individual mastery</span></h3>
+      <p><strong>Definition:</strong> Head-to-head excellence; mastery of tools, timing, and spectacle.</p>
+      <ul>
+        <li><em>Operations:</em> On-call champions, top-gun troubleshooters.</li>
+        <li><em>Business:</em> Key-account closers, demo gladiators, debate leads.</li>
+        <li><em>Lifestyle:</em> Deliberate practice, tournaments, performance showcases.</li>
+      </ul>
+    </article>
+
+    <!-- Shapeshifter -->
+    <article class="card" id="shapeshifter">
+      <h3>Shapeshifter 🔮🐙🌀 <span class="badge">Explorer-leaning 🧭 • Adaptive • High flexibility</span></h3>
+      <p><strong>Definition:</strong> Form-changing to fit context; polymath cross-training, reframing problems.</p>
+      <ul>
+        <li><em>Operations:</em> Role rotation, multi-skill rosters, modular architectures.</li>
+        <li><em>Business:</em> Pivot protocols, product line morphing, option portfolios.</li>
+        <li><em>Lifestyle:</em> Skill stacks, seasonal routines, context-switch fluency.</li>
+      </ul>
+    </article>
+
+    <!-- Trickster -->
+    <article class="card" id="trickster">
+      <h3>Trickster 🃏🪄🪅 <span class="badge">Killer/Explorer mix ⚔️🧭 • Creative disruption</span></h3>
+      <p><strong>Definition:</strong> Subvert expectations; misdirection; exploit blind spots; play with norms.</p>
+      <ul>
+        <li><em>Operations:</em> Chaos testing, red-team drills, failure injection.</li>
+        <li><em>Business:</em> Category judo, meme-driven campaigns, playful T&Cs.</li>
+        <li><em>Lifestyle:</em> Humor as leverage, rule-bending games, constraint hacks.</li>
+      </ul>
+    </article>
+  </section>
+
+  <footer>
+    <p>Axes: X = Individual Rationality → Collective Fairness, Y = Stability → Flexibility. Bartle anchors (for intuition): Achiever 🏆 ~ rational/stable; Killer ⚔️ ~ rational/flexible; Socializer 🫂 ~ collective/*mid*; Explorer 🧭 ~ flexible/curious.</p>
+    <p>Dictionary line and quote included as provided. <a href="https://www.oxfordlearnersdictionaries.com/definition/english/wise_1" target="_blank" rel="noopener">Oxford Learner’s Dictionaries — wise</a></p>
+  </footer>
+
+  <script>
+    // ====== Helpers ======
+    const clamp01 = v => Math.max(0, Math.min(1, v));
+
+    // ====== Agents: label (with creative emojis), color, equilibrium (home), gravitas ======
+    // Equilibrium coordinates reflect a "best place" consistent with Bartle leanings & axis semantics.
+    // X: Individual Rationality (0) → Collective Fairness (1)
+    // Y: Stability (0) → Flexibility (1)
+    const agents = [
+      { label:" 👑",       color:"#A6CEE3", home:[0.75,0.25], gravitas:1.30 }, // Achiever-leaning
+      { label:" 🛡️",     color:"#1F78B4", home:[0.25,0.20], gravitas:1.40 }, // Socializer-friendly (collective, stable)
+      { label:" 🌲", color:"#B2DF8A", home:[0.30,0.70], gravitas:1.05 }, // Collective & flexible
+      { label:" ⚡",    color:"#FB9A99", home:[0.88,0.80], gravitas:1.10 }, // Killer-leaning
+      { label:"🐎",       color:"#CAB2D6", home:[0.60,0.70], gravitas:1.10 }, // Coordinated, agile
+      { label:" 🗡️",   color:"#FDBF6F", home:[0.80,0.45], gravitas:1.20 }, // Individual mastery
+      { label:" 🐙", color:"#E31A1C", home:[0.50,0.82], gravitas:1.00 }, // Explorer-leaning
+      { label:" 🃏",     color:"#33A02C", home:[0.70,0.78], gravitas:1.05 }, // Creative disruption
+    ];
+    const N = agents.length;
+
+    // Start near each equilibrium with slight jitter
+    let positions = agents.map(a => [
+      clamp01(a.home[0] + (Math.random()-0.5)*0.06),
+      clamp01(a.home[1] + (Math.random()-0.5)*0.06)
+    ]);
+    let velocities = Array.from({length:N}, () => [0,0]);
+
+    // ====== UI elements ======
+    const modeEl = document.getElementById('mode');
+    const riskEl = document.getElementById('risk');
+    const riskVal = document.getElementById('riskVal');
+    const trailLenEl = document.getElementById('trailLen');
+    const trailVal = document.getElementById('trailVal');
+    const showTrailsEl = document.getElementById('showTrails');
+    const eqBiasEl = document.getElementById('eqBias');
+    const edgeSafeEl = document.getElementById('edgeSafe');
+    const resetBtn = document.getElementById('reset');
+    const pausePlayBtn = document.getElementById('pausePlay');
+
+    riskEl.addEventListener('input', ()=> riskVal.textContent = `${riskEl.value}%`);
+    trailLenEl.addEventListener('input', ()=> trailVal.textContent = `${trailLenEl.value}`);
+
+    resetBtn.addEventListener('click', ()=>{
+      positions = agents.map(a => [
+        clamp01(a.home[0] + (Math.random()-0.5)*0.06),
+        clamp01(a.home[1] + (Math.random()-0.5)*0.06)
+      ]);
+      velocities = Array.from({length:N}, () => [0,0]);
+      // reset trails
+      for (let i=0;i<N;i++){
+        Plotly.restyle('chart', {x:[[positions[i][0]]], y:[[positions[i][1]]]}, [i]); // trails indices first
+      }
+      draw(true);
+    });
+
+    let paused=false;
+    pausePlayBtn.addEventListener('click', ()=>{
+      paused=!paused;
+      pausePlayBtn.textContent = paused ? "Play" : "Pause";
+    });
+
+    // ====== Plotly setup ======
+    const layout = {
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      xaxis: {
+        range:[0,1],
+        title:{text:"Axis 1: Individual Rationality → Collective Fairness", font:{color:"#cfe1ff"}},
+        gridcolor:"#1c2647", zeroline:false, color:"#e9eefc"
+      },
+      yaxis: {
+        range:[0,1],
+        title:{text:"Axis 2: Stability → Flexibility", font:{color:"#cfe1ff"}},
+        gridcolor:"#1c2647", zeroline:false, color:"#e9eefc"
+      },
+      margin:{t:10,l:60,r:20,b:60}
+    };
+
+    // Trails (one per agent)
+    const trailTraces = agents.map((a,i)=>({
+      x:[positions[i][0]], y:[positions[i][1]],
+      mode:"lines", type:"scatter", line:{color:a.color, width:2},
+      opacity:0.85, hoverinfo:"none", showlegend:false
+    }));
+
+    // Equilibrium markers (targets)
+    const eqTrace = {
+      x: agents.map(a=>a.home[0]),
+      y: agents.map(a=>a.home[1]),
+      mode: "markers",
+      type: "scatter",
+      marker: { size: 8, color: agents.map(a=>a.color), symbol:"x", opacity:0.65, line:{color:"#101425", width:1} },
+      hoverinfo: "none",
+      showlegend:false
+    };
+
+    // Dots and text (live positions)
+    const dotsTrace = {
+      x: positions.map(p=>p[0]),
+      y: positions.map(p=>p[1]),
+      mode: "markers",
+      type: "scatter",
+      marker: { size: 11, color: agents.map(a=>a.color), opacity: 0.95, line:{color:"#101425", width:1} },
+      hoverinfo: "none", showlegend:false
+    };
+    const textTrace = {
+      x: positions.map(p=>p[0]),
+      y: positions.map(p=>p[1]),
+      mode: "text",
+      type: "scatter",
+      text: agents.map(a=>a.label),
+      textfont: { size: 18, color: "#e9eefc" },
+      hoverinfo: "none", showlegend:false
+    };
+
+    Plotly.newPlot("chart", [...trailTraces, eqTrace, dotsTrace, textTrace], layout,
+                   {responsive:true, displayModeBar:false});
+
+    const trailIdxs = [...Array(N).keys()];      // 0..N-1
+    const eqIdx     = N;                          // equilibrium markers
+    const dotsIdx   = N+1;                        // dots
+    const textIdx   = N+2;                        // labels
+
+    // ====== Motion models ======
+    function randomPositions(pos, riskPct){
+      const r = Math.max(25, Math.min(75, riskPct));
+      const step = 0.004 + (r - 25) * (0.012 - 0.004) / 50; // 25–75% → 0.004–0.012
+      return pos.map(([x,y])=>{
+        const dx = (Math.random()-0.5)*2*step;
+        const dy = (Math.random()-0.5)*2*step;
+        return [clamp01(x+dx), clamp01(y+dy)];
+      });
+    }
+
+    function wisePositions(pos, vel, riskPct){
+      const r = Math.max(25, Math.min(75, riskPct));
+      const rn = (r - 25) / 50; // 0..1 (risk-averse → risk-seeking)
+
+      const curiosity  = 0.0015 + rn * 0.0035;   // tiny, never zero
+      const inertia    = 0.86 + rn * 0.08;       // experience/momentum
+      const centerPull = 0.020 * (1 - rn);       // advice stronger when risk is low
+      const sepRadius  = 0.12 - rn * 0.04;       // awareness radius
+      const sepStrength= 0.030 + rn * 0.015;     // firmness when too close
+      const maxSpeed   = 0.015;                  // sensible cap
+      const homeKBase  = 0.020 * (1 - rn);       // equilibrium bias (risk low → stronger)
+      const edgeK      = 0.040;                  // edge safety strength
+      const edgeM      = 0.02;                   // edge margin
+
+      const cx=0.5, cy=0.5;
+
+      for (let i=0;i<N;i++){
+        let [x,y] = pos[i];
+        let [vx,vy] = vel[i];
+
+        // curiosity / exploration
+        let nx = (Math.random()-0.5)*2*curiosity;
+        let ny = (Math.random()-0.5)*2*curiosity;
+
+        // center advice
+        let ax = (cx - x) * centerPull;
+        let ay = (cy - y) * centerPull;
+
+        // equilibrium (home) bias (optional)
+        let hx = 0, hy = 0;
+        if (eqBiasEl.checked){
+          const home = agents[i].home;
+          const homeK = homeKBase * (0.85 + 0.3*Math.random()); // small variance
+          hx = (home[0] - x) * homeK;
+          hy = (home[1] - y) * homeK;
+        }
+
+        // separation (social awareness) with gravitas
+        let sx=0, sy=0;
+        for (let j=0;j<N;j++){
+          if (i===j) continue;
+          const dx = x - pos[j][0];
+          const dy = y - pos[j][1];
+          const d2 = dx*dx + dy*dy;
+          if (d2>0){
+            const d = Math.sqrt(d2);
+            if (d < sepRadius){
+              const weight = agents[j].gravitas;
+              const f = sepStrength * (sepRadius - d) / sepRadius * weight;
+              sx += (dx/d) * f;
+              sy += (dy/d) * f;
+            }
+          }
+        }
+
+        // edge safety (optional)
+        let ex=0, ey=0;
+        if (edgeSafeEl.checked){
+          if (x < edgeM) ex += (edgeM - x) * edgeK;
+          if (x > 1-edgeM) ex -= (x - (1-edgeM)) * edgeK;
+          if (y < edgeM) ey += (edgeM - y) * edgeK;
+          if (y > 1-edgeM) ey -= (y - (1-edgeM)) * edgeK;
+        }
+
+        // combine
+        vx = vx*inertia + nx + ax + hx + sx + ex;
+        vy = vy*inertia + ny + ay + hy + sy + ey;
+
+        // cap speed
+        const sp = Math.hypot(vx,vy);
+        if (sp > maxSpeed){
+          vx = (vx/sp)*maxSpeed;
+          vy = (vy/sp)*maxSpeed;
+        }
+
+        x = clamp01(x + vx);
+        y = clamp01(y + vy);
+
+        pos[i] = [x,y];
+        vel[i] = [vx,vy];
+      }
+      return {pos, vel};
+    }
+
+    // ====== Animation & drawing ======
+    const intervalMs = 300;
+
+    function tick(){
+      if (paused) return;
+
+      const risk = Number(riskEl.value);
+      if (modeEl.value === "Random"){
+        positions = randomPositions(positions, risk);
+      } else {
+        const res = wisePositions(positions, velocities, risk);
+        positions = res.pos; velocities = res.vel;
+      }
+      draw(false);
+    }
+
+    function draw(forceRedrawTrails){
+      const xs = positions.map(p=>p[0]);
+      const ys = positions.map(p=>p[1]);
+
+      // Move equilibrium markers (static), dots and labels (live)
+      Plotly.restyle('chart', {x:[xs], y:[ys]}, [dotsIdx]);                // live dots
+      Plotly.restyle('chart', {x:[xs], y:[ys], text:[agents.map(a=>a.label)]}, [textIdx]); // labels
+
+      // Trails: append latest point
+      if (showTrailsEl.checked || forceRedrawTrails){
+        const xExt = positions.map(p=>[p[0]]);
+        const yExt = positions.map(p=>[p[1]]);
+        const maxPts = Number(trailLenEl.value);
+        Plotly.extendTraces('chart', {x:xExt, y:yExt}, trailIdxs, maxPts);
+      }
+    }
+
+    setInterval(tick, intervalMs);
+    window.addEventListener('resize', () => Plotly.Plots.resize('chart'));
+  </script>
+</body>
+</html>
