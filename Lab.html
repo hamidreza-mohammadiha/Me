@@ -32,14 +32,15 @@
       background:var(--panel); border:1px solid var(--grid); border-radius:16px;
       box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 var(--outline);
     }
-    .desc p{margin:0; color:var(--muted); font-size:14px}
+    .desc p{margin:0; color:var(--muted); font-size:14px; line-height:1.6}
+    .quote{font-style:italic; color:#cfe1ff}
 
-    /* -------- Split layout -------- */
+    /* -------- Split layout (equal heights, 33% / 67%) -------- */
     .mainGrid{
       display:grid;
-      grid-template-columns: 360px 1fr; /* left = settings, right = chart */
+      grid-template-columns: 33% 67%;
       gap:14px;
-      align-items:start;
+      align-items: stretch;       /* make both items equal height */
     }
     @media (max-width: 900px){
       .mainGrid{ grid-template-columns: 1fr; }
@@ -50,6 +51,10 @@
       border-radius:16px; padding:12px 14px;
       box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 var(--outline);
       display:flex; flex-wrap:wrap; gap:14px; align-items:center;
+      height:100%;                /* stretch to grid row height */
+      margin: 1%;
+      padding: 10px;
+      
     }
     .group{display:flex; align-items:center; gap:10px}
     .group label{font-size:14px; color:var(--muted)}
@@ -71,8 +76,10 @@
       background:linear-gradient(180deg, #0f1430 0%, #0b1020 100%);
       border:1px solid var(--grid); border-radius:16px;
       box-shadow: inset 0 0 0 1px var(--outline), 0 12px 40px rgba(0,0,0,.35);
-      padding:10px;
-      min-height: 54vh; /* nice presence on desktop */
+      padding:-20px;
+      height:100%;                /* stretch to grid row height */
+      display:flex;               /* allow inner chart to size nicely */
+      margin: 1%;
     }
     #chart{ width:100%; height:auto; aspect-ratio: 16 / 10; }
 
@@ -98,11 +105,12 @@
 <body>
   <header>
     <h1>Strategies on the Decision Compass</h1>
-    <p>Split layout: <strong>Settings</strong> (left) and <strong>Chart</strong> (right) on desktop; stacked on mobile. Cards live below.</p>
+    <!-- <p>Desktop: split layout (left settings • right chart). Mobile: stacked. Cards live below.</p> -->
   </header>
 
   <section class="desc">
-    <p>Axes: X = Individual Rationality → Collective Fairness, Y = Stability → Flexibility. Use **Random/Wise** motion, adjust **Risk-Taking Index (25–75%)**, toggle **Trails**, **Equilibrium bias**, and **Edge safety**.</p>
+    <p style="text-align: justify;"><strong>How this simulation works:</strong><br> each emoji is a tiny “agent” moving on a map. Every tick (about 3 times per second) we update its position. In <em>Random</em> mode it wiggles with small random steps controlled by the Risk slider. In <em>Wise</em> mode it follows gentle rules: it keeps some momentum (experience), drifts a little toward the center (good advice), avoids bumping others (awareness), leans toward its favorite home spot (identity), stays away from the edges (safety), and adds a tiny curiosity nudge so it never gets stuck. The colored trail shows where it just came from.</p>
+    <p class="quote">“One thing about us wise guys, the hustle never ends.” — Tony Soprano</p>
   </section>
 
   <section class="mainGrid" aria-label="Main split layout">
@@ -153,15 +161,18 @@
       </div>
     </div>
 
+
+
     <!-- Right: Chart -->
     <div class="chartPane">
       <div id="chart" role="img" aria-label="Animated strategies on 2D compass"></div>
     </div>
   </section>
+  <br>
 
   <!-- Strategy Cards Below -->
   <section class="grid" aria-label="Strategy Definitions">
-    <article class="card"><h3>👑 Empire <span class="badge">Achiever • Rational • Stable</span></h3>
+    <article class="card"><h3 style="text-align: justify;">👑 Empire <span class="badge">Achiever • Rational • Stable</span></h3>
       <p><strong>Build structured dominance</strong> via planning/hierarchy/standards.</p>
       <ul>
         <li><em>Ops:</em> ERP rollout, SOP unification.</li>
@@ -170,7 +181,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3>🛡️ Fortress <span class="badge">Socializer • Fair • Stable</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🛡️ Fortress <span class="badge">Socializer • Fair • Stable</span></h3>
       <p><strong>Protect core assets</strong>; reliability, compliance, safety nets.</p>
       <ul>
         <li><em>Ops:</em> Redundancy, QA hardening, incident response.</li>
@@ -179,7 +190,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3>🌲 Guerrilla <span class="badge">Socializer/Explorer • Fair • Flexible</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🌲 Guerrilla <span class="badge">Socializer/Explorer • Fair • Flexible</span></h3>
       <p><strong>Small, adaptive units</strong>; exploit asymmetry; iterate fast.</p>
       <ul>
         <li><em>Ops:</em> Skunkworks pilots, A/B tests.</li>
@@ -188,7 +199,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3>⚡ Blitzkrieg <span class="badge">Killer • Rational • Flexible</span></h3>
+    <article class="card"><h3 style="text-align: justify;">⚡ Blitzkrieg <span class="badge">Killer • Rational • Flexible</span></h3>
       <p><strong>Time-boxed offensives</strong> to seize advantage fast.</p>
       <ul>
         <li><em>Ops:</em> War-room sprints, launch surges.</li>
@@ -197,7 +208,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3>🐎 Cavalry <span class="badge">Achiever/Socializer • Coordinated • Agile</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🐎 Cavalry <span class="badge">Achiever/Socializer • Coordinated • Agile</span></h3>
       <p><strong>Fast maneuver support</strong> that links and rescues units.</p>
       <ul>
         <li><em>Ops:</em> Rapid response squads, cross-functional strikes.</li>
@@ -206,7 +217,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3>🗡️ Gladiator <span class="badge">Achiever/Killer • Individual mastery</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🗡️ Gladiator <span class="badge">Achiever/Killer • Individual mastery</span></h3>
       <p><strong>Head-to-head excellence</strong>; mastery of tools & timing.</p>
       <ul>
         <li><em>Ops:</em> Top-gun troubleshooters, on-call champions.</li>
@@ -215,7 +226,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3>🐙 Shapeshifter <span class="badge">Explorer • Adaptive • Very flexible</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🐙 Shapeshifter <span class="badge">Explorer • Adaptive • Very flexible</span></h3>
       <p><strong>Form-changing to fit context</strong>; polymath reframing.</p>
       <ul>
         <li><em>Ops:</em> Role rotation, modular architecture.</li>
@@ -224,7 +235,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3>🃏 Trickster <span class="badge">Killer/Explorer • Creative disruption</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🃏 Trickster <span class="badge">Killer/Explorer • Creative disruption</span></h3>
       <p><strong>Subvert expectations</strong>; misdirection; playful norms.</p>
       <ul>
         <li><em>Ops:</em> Chaos testing, red-team drills.</li>
@@ -235,24 +246,24 @@
   </section>
 
   <footer>
-    Axes: X = Individual Rationality → Collective Fairness, Y = Stability → Flexibility.  
-    Desktop: split left/right • Mobile: stacked with cards below.
+    A Play by: <a href="https://hamidreza-mohammadiha.github.io/Me/">Hamidreza</a>
+    <br><br>
   </footer>
 
   <script>
     // ====== Helpers ======
     const clamp01 = v => Math.max(0, Math.min(1, v));
 
-    // ====== Your emoji-only agents (colors & homes kept sensible) ======
+    // ====== Emoji-only agents with equilibrium "home" and colors ======
     const agents = [
-      { label:"👑",  color:"#A6CEE3", home:[0.75,0.25], gravitas:1.30 }, // Empire (Achiever-leaning)
-      { label:"🛡️", color:"#1F78B4", home:[0.25,0.20], gravitas:1.40 }, // Fortress (collective, stable)
-      { label:"🌲",  color:"#B2DF8A", home:[0.30,0.70], gravitas:1.05 }, // Guerrilla (collective, flexible)
-      { label:"⚡",  color:"#FB9A99", home:[0.88,0.80], gravitas:1.10 }, // Blitzkrieg (Killer-leaning)
-      { label:"🐎",  color:"#CAB2D6", home:[0.60,0.70], gravitas:1.10 }, // Cavalry (coordinated, agile)
-      { label:"🗡️", color:"#FDBF6F", home:[0.80,0.45], gravitas:1.20 }, // Gladiator (individual mastery)
-      { label:"🐙",  color:"#E31A1C", home:[0.50,0.82], gravitas:1.00 }, // Shapeshifter (Explorer-leaning)
-      { label:"🃏",  color:"#33A02C", home:[0.70,0.78], gravitas:1.05 }, // Trickster (creative disruption)
+      { label:"👑",  color:"#A6CEE3", home:[0.75,0.25], gravitas:1.30 }, // Empire
+      { label:"🛡️", color:"#1F78B4", home:[0.25,0.20], gravitas:1.40 }, // Fortress
+      { label:"🌲",  color:"#B2DF8A", home:[0.30,0.70], gravitas:1.05 }, // Guerrilla
+      { label:"⚡",  color:"#FB9A99", home:[0.88,0.80], gravitas:1.10 }, // Blitzkrieg
+      { label:"🐎",  color:"#CAB2D6", home:[0.60,0.70], gravitas:1.10 }, // Cavalry
+      { label:"🗡️", color:"#FDBF6F", home:[0.80,0.45], gravitas:1.20 }, // Gladiator
+      { label:"🐙",  color:"#E31A1C", home:[0.50,0.82], gravitas:1.00 }, // Shapeshifter
+      { label:"🃏",  color:"#33A02C", home:[0.70,0.78], gravitas:1.05 }, // Trickster
     ];
     const N = agents.length;
 
@@ -355,7 +366,6 @@
                    {responsive:true, displayModeBar:false});
 
     const trailIdxs = [...Array(N).keys()]; // 0..N-1
-    const eqIdx     = N;
     const dotsIdx   = N+1;
     const textIdx   = N+2;
 
@@ -398,7 +408,7 @@
         let ax = (cx - x) * centerPull;
         let ay = (cy - y) * centerPull;
 
-        // home bias (equilibrium)
+        // equilibrium (home) bias
         let hx = 0, hy = 0;
         if (eqBiasEl.checked){
           const home = agents[i].home;
@@ -454,11 +464,10 @@
     }
 
     // ====== Animation ======
-    const intervalMs = 88;
+    const intervalMs = 100;
 
     function tick(){
       if (paused) return;
-
       const risk = Number(riskEl.value);
       if (modeEl.value === "Random"){
         positions = randomPositions(positions, risk);
@@ -473,8 +482,8 @@
       const xs = positions.map(p=>p[0]);
       const ys = positions.map(p=>p[1]);
 
-      Plotly.restyle('chart', {x:[xs], y:[ys]}, [dotsIdx]); // dots
-      Plotly.restyle('chart', {x:[xs], y:[ys], text:[agents.map(a=>a.label)]}, [textIdx]); // labels
+      Plotly.restyle('chart', {x:[xs], y:[ys]}, [N+1]); // dots
+      Plotly.restyle('chart', {x:[xs], y:[ys], text:[agents.map(a=>a.label)]}, [N+2]); // labels
 
       if (showTrailsEl.checked || forceRedrawTrails){
         const xExt = positions.map(p=>[p[0]]);
@@ -484,8 +493,35 @@
       }
     }
 
-    Plotly.newPlot("chart", [...trailTraces, eqTrace, dotsTrace, textTrace], layout,
-                   {responsive:true, displayModeBar:false});
+    Plotly.newPlot("chart",
+      [
+        ...trailTraces,   // 0..N-1
+        { /* equilibrium markers */ 
+          x: agents.map(a=>a.home[0]),
+          y: agents.map(a=>a.home[1]),
+          mode: "markers", type: "scatter",
+          marker: { size: 8, color: agents.map(a=>a.color), symbol:"x", opacity:0.65, line:{color:"#101425", width:1} },
+          hoverinfo: "none", showlegend:false
+        },
+        { /* dots */
+          x: positions.map(p=>p[0]),
+          y: positions.map(p=>p[1]),
+          mode: "markers", type: "scatter",
+          marker: { size: 11, color: agents.map(a=>a.color), opacity: 0.95, line:{color:"#101425", width:1} },
+          hoverinfo: "none", showlegend:false
+        },
+        { /* emoji labels */
+          x: positions.map(p=>p[0]),
+          y: positions.map(p=>p[1]),
+          mode: "text", type: "scatter",
+          text: agents.map(a=>a.label),
+          textfont: { size: 22, color: "#e9eefc" },
+          hoverinfo: "none", showlegend:false
+        }
+      ],
+      layout,
+      {responsive:true, displayModeBar:false}
+    );
 
     setInterval(tick, intervalMs);
     window.addEventListener('resize', () => Plotly.Plots.resize('chart'));
