@@ -14,7 +14,7 @@
     }
     *{box-sizing:border-box}
     body{
-      margin:0; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin:0; font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
       color:var(--ink); background: radial-gradient(1200px 700px at 10% -10%, #1b2140, #0f1220 60%);
       min-height:100vh; display:flex; flex-direction:column;
     }
@@ -28,22 +28,25 @@
     main{ width:100%; max-width:1100px; margin:22px auto; padding:0 16px; flex:1; }
     .panel{
       background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.00));
-      border:1px solid #232a4b; border-radius:14px; padding:18px; box-shadow:10px 10px 28px rgba(0,0,0,.25); height: 718px;
+      border:1px solid #232a4b; border-radius:14px; padding:18px; box-shadow:10px 10px 28px rgba(0,0,0,.25);
     }
+    .panel.chart { height: 720px; display:flex; flex-direction:column; }
     .controls{
       display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:12px 0 8px;
     }
-    .controls select, .controls button{
+    .controls select, .controls button, .controls input{
       padding:10px 12px; border-radius:10px; border:1px solid #2a335c; background:#121731; color:var(--ink);
       outline:none; transition:transform .06s ease, border .2s;
     }
-    .controls select:focus, .controls button:focus{ border-color:#3b4b8f }
+    .controls input[type="number"]{ width:90px; }
+    .controls select:focus, .controls button:focus, .controls input:focus{ border-color:#3b4b8f }
     .controls button:hover{ transform:translateY(-1px); cursor:pointer; }
-    .controls button.play{ border-color: #1f8cff; }
-    .controls button.pause{ border-color: #ffbf69; }
-    .controls button.reset{ border-color: #5eead4; }
+    .controls button.play{ border-color:#1f8cff; }
+    .controls button.pause{ border-color:#ffbf69; }
+    .controls button.reset{ border-color:#5eead4; }
+    .controls button.reroll{ border-color:#c084fc; }
     .kbd{
-      font: 12px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font:12px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
       background:#0e1326; border:1px solid #2a335c; padding:2px 6px; border-radius:6px; color:#c3cdf7;
     }
     .grid{ display:grid; grid-template-columns: 1.3fr .7fr; gap:18px; }
@@ -52,7 +55,7 @@
     .desc p{ margin:0 0 12px; color:var(--muted) }
     ul.scenarios{ margin:8px 0 0 1.2rem; padding:0; color:var(--muted) }
     ul.scenarios li{ margin:6px 0 }
-    canvas{ background:#0c1122; border:1px solid #232a4b; border-radius:12px; }
+    canvas{ background:#0c1122; border:1px solid #232a4b; border-radius:12px; flex:1; }
     .legend-dot{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; transform:translateY(1px); }
     footer{ color:var(--muted); font-size:12px; }
     footer a{ color:#b7c5ff; text-decoration:none }
@@ -70,8 +73,8 @@
 
   <main>
     <div class="grid">
-      <div class="panel">
-        <canvas id="chart" height="10px"></canvas>
+      <div class="panel chart">
+        <canvas id="chart"></canvas>
         <div class="controls">
           <label for="scenario"><strong>Scenario:</strong></label>
           <select id="scenario">
@@ -80,87 +83,87 @@
             <option value="pessimistic">Pessimistic</option>
           </select>
 
+          <label for="paths"><strong>Realizations:</strong></label>
+          <input id="paths" type="number" min="1" max="21" step="1" value="2" title="Number of random paths" />
+
+          <button class="reroll" id="btnReroll">🎲 Reroll</button>
           <button class="play" id="btnPlay">▶ Play</button>
           <button class="pause" id="btnPause">⏸ Pause</button>
           <button class="reset" id="btnReset">⟲ Reset</button>
 
           <span style="margin-left:auto; color:var(--muted);">Frames: <span id="frameCount">0</span>/<span id="frameTotal">0</span></span>
         </div>
-        
       </div>
 
       <div class="panel desc">
         <h2>About this page</h2>
         <p>
-          This lightweight simulator renders a single price path per scenario using
-          a geometric-Brownian-like process (drift + volatility) from
-          <strong>Sep 22, 2025</strong> through <strong>Jan 1, 2026</strong>.
-          It animates one day per frame over ~60 seconds.
+          This simulator renders an <em>ensemble</em> of price paths per scenario using a geometric-Brownian-like process
+          (drift + volatility) from <strong>Sep 22, 2025</strong> through <strong>Jan 1, 2026</strong>.
+          It animates one day per frame (~30 seconds total). The shaded area shows the <strong>10–90% band</strong>.
         </p>
         <h2>Scenario assumptions</h2>
         <ul class="scenarios">
-          <li><span class="legend-dot" style="background:var(--good)"></span><strong>Optimistic</strong> — net drift ≈ <em>+35%</em> across the window, relatively low daily volatility.</li>
+          <li><span class="legend-dot" style="background:var(--good)"></span><strong>Optimistic</strong> — net drift ≈ <em>+35%</em>, relatively low daily volatility.</li>
           <li><span class="legend-dot" style="background:var(--accent)"></span><strong>Realistic</strong> — net drift ≈ <em>+10%</em>, moderate volatility.</li>
           <li><span class="legend-dot" style="background:var(--bad)"></span><strong>Pessimistic</strong> — net drift ≈ <em>−20%</em>, higher volatility.</li>
         </ul>
         <p style="margin-top:10px">
-          <em>Context:</em> BTC recently traded near <strong>$112K</strong> with the year’s biggest long-side liquidations (> $1B) and macro catalysts
-          (PCE, Powell) in focus; traders debated $100K retests vs rebounds — see Cointelegraph’s wrap for color.
+          <em>Context:</em> BTC recently traded near <strong>$112K</strong> with the year’s largest long-side liquidations and macro catalysts in focus; traders debated $100K retests vs rebounds.
         </p>
         <p style="font-size:12px; color:var(--muted)">
-          This is an illustrative simulation, not a forecast. One randomized path per scenario is shown for clarity.
+          Illustrative only, not financial advice. Paths are randomized per reroll.
         </p>
       </div>
     </div>
   </main>
 
   <footer>
-    Cross-checked with Cointelegraph’s “Biggest long liquidation of 2025” weekly brief (market dipped to ~$112K; >$1B liquidations; macro + politics in focus).
+    Cross-checked with Cointelegraph’s weekly wrap on the big liquidation and macro focus.
     <a href="https://cointelegraph.com/news/biggest-liquidation-of-2025-5-things-bitcoin-this-week" target="_blank" rel="noopener">Read source</a>.
   </footer>
 
   <script>
-    // ---- Parameters ----
+    // ------- Parameters -------
     const START_PRICE = 112550; // user-provided
     const START_DATE = new Date('2025-09-22T00:00:00Z');
     const END_DATE   = new Date('2026-01-01T00:00:00Z');
 
-    // Duration ~60s total; frames = number of days
     const DAY_MS = 24*60*60*1000;
     const totalDays = Math.round((END_DATE - START_DATE) / DAY_MS) + 1;
-    const FRAME_INTERVAL_MS = Math.round(60000 / totalDays); // ~60s total
+    const FRAME_INTERVAL_MS = Math.max(16, Math.round(30000 / totalDays)); // ~30s total
 
-    // Simple seeded RNG for reproducibility per scenario
-    function mulberry32(a){ return function(){ var t = a += 0x6D2B79F5; t = Math.imul(t ^ t>>>15, t | 1); t ^= t + Math.imul(t ^ t>>>7, t | 61); return ((t ^ t>>>14) >>> 0) / 4294967296; } }
-    const randNum = Math.floor(Math.random())
+    // Seeded RNG
+    function mulberry32(a){ return function(){ let t = a += 0x6D2B79F5; t = Math.imul(t ^ t>>>15, t | 1); t ^= t + Math.imul(t ^ t>>>7, t | 61); return ((t ^ t>>>14) >>> 0) / 4294967296; } }
+    function normal01(rand){ // Box–Muller
+      const u = Math.max(rand(), 1e-12), v = Math.max(rand(), 1e-12);
+      return Math.sqrt(-2*Math.log(u)) * Math.cos(2*Math.PI*v);
+    }
+
     const scenarios = {
-      optimistic: { label: "Optimistic", color: "#34d399", seed: 1337, driftTotal: 0.35, dailyVol: 0.015 },
-      realistic:  { label: "Realistic",  color: "#7dd3fc", seed: randNum, driftTotal: 0.10, dailyVol: 0.020 },
-      pessimistic:{ label: "Pessimistic",color: "#f87171", seed: 2025, driftTotal:-0.20, dailyVol: 0.025 }
+      optimistic: { label: "Optimistic", baseColor: "#34d399", bandColor: "rgba(52,211,153,0.18)", seed: 1337, driftTotal: 0.35, dailyVol: 0.015 },
+      realistic:  { label: "Realistic",  baseColor: "#7dd3fc", bandColor: "rgba(125,211,252,0.18)", seed: 4242, driftTotal: 0.10, dailyVol: 0.020 },
+      pessimistic:{ label: "Pessimistic",baseColor: "#f87171", bandColor: "rgba(248,113,113,0.18)", seed: 2025, driftTotal:-0.20, dailyVol: 0.025 }
     };
 
-    // Generate one GBM-like path for the full window
-    function generatePath(scn){
-      const { seed, driftTotal, dailyVol } = scn;
+    // ------- Path generation -------
+    // One GBM-like path (returns arrays of Date & price)
+    function generatePath(seed, driftTotal, dailyVol){
       const rand = mulberry32(seed);
       const days = totalDays;
-      const dt = 1/365; // year fraction per day
-      // Convert total drift across the window to a daily drift
-      const windowYears = days/365;
-      const mu_window = Math.log(1 + driftTotal); // log-return drift over window
-      const mu_daily = mu_window / days; // per-day log drift approximation
+      const dt = 1/365;
+      const mu_window = Math.log(1 + driftTotal);
+      const mu_daily = mu_window / days;
 
       let t = new Date(START_DATE);
       let price = START_PRICE;
-
-      const labels = [];
-      const data = [];
+      const labels = new Array(days);
+      const data = new Array(days);
       for(let i=0;i<days;i++){
-        labels.push(new Date(t));
-        data.push({x:new Date(t), y:price});
-        // GBM step: S_{t+1} = S_t * exp( (mu - 0.5*sigma^2)*dt + sigma*sqrt(dt)*N(0,1) )
-        const z = Math.sqrt(-2*Math.log(Math.max(rand(),1e-12))) * Math.cos(2*Math.PI*rand()); // standard normal (Box–Muller)
-        const sigma = dailyVol * Math.sqrt(365); // convert dailyVol (%) to annualized-ish scaler; here we keep it simple
+        labels[i] = new Date(t);
+        data[i] = price;
+        const z = normal01(rand);
+        const sigma = dailyVol * Math.sqrt(365);
         const drift = (mu_daily - 0.5*(sigma**2)*dt);
         const shock = sigma*Math.sqrt(dt)*z;
         price = price * Math.exp(drift + shock);
@@ -169,25 +172,82 @@
       return { labels, data };
     }
 
-    // Chart setup
+    // Generate ensemble of N paths + percentiles (10/90)
+    function generateEnsemble(scn, nPaths, seedBump=0){
+      const { seed, driftTotal, dailyVol } = scn;
+      const paths = [];
+      let labels = null;
+      for(let i=0;i<nPaths;i++){
+        const p = generatePath(seed + seedBump + i*997, driftTotal, dailyVol);
+        if(!labels) labels = p.labels;
+        paths.push(p.data);
+      }
+      // Compute percentiles per day
+      const p10 = [], p90 = [];
+      for(let d=0; d<labels.length; d++){
+        const vals = paths.map(a => a[d]).sort((a,b)=>a-b);
+        const q = (arr, q) => {
+          const pos = (arr.length-1)*q;
+          const base = Math.floor(pos), rest = pos - base;
+          return arr[base] + (arr[base+1] - arr[base]) * (isNaN(rest)?0:rest);
+        };
+        p10.push(q(vals, 0.10));
+        p90.push(q(vals, 0.90));
+      }
+      return { labels, paths, p10, p90 };
+    }
+
+    // ------- Chart setup -------
     const ctx = document.getElementById('chart').getContext('2d');
-    const initialScenario = 'realistic';
-    let activeScenario = initialScenario;
-    let fullSeries = generatePath(scenarios[activeScenario]);
+    let activeKey = 'realistic';
+    let nRealizations = 2;
+    let seedBump = 0; // changes on reroll for fresh randomness
+
+    let ensemble = generateEnsemble(scenarios[activeKey], nRealizations, seedBump);
+
+    // Build datasets: [bandLow, bandHigh(fill to prev), path1..pathN]
+    function buildDatasets(scn, ens){
+      const base = scn.baseColor, bandBg = scn.bandColor;
+
+      const ds = [];
+      // Band low first (no fill)
+      ds.push({
+        label: "10th pct",
+        data: [{x: ens.labels[0], y: ens.p10[0]}],
+        borderColor: 'rgba(0,0,0,0)',
+        backgroundColor: 'transparent',
+        pointRadius: 0, borderWidth: 0, tension: 0.2
+      });
+      // Band high second, fill to previous
+      ds.push({
+        label: "90th pct",
+        data: [{x: ens.labels[0], y: ens.p90[0]}],
+        borderColor: 'rgba(0,0,0,0)',
+        backgroundColor: bandBg,
+        fill: '-1',
+        pointRadius: 0, borderWidth: 0, tension: 0.2
+      });
+      // Individual paths
+      const alphaLine = 0.5;
+      for(let i=0;i<ens.paths.length;i++){
+        ds.push({
+          label: `${scn.label} path #${i+1}`,
+          data: [{x: ens.labels[0], y: ens.paths[i][0]}],
+          borderColor: base,
+          backgroundColor: "transparent",
+          borderWidth: 1.6,
+          pointRadius: 0,
+          tension: 0.22,
+          hidden: false,
+          parsing: false
+        });
+      }
+      return ds;
+    }
 
     const chart = new Chart(ctx, {
       type: 'line',
-      data: {
-        datasets: [{
-          label: scenarios[activeScenario].label,
-          data: [ fullSeries.data[0] ],
-          borderColor: scenarios[activeScenario].color,
-          backgroundColor: "transparent",
-          borderWidth: 2,
-          pointRadius: 0,
-          tension: 0.22
-        }]
-      },
+      data: { datasets: buildDatasets(scenarios[activeKey], ensemble) },
       options: {
         responsive: true,
         maintainAspectRatio: false,
@@ -200,59 +260,72 @@
         plugins: {
           legend: { labels: { color: '#dbeafe' } },
           tooltip: {
-            mode: 'index', intersect:false,
+            mode: 'nearest', intersect:false,
             callbacks: { label: ctx => ` ${ctx.dataset.label}: $${Math.round(ctx.parsed.y).toLocaleString()}` }
           }
         }
       }
     });
 
-    // Animation control
+    // ------- Animation control -------
     let timer = null;
-    let frame = 1;
+    let frame = 1; // we already plotted index 0
     const frameTotalEl = document.getElementById('frameTotal');
     const frameCountEl = document.getElementById('frameCount');
-    frameTotalEl.textContent = (fullSeries.data.length - 1).toString();
+    frameTotalEl.textContent = (ensemble.labels.length - 1).toString();
+
+    function pushFrameToDatasets(idx){
+      // ds[0] = p10; ds[1] = p90; rest = paths
+      chart.data.datasets[0].data.push({x: ensemble.labels[idx], y: ensemble.p10[idx]});
+      chart.data.datasets[1].data.push({x: ensemble.labels[idx], y: ensemble.p90[idx]});
+      for(let i=0;i<ensemble.paths.length;i++){
+        chart.data.datasets[2+i].data.push({x: ensemble.labels[idx], y: ensemble.paths[i][idx]});
+      }
+    }
 
     function step(){
-      if(frame >= fullSeries.data.length){
-        pause(); return;
-      }
-      chart.data.datasets[0].data.push(fullSeries.data[frame]);
+      if(frame >= ensemble.labels.length){ pause(); return; }
+      pushFrameToDatasets(frame);
       chart.update();
       frameCountEl.textContent = frame.toString();
       frame++;
     }
-    function play(){
-      if(timer) return;
-      timer = setInterval(step, FRAME_INTERVAL_MS);
-    }
-    function pause(){
-      if(timer){ clearInterval(timer); timer = null; }
-    }
+    function play(){ if(!timer) timer = setInterval(step, FRAME_INTERVAL_MS); }
+    function pause(){ if(timer){ clearInterval(timer); timer = null; } }
     function reset(){
-      pause();
-      frame = 1;
-      chart.data.datasets[0].data = [ fullSeries.data[0] ];
+      pause(); frame = 1;
+      // Rebuild datasets at first point only
+      chart.data.datasets = buildDatasets(scenarios[activeKey], ensemble);
       chart.update();
+      frameTotalEl.textContent = (ensemble.labels.length - 1).toString();
       frameCountEl.textContent = '0';
     }
+
     function setScenario(key){
-      activeScenario = key;
-      fullSeries = generatePath(scenarios[activeScenario]);
-      chart.data.datasets[0].label = scenarios[activeScenario].label;
-      chart.data.datasets[0].borderColor = scenarios[activeScenario].color;
-      frameTotalEl.textContent = (fullSeries.data.length - 1).toString();
+      activeKey = key;
+      ensemble = generateEnsemble(scenarios[activeKey], nRealizations, seedBump);
+      reset();
+    }
+    function setPaths(n){
+      nRealizations = Math.max(1, Math.min(10, parseInt(n||'2', 10)));
+      ensemble = generateEnsemble(scenarios[activeKey], nRealizations, seedBump);
+      reset();
+    }
+    function reroll(){
+      seedBump = Math.floor(Math.random() * 1e9);
+      ensemble = generateEnsemble(scenarios[activeKey], nRealizations, seedBump);
       reset();
     }
 
-    // Wire up UI
+    // ------- Wire up UI -------
     document.getElementById('btnPlay').addEventListener('click', play);
     document.getElementById('btnPause').addEventListener('click', pause);
     document.getElementById('btnReset').addEventListener('click', reset);
+    document.getElementById('btnReroll').addEventListener('click', reroll);
     document.getElementById('scenario').addEventListener('change', (e)=> setScenario(e.target.value));
+    document.getElementById('paths').addEventListener('change', (e)=> setPaths(e.target.value));
 
-    // Start paused
+    // Start paused with initial first points set
     reset();
   </script>
 </body>
