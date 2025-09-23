@@ -16,7 +16,7 @@
       margin:0; background:var(--bg); color:var(--ink);
       font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto,
                    "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", sans-serif;
-      display:grid; grid-template-rows:auto auto auto auto; gap:14px; padding:14px;
+      display:grid; grid-template-rows:auto auto auto auto; gap:14px; padding-left: 15%; padding-right: 15%; padding-top: 2%;
     }
 
     header{
@@ -110,7 +110,7 @@
 
   <section class="desc">
     <p style="text-align: justify;"><strong>How this simulation works:</strong><br> each emoji is a tiny “agent” moving on a map. Every tick (about 3 times per second) we update its position. In <em>Random</em> mode it wiggles with small random steps controlled by the Risk slider. In <em>Wise</em> mode it follows gentle rules: it keeps some momentum (experience), drifts a little toward the center (good advice), avoids bumping others (awareness), leans toward its favorite home spot (identity), stays away from the edges (safety), and adds a tiny curiosity nudge so it never gets stuck. The colored trail shows where it just came from.</p>
-    <p class="quote">“One thing about us wise guys, the hustle never ends.” — Tony Soprano</p>
+    <p class="quote">This simulation is an Agent-Based Model (ABM) where each agent (represented by an emoji) operates within a bounded 2D environment. The model progresses in discrete time steps (approximately 3 per second), during which each agent's position is updated based on its behavioral rules.</p>
   </section>
 
   <section class="mainGrid" aria-label="Main split layout">
@@ -157,7 +157,7 @@
       </div>
 
       <div class="group">
-        <span class="hint">Wise = momentum + center + separation + equilibrium + edge + curiosity.</span>
+        <span class="hint">“One thing about us wise guys, the hustle never ends.” — Tony Soprano</span>
       </div>
     </div>
 
@@ -172,7 +172,7 @@
 
   <!-- Strategy Cards Below -->
   <section class="grid" aria-label="Strategy Definitions">
-    <article class="card"><h3 style="text-align: justify;">👑 Empire <span class="badge">Achiever • Rational • Stable</span></h3>
+    <article class="card"><h3 style="text-align: justify;">👑 Empire  <br>  <span class="badge">Achiever • Rational • Stable</span></h3>
       <p><strong>Build structured dominance</strong> via planning/hierarchy/standards.</p>
       <ul>
         <li><em>Ops:</em> ERP rollout, SOP unification.</li>
@@ -181,7 +181,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3 style="text-align: justify;">🛡️ Fortress <span class="badge">Socializer • Fair • Stable</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🛡️ Fortress <br><span class="badge">Socializer • Fair • Stable</span></h3>
       <p><strong>Protect core assets</strong>; reliability, compliance, safety nets.</p>
       <ul>
         <li><em>Ops:</em> Redundancy, QA hardening, incident response.</li>
@@ -190,7 +190,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3 style="text-align: justify;">🌲 Guerrilla <span class="badge">Socializer/Explorer • Fair • Flexible</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🦍 Guerrilla <br><span class="badge">Socializer/Explorer • Fair • Flexible</span></h3>
       <p><strong>Small, adaptive units</strong>; exploit asymmetry; iterate fast.</p>
       <ul>
         <li><em>Ops:</em> Skunkworks pilots, A/B tests.</li>
@@ -199,7 +199,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3 style="text-align: justify;">⚡ Blitzkrieg <span class="badge">Killer • Rational • Flexible</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🏍️ Blitzkrieg <br><span class="badge">Killer • Rational • Flexible</span></h3>
       <p><strong>Time-boxed offensives</strong> to seize advantage fast.</p>
       <ul>
         <li><em>Ops:</em> War-room sprints, launch surges.</li>
@@ -208,7 +208,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3 style="text-align: justify;">🐎 Cavalry <span class="badge">Achiever/Socializer • Coordinated • Agile</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🐎 Cavalry <br><span class="badge">Achiever/Socializer • Coordinated • Agile</span></h3>
       <p><strong>Fast maneuver support</strong> that links and rescues units.</p>
       <ul>
         <li><em>Ops:</em> Rapid response squads, cross-functional strikes.</li>
@@ -217,7 +217,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3 style="text-align: justify;">🗡️ Gladiator <span class="badge">Achiever/Killer • Individual mastery</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🗡️ Gladiator <br><span class="badge">Achiever/Killer • Individual mastery</span></h3>
       <p><strong>Head-to-head excellence</strong>; mastery of tools & timing.</p>
       <ul>
         <li><em>Ops:</em> Top-gun troubleshooters, on-call champions.</li>
@@ -226,7 +226,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3 style="text-align: justify;">🐙 Shapeshifter <span class="badge">Explorer • Adaptive • Very flexible</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🐙 Shapeshifter <br><span class="badge">Explorer • Adaptive • Very flexible</span></h3>
       <p><strong>Form-changing to fit context</strong>; polymath reframing.</p>
       <ul>
         <li><em>Ops:</em> Role rotation, modular architecture.</li>
@@ -235,7 +235,7 @@
       </ul>
     </article>
 
-    <article class="card"><h3 style="text-align: justify;">🃏 Trickster <span class="badge">Killer/Explorer • Creative disruption</span></h3>
+    <article class="card"><h3 style="text-align: justify;">🃏 Trickster <br><span class="badge">Killer/Explorer • Creative disruption</span></h3>
       <p><strong>Subvert expectations</strong>; misdirection; playful norms.</p>
       <ul>
         <li><em>Ops:</em> Chaos testing, red-team drills.</li>
@@ -258,8 +258,8 @@
     const agents = [
       { label:"👑",  color:"#A6CEE3", home:[0.75,0.25], gravitas:1.30 }, // Empire
       { label:"🛡️", color:"#1F78B4", home:[0.25,0.20], gravitas:1.40 }, // Fortress
-      { label:"🌲",  color:"#B2DF8A", home:[0.30,0.70], gravitas:1.05 }, // Guerrilla
-      { label:"⚡",  color:"#FB9A99", home:[0.88,0.80], gravitas:1.10 }, // Blitzkrieg
+      { label:"🦍",  color:"#B2DF8A", home:[0.30,0.70], gravitas:1.05 }, // Guerrilla
+      { label:"🏍️",  color:"#FB9A99", home:[0.88,0.80], gravitas:1.10 }, // Blitzkrieg
       { label:"🐎",  color:"#CAB2D6", home:[0.60,0.70], gravitas:1.10 }, // Cavalry
       { label:"🗡️", color:"#FDBF6F", home:[0.80,0.45], gravitas:1.20 }, // Gladiator
       { label:"🐙",  color:"#E31A1C", home:[0.50,0.82], gravitas:1.00 }, // Shapeshifter
@@ -329,7 +329,7 @@
     const trailTraces = agents.map((a,i)=>({
       x:[positions[i][0]], y:[positions[i][1]],
       mode:"lines", type:"scatter",
-      line:{color:a.color, width:2}, opacity:0.85,
+      line:{color:a.color, width:1.2}, opacity:0.75,
       hoverinfo:"none", showlegend:false
     }));
 
