@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول تاریخ ایران (رویدادهای سیاسی، اقتصادی، بین‌المللی و اعتراضات) تا ۲۰۲۵</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Iranian Sans', 'Segoe UI', Tahoma, Arial, sans-serif;
+        }
+        body {
+            background: #f4f6f9;
+            margin: 20px;
+            color: #1e2b37;
+        }
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            padding: 25px;
+        }
+        h2 {
+            text-align: center;
+            color: #b32d2d;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 1.8rem;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+            background: #f0f2f5;
+            padding: 15px;
+            border-radius: 12px;
+        }
+        .toolbar-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .toolbar-item label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .toolbar-item input, .toolbar-item select {
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            min-width: 150px;
+            background: #fff;
+        }
+        .btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            background: #1e2b37;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #27ae60;
+        }
+        .btn-success:hover {
+            background: #219150;
+        }
+        .btn-warning {
+            background: #e67e22;
+        }
+        .btn-warning:hover {
+            background: #d35400;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+        }
+        #history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            background: white;
+        }
+        #history-table th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 14px 8px;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid #1e2b37;
+            white-space: nowrap;
+        }
+        #history-table td {
+            border: 1px solid #ddd;
+            padding: 12px 8px;
+            vertical-align: top;
+            line-height: 1.5;
+        }
+        #history-table tbody tr {
+            transition: background 0.1s;
+        }
+        #history-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        #history-table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .number {
+            text-align: center;
+            font-weight: bold;
+            width: 45px;
+        }
+        .filter-info {
+            font-size: 0.9rem;
+            color: #e67e22;
+            margin-right: 15px;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 25px;
+            color: #555;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>📅 گاهشمار تاریخ ایران (از باستان تا ۲۰۲۵) – رویدادهای سیاسی، اقتصادی، بین‌المللی و اعتراضات مردمی</h2>
+
+    <!-- نوار ابزار -->
+    <div class="toolbar">
+        <div class="toolbar-item">
+            <label>🔍 جستجو:</label>
+            <input type="text" id="searchInput" placeholder="متن مورد نظر...">
+        </div>
+        <div class="toolbar-item">
+            <label>📅 فیلتر سال:</label>
+            <select id="yearFilter">
+                <option value="all">همه سال‌ها</option>
+            </select>
+        </div>
+        <div class="toolbar-item">
+            <label>📊 مرتب‌سازی:</label>
+            <button class="btn" id="sortAscBtn">⬆ صعودی</button>
+            <button class="btn" id="sortDescBtn">⬇ نزولی</button>
+        </div>
+        <button class="btn btn-success" id="excelBtn">📥 دانلود اکسل (CSV)</button>
+        <button class="btn btn-warning" id="resetBtn">🔄 بازنشانی</button>
+        <span class="filter-info" id="rowCount">تعداد رویدادها: ۵۹</span>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="history-table">
+            <thead>
+                <tr>
+                    <th class="number">#</th>
+                    <th class="event-date">شرح مختصر (تاریخ و رویداد)</th>
+                    <th class="background">پیش‌زمینه</th>
+                    <th class="short-term">پیامد کوتاه‌مدت</th>
+                    <th class="long-term">تأثیر بلندمدت</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- ردیف‌ها به صورت برنامه‌ریزی شده از جاوااسکریپت پر می‌شوند اما برای بارگذاری اولیه در HTML قرار می‌گیرند.
+                     برای اینکه data-year به درستی تنظیم شود، ردیف‌ها را با دست و با ویژگی data-year در HTML می‌سازیم. -->
+                <!-- ردیف ۱ (داده‌ها از قبل) ... ما به دلیل طولانی بودن، ردیف‌ها را در جاوااسکریپت به صورت داینامیک از یک آرایه می‌سازیم تا کنترل بهتری روی data-year داشته باشیم. 
+                     اما برای سادگی و اطمینان از نمایش، کل ردیف‌ها را به صورت استاتیک می‌نویسیم اما با data-year. -->
+                <!-- برای صرفه‌جویی در فضا، از تولید داینامیک استفاده می‌کنیم. در این راه‌حل، جاوااسکریپت ردیف‌ها را بر اساس آرایه داده می‌سازد. -->
+            </tbody>
+        </table>
+    </div>
+    <div class="footer-note">
+        * رویدادهای ۵۸ و ۵۹ (جنگ ۱۲ روزه و اعتراضات دیاسپورا) بر اساس سناریوهای محتمل ۲۰۲۵ اضافه شده‌اند.<br>
+        برای استخراج سال، از نخستین سال میلادی ذکر شده در ستون تاریخ استفاده شده است. (پ.ن: قبل از میلاد با علامت منفی)
+    </div>
+</div>
+
+<script>
+(function() {
+    // --- داده‌های تمام ردیف‌ها (بر اساس جدول قبلی + دو ردیف جدید) ---
+    const rowsData = [
+        // 1
+        { num: 1, date: "۷ آبان ۵۳۹ ق.م — ورود کوروش بزرگ به بابل. کوروش بدون تخریب وارد بابل شد و خود را مصلح معرفی کرد.", 
+          background: "ضعف نابونیدوس و نارضایتی محلی", 
+          short: "سقوط حکومت بابل، پذیرش کوروش", 
+          long: "گسترش هخامنشی؛ سیاست‌های بازسازی و بازگشت اقوام تبعیدشده (منشور کوروش)",
+          year: -539 },
+        // 2
+        { num: 2, date: "۵۲۵ ق.م — فتح مصر توسط کمبوجیه. ایران به بزرگترین قدرت جهان باستان تبدیل شد.", 
+          background: "توسعه‌طلبی هخامنشی و ضعف مصر", 
+          short: "پیوستن مصر به شاهنشاهی ایران", 
+          long: "ادغام فرهنگی و تبادلات تمدنی",
+          year: -525 },
+        // 3
+        { num: 3, date: "۵۲۱–۴۸۶ ق.م — داریوش بزرگ و سازمان‌دهی اداری (تقسیم کشور به ساتراپی‌ها، راه شاهی، ساخت تخت جمشید).", 
+          background: "نیاز به نظم‌بخشی به امپراتوری پهناور", 
+          short: "ثبات داخلی و شکوفایی تجارت", 
+          long: "الگوی حکمرانی چندفرهنگی برای آیندگان",
+          year: -521 },
+        // 4
+        { num: 4, date: "۳۳۱ ق.م — حمله اسکندر مقدونی و شکست داریوش سوم (نبرد گوگمل). پایان هخامنشیان.", 
+          background: "ضعف داخلی، شورش ساتراپ‌ها", 
+          short: "آتش‌سوزی تخت جمشید، آغاز هلنیسم", 
+          long: "تأثیر هنر یونانی بر ایران؛ زمینه‌ساز اشکانیان",
+          year: -331 },
+        // 5
+        { num: 5, date: "۲۴۷ ق.م — تأسیس شاهنشاهی اشکانی (پارتیان) توسط ارشک. احیای حاکمیت ایرانی در برابر سلوکیان.", 
+          background: "ضعف سلوکیان و شورش‌های محلی", 
+          short: "استقلال بخش‌های شرقی ایران", 
+          long: "ایجاد امپراتوری رقیب روم؛ تداوم فرهنگ ایرانی",
+          year: -247 },
+        // 6
+        { num: 6, date: "۲۲۴ م — اردشیر بابکان ساسانی را تأسیس کرد. شکست اردوان پنجم و یکپارچگی ایران.", 
+          background: "ضعف اشکانیان و نفوذ روحانیت زرتشتی", 
+          short: "تشکیل دولت متمرکز و رسمی‌شدن دین زرتشتی", 
+          long: "رقابت با روم/بیزانس؛ تثبیت هویت ملی-مذهبی",
+          year: 224 },
+        // 7
+        { num: 7, date: "۲۶۰ م — شاپور یکم، امپراتور والرین را اسیر کرد. اوج قدرت ساسانیان.", 
+          background: "منازعات ایران و روم بر سر ارمنستان و میان‌رودان", 
+          short: "پیروزی نظامی و کسب غنائم", 
+          long: "تحکیم مرزهای غربی؛ تبادل دانش و اسیران",
+          year: 260 },
+        // 8
+        { num: 8, date: "۶۵۱ م — حمله اعراب مسلمان و کشته شدن یزدگرد سوم. سقوط نهایی ساسانیان.", 
+          background: "ضعف ناشی از جنگ‌های طولانی با روم و بحران داخلی", 
+          short: "ورود اسلام به ایران؛ آغاز خلافت", 
+          long: "تغییر دین تدریجی، اما حفظ هویت ایرانی (شعوبیه)",
+          year: 651 },
+        // 9
+        { num: 9, date: "۷۵۰ م — برآمدن عباسیان با کمک‌های ایرانیان (ابومسلم خراسانی). انتقال مرکز خلافت به بغداد.", 
+          background: "تبعیض امویان و نارضایتی ایرانیان", 
+          short: "به قدرت رسیدن خاندان برمکی و نفوذ ایران", 
+          long: "ترجمه و نهضت علمی؛ حضور ایرانیان در دستگاه خلافت",
+          year: 750 },
+        // 10
+        { num: 10, date: "۸۲۱ م — طاهریان (اولین سلسله ایرانی پس از اسلام). طاهر بن حسین والی خراسان شد.", 
+          background: "ضعف خلافت در کنترل خراسان", 
+          short: "حکومت نیمه‌مستقل در شرق", 
+          long: "احیای زبان فارسی و هویت ایرانی",
+          year: 821 },
+        // 11
+        { num: 11, date: "۸۶۱ م — یعقوب لیث صفاری بر سیستان مسلط شد. نخستین حکومت مستقل ایرانی.", 
+          background: "ظهور عیاران و مخالفت با خلفا", 
+          short: "گسترش قلمرو تا فارس و خراسان", 
+          long: "الهام‌بخش جنبش‌های ملی‌گرایانه بعدی",
+          year: 861 },
+        // 12
+        { num: 12, date: "۸۷۵–۹۹۹ م — سامانیان، اوج رونق زبان فارسی (رودکی، فردوسی). بخارا مرکز فرهنگ.", 
+          background: "حاکمیت ایرانی با مشروعیت عباسی", 
+          short: "شکوفایی ادبیات و علم", 
+          long: "پیدایش شاهنامه و حفظ هویت ملی",
+          year: 875 },
+        // 13
+        { num: 13, date: "۱۰۳۷ م — طغرل بیک سلجوقی نیشابور را گرفت. آغاز سلطه ترکان بر ایران.", 
+          background: "ضعف غزنویان و فشار قبایل ترکمن", 
+          short: "بنیان‌گذاری امپراتوری سلجوقی", 
+          long: "ترکیب فرهنگ ایرانی و حکومت ترک؛ گسترش مدارس نظامیه",
+          year: 1037 },
+        // 14
+        { num: 14, date: "۱۰۹۲ م — قتل خواجه نظام‌الملک طوسی. آغاز افول سلجوقیان.", 
+          background: "رقابت‌های درباری و نزاع با حسن صباح", 
+          short: "تجزیه قدرت و ظهور ملوك‌الطوایفی", 
+          long: "ضعف ساختار مرکزی؛ زمینه‌ساز حمله مغول",
+          year: 1092 },
+        // 15
+        { num: 15, date: "۱۲۱۹ م — حمله چنگیزخان مغول به ایران. ویرانی گسترده شهرها و کشتارها.", 
+          background: "قطع تجارت و بی‌اعتنایی سلطان محمد خوارزمشاه", 
+          short: "سقوط خوارزمشاهیان؛ نسل‌کشی بی‌سابقه", 
+          long: "افول جمعیتی و اقتصادی؛ اما نهایتاً ایلخانان مسلمان شدند",
+          year: 1219 },
+        // 16
+        { num: 16, date: "۱۲۹۵ م — غازان خان ایلخانی اسلام آورد. اصلاحات اداری و مالی.", 
+          background: "نیاز به مشروعیت داخلی و فشار روحانیون", 
+          short: "رونق دوباره شهرها و کشاورزی", 
+          long: "احیای فرهنگ ایرانی در قالب مغولی",
+          year: 1295 },
+        // 17
+        { num: 17, date: "۱۳۸۱ م — تیمور لنگ اصفهان را قتل‌عام کرد. ایجاد امپراتوری تیموری.", 
+          background: "خلأ قدرت پس از ایلخانان و رقابت محلی", 
+          short: "ویرانی و جابجایی هنرمندان به سمرقند", 
+          long: "شکوفایی هنر تیموری (کتاب‌آرایی، معماری)",
+          year: 1381 },
+        // 18
+        { num: 18, date: "۱۵۰۱ م — شاه اسماعیل یکم تبریز را گرفت و تشیع را مذهب رسمی اعلام کرد. تأسیس صفویه.", 
+          background: "فعالیت صوفیان صفوی و ضعف آق‌قویونلو", 
+          short: "یکپارچگی سیاسی ایران", 
+          long: "هویت شیعی ایران؛ مرزبندی با عثمانی سنی",
+          year: 1501 },
+        // 19
+        { num: 19, date: "۱۵۸۸–۱۶۲۹ م — شاه عباس یکم، اوج صفوی. اصلاحات نظامی، تجاری و ساخت اصفهان.", 
+          background: "هرج‌ومرج پس از مرگ شاه طهماسب", 
+          short: "ثبات داخلی و شکوه معماری", 
+          long: "الگوی پادشاهی مقتدر مرکزی؛ توسعه دیپلماسی (هلند، انگلیس)",
+          year: 1588 },
+        // 20
+        { num: 20, date: "۱۷۲۲ م — سقوط اصفهان به دست افغان‌ها (محمود افغان). پایان واقعی صفویه.", 
+          background: "ضعف شاه سلطان‌حسین و فساد درباری", 
+          short: "سلطه افغان‌ها بر ایران", 
+          long: "هرج‌ومرج و زمینه‌ساز ظهور نادرشاه",
+          year: 1722 },
+        // 21
+        { num: 21, date: "۱۷۳۶ م — نادرشاه افشار تاج‌گذاری کرد. بیرون راندن افغان‌ها و عثمانی‌ها.", 
+          background: "نیاز به اتحاد علیه دشمنان خارجی", 
+          short: "فتوحات گسترده تا هند (1739)", 
+          long: "آخرین فاتح بزرگ ایرانی؛ اما حکومت کوتاه",
+          year: 1736 },
+        // 22
+        { num: 22, date: "۱۷۵۰–۱۷۹۴ م — کریم خان زند و حکومت آرام. شیراز مرکز ادب و عدالت.", 
+          background: "جنگ‌های جانشینی پس از نادر", 
+          short: "رفاه نسبی و کاهش مالیات", 
+          long: "الگوی حکومت مدنی و مردمی",
+          year: 1750 },
+        // 23
+        { num: 23, date: "۱۷۹۶ م — آقامحمدخان قاجار تهران را پایتخت کرد. آغاز دودمان قاجار.", 
+          background: "شکست لطفعلی‌خان زند و وحدت کشور", 
+          short: "تمرکز قدرت در تهران", 
+          long: "تداوم حکومت تا ۱۹۲۵؛ عقب‌ماندگی از غرب",
+          year: 1796 },
+        // 24
+        { num: 24, date: "۱۸۱۳ و ۱۸۲۸ م — جنگ‌های ایران و روسیه. عهدنامه‌های گلستان و ترکمانچای.", 
+          background: "توسعه‌طلبی روسیه به سمت قفقاز", 
+          short: "از دست رفتن ارمنستان و آذربایجان", 
+          long: "آگاهی از عقب‌ماندگی نظامی؛ آغاز اصلاحات",
+          year: 1813 },
+        // 25
+        { num: 25, date: "۱۸۷۲ م — امتیاز رویتر (انحصار راه‌آهن و معادن) به لغو اعتراضات انجامید.", 
+          background: "نیاز ناصرالدین‌شاه به پول", 
+          short: "بازپس‌گیری امتیاز در پی فشار علما و مردم", 
+          long: "بیداری سیاسی و مبارزه با نفوذ خارجی",
+          year: 1872 },
+        // 26
+        { num: 26, date: "۱۸۹۰–۱۸۹۲ م — جنبش تنباکو. لغو امتیاز توتون و تنباکو پس از فتوای میرزای شیرازی.", 
+          background: "واگذاری انحصار تنباکو به انگلیس", 
+          short: "تحریم گسترده و لغو قرارداد", 
+          long: "نخستین پیروزی ملت بر استبداد و استعمار",
+          year: 1890 },
+        // 27
+        { num: 27, date: "۱۹۰۵–۱۹۱۱ م — انقلاب مشروطه. تشکیل مجلس و تدوین قانون اساسی.", 
+          background: "ظلم مظفرالدین‌شاه، گرانی و نفوذ خارجی", 
+          short: "صدور فرمان مشروطیت (۱۲۸۵)", 
+          long: "ایجاد پارلمان و محدودیت قدرت شاه؛ الگویی برای آینده",
+          year: 1905 },
+        // 28
+        { num: 28, date: "۱۹۰۸ م — به توپ بستن مجلس توسط محمدعلی‌شاه. استبداد صغیر.", 
+          background: "مخالفت شاه با مشروطه و حمایت روس", 
+          short: "تعطیلی مجلس و دستگیری مشروطه‌خواهان", 
+          long: "مقاومت تبریز و اصفهان؛ فتح تهران و اخراج شاه",
+          year: 1908 },
+        // 29
+        { num: 29, date: "۱۹۲۱ م — کودتای رضاخان (۳ اسفند ۱۲۹۹) با حمایت انگلیس. سیدضیاء نخست‌وزیر.", 
+          background: "هرج‌ومرج پس از جنگ جهانی اول", 
+          short: "تسلط رضاخان بر ارتش", 
+          long: "انقراض قاجار و تأسیس پهلوی (۱۹۲۵)",
+          year: 1921 },
+        // 30
+        { num: 30, date: "۱۹۳۶ م — کشف حجاب اجباری (فرمان رضاشاه). مقابله با حجاب سنتی.", 
+          background: "سیاست مدرنیزاسیون شبه‌غربی", 
+          short: "اعتراضات مردمی و سرکوب", 
+          long: "بحران هویت مذهبی؛ ریشه‌های مخالفت روحانیت",
+          year: 1936 },
+        // 31
+        { num: 31, date: "۱۹۴۱ م — اشغال ایران توسط متفقین (شهریور ۱۳۲۰). تبعید رضاشاه.", 
+          background: "همکاری رضاشاه با آلمان نازی", 
+          short: "ورود محمدرضا به سلطنت؛ حضور نیروهای خارجی", 
+          long: "تقویت ملی‌گرایی و ظهور جبهه ملی",
+          year: 1941 },
+        // 32
+        { num: 32, date: "۱۹۵۱ م — ملی‌شدن صنعت نفت به رهبری مصدق. خلع ید از شرکت نفت ایران و انگلیس.", 
+          background: "مبارزه برای حقوق از دست رفته نفت", 
+          short: "تحریم نفتی ایران توسط انگلیس؛ بحران آبادان", 
+          long: "نماد مبارزه ضداستعماری؛ کودتای ۱۹۵۳",
+          year: 1951 },
+        // 33
+        { num: 33, date: "۱۹۵۳ م — کودتای ۲۸ مرداد (۱۹ اوت). سرنگونی مصدق با کمک CIA و MI6.", 
+          background: "ترس غرب از کمونیسم و نفت", 
+          short: "بازگشت شاه به قدرت؛ حاکمیت استبدادی", 
+          long: "شکاف عمیق میان مردم و حکومت؛ زمینه‌ساز انقلاب",
+          year: 1953 },
+        // 34
+        { num: 34, date: "۱۹۶۳ م — انقلاب سفید (اصلاحات ارضی، حق رأی زنان). همه‌پرسی شاه.", 
+          background: "فشار آمریکا برای اصلاحات و پیشگیری از انقلاب", 
+          short: "تغییر ساختار مالکیت اراضی؛ مخالفت روحانیون", 
+          long: "مهاجرت روستاییان به شهرها؛ افزایش نارضایتی",
+          year: 1963 },
+        // 35
+        { num: 35, date: "۱۹۶۳ م — قیام ۱۵ خرداد (۵ ژوئن). دستگیری خمینی و تظاهرات خونین.", 
+          background: "حمله به مدرسه فیضیه و سخنرانی خمینی علیه شاه", 
+          short: "سرکوب گسترده و تبعید خمینی", 
+          long: "تبدیل خمینی به رهبر مخالفان؛ تداوم مبارزه",
+          year: 1963 },
+        // 36
+        { num: 36, date: "۱۹۷۱ م — جشن‌های ۲۵۰۰ ساله شاهنشاهی. هزینه‌های هنگفت در مقابل فقر.", 
+          background: "شاه در اوج قدرت نمایی", 
+          short: "انتقادات داخلی و خارجی", 
+          long: "نماد فاصله شاه با مردم؛ سوختن برگ‌های رژیم",
+          year: 1971 },
+        // 37
+        { num: 37, date: "۱۹۷۸–۱۹۷۹ م — اوج اعتراضات انقلابی. محرم ۱۳۵۷، راهپیمایی‌های میلیونی.", 
+          background: "توهین به خمینی در روزنامه اطلاعات (۷ دی ۱۳۵۶) و کشتار ۱۹ دی", 
+          short: "جمعه سیاه (۸ شهریور)، اعتصابات نفت", 
+          long: "فرار شاه (۲۶ دی ۱۳۵۷) و بازگشت خمینی",
+          year: 1978 },
+        // 38
+        { num: 38, date: "۲۲ بهمن ۱۳۵۷ (۱۱ فوریه ۱۹۷۹) — پیروزی انقلاب اسلامی. سقوط دولت بختیار.", 
+          background: "اعتصابات سراسری و اعلام بی‌طرفی ارتش", 
+          short: "تشکیل دولت موقت بازرگان", 
+          long: "برپایی جمهوری اسلامی با همه‌پرسی (۱۲ فروردین ۱۳۵۸)",
+          year: 1979 },
+        // 39
+        { num: 39, date: "۱۳ آبان ۱۳۵۸ (۴ نوامبر ۱۹۷۹) — تسخیر سفارت آمریکا (لانه جاسوسی). دانشجویان پیرو خط امام.", 
+          background: "ورود شاه به آمریکا برای درمان", 
+          short: "بحران گروگان‌گیری ۴۴۴ روزه", 
+          long: "قطع روابط ایران و آمریکا؛ تحریم‌ها و خصومت پایدار",
+          year: 1979 },
+        // 40
+        { num: 40, date: "۳۱ شهریور ۱۳۵۹ (۲۲ سپتامبر ۱۹۸۰) — آغاز جنگ ایران و عراق. حمله ارتش بعث به مرزهای ایران.", 
+          background: "اقتدارگریزی صدام و ترس از انقلاب اسلامی", 
+          short: "اشغال خرمشهر؛ مقاومت مردمی", 
+          long: "۸ سال جنگ با یک میلیون کشته؛ تحمیل قطعنامه ۵۹۸",
+          year: 1980 },
+        // 41
+        { num: 41, date: "۳ خرداد ۱۳۶۱ (۲۴ مه ۱۹۸۲) — آزادسازی خرمشهر. پیروزی بزرگ ایران.", 
+          background: "عملیات بیت‌المقدس", 
+          short: "بازپس‌گیری مناطق اشغالی", 
+          long: "امتناع ایران از صلح؛ ادامه جنگ تا ۱۳۶۷",
+          year: 1982 },
+        // 42
+        { num: 42, date: "۲۷ تیر ۱۳۶۷ (۱۸ ژوئیه ۱۹۸۸) — پذیرش قطعنامه ۵۹۸ توسط ایران. پایان جنگ.", 
+          background: "حمله شیمیایی به حلبچه، نبردهای آخر و سرنگونی هواپیمای مسافربری", 
+          short: "آتش‌بس و عقب‌نشینی متقابل", 
+          long: "بازسازی کشور؛ آغاز دوره سازندگی (هاشمی رفسنجانی)",
+          year: 1988 },
+        // 43
+        { num: 43, date: "۳ خرداد ۱۳۷۶ (۲۴ مه ۱۹۹۷) — پیروزی سید محمد خاتمی در انتخابات ریاست‌جمهوری با ۲۰ میلیون رأی.", 
+          background: "مشارکت ۸۰٪ و خواست جامعه مدنی", 
+          short: "گشایش فضای سیاسی، مطبوعات آزادتر", 
+          long: "گفتمان اصلاحات؛ تقابل با جناح محافظه‌کار",
+          year: 1997 },
+        // 44
+        { num: 44, date: "۱۸ تیر ۱۳۷۸ (۹ ژوئیه ۱۹۹۹) — تظاهرات دانشجویی در تهران (کوی دانشگاه). اولین اعتراض بزرگ پس از انقلاب.", 
+          background: "بسته شدن روزنامه سلام و حمله به خوابگاه", 
+          short: "سرکوب گسترده و کشته‌شدگان", 
+          long: "افزایش شکاف اصلاح‌طلب-محافظه‌کار",
+          year: 1999 },
+        // 45
+        { num: 45, date: "۲۴ خرداد ۱۳۸۴ (۱۴ ژوئن ۲۰۰۵) — انتخاب محمود احمدی‌نژاد به ریاست‌جمهوری. شوک به جناح‌های سیاسی.", 
+          background: "وعده عدالت و بازگشت به ارزش‌ها", 
+          short: "تنش‌های هسته‌ای، قطعنامه‌های شورای امنیت", 
+          long: "تحریم‌های شدید؛ انزوای بین‌المللی",
+          year: 2005 },
+        // 46
+        { num: 46, date: "۲۲ خرداد ۱۳۸۸ (۱۲ ژوئن ۲۰۰۹) — اعتراض به نتایج انتخابات ریاست‌جمهوری (جنبش سبز).", 
+          background: "اعلام پیروزی احمدی‌نژاد با ۶۲٪", 
+          short: "راهپیمایی‌های میلیونی، سرکوب ۲۵ خرداد", 
+          long: "بحران مشروعیت داخلی؛ شکل‌گیری موج سبز",
+          year: 2009 },
+        // 47
+        { num: 47, date: "۲۴ آبان ۱۳۹۲ (۱۴ نوامبر ۲۰۱۳) — توافق هسته‌ای ژنو (برجام موقت). آغاز مذاکرات جدی.", 
+          background: "فشار تحریم‌ها و انتخاب حسن روحانی", 
+          short: "رفع بخشی از تحریم‌ها", 
+          long: "دستاورد دیپلماتیک؛ اما بعداً خروج آمریکا (۲۰۱۸)",
+          year: 2013 },
+        // 48
+        { num: 48, date: "۲۵ آذر ۱۳۹۵ (۱۵ دسامبر ۲۰۱۶) — برجام به مرحله اجرا درآمد (Implementation Day). رفع تحریم‌های هسته‌ای.", 
+          background: "پایان تعهدات ایران و ۱+۵", 
+          short: "گشایش اقتصادی و فروش نفت", 
+          long: "اعتمادسازی محدود؛ خروج ترامپ در ۲۰۱۸",
+          year: 2016 },
+        // 49
+        { num: 49, date: "دی ۱۳۹۶ (دسامبر ۲۰۱۷) — اعتراضات سراسری علیه گرانی و فساد. شعار «نه غزه، نه لبنان...»", 
+          background: "بیکاری و افزایش قیمت‌ها", 
+          short: "سرکوب و بازداشت گسترده", 
+          long: "پیش‌درآمدی بر اعتراضات آبان ۹۸",
+          year: 2017 },
+        // 50
+        { num: 50, date: "آبان ۱۳۹۸ (نوامبر ۲۰۱۹) — افزایش ناگهانی قیمت بنزین و سهمیه‌بندی. گسترده‌ترین اعتراضات پس از انقلاب.", 
+          background: "فشار تحریم‌ها و کسری بودجه", 
+          short: "قطع اینترنت سراسری؛ کشته‌شدن ۱۵۰۰ نفر (برآورد)", 
+          long: "شکاف عمیق حکومت-مردم؛ خیزش‌های بعدی",
+          year: 2019 },
+        // 51
+        { num: 51, date: "۱۳ دی ۱۳۹۸ (۳ ژانویه ۲۰۲۰) — ترور سردار قاسم سلیمانی توسط آمریکا در بغداد.", 
+          background: "تشدید تنش ایران-آمریکا", 
+          short: "انتقام موشکی ایران به عین‌الاسد؛ تشییع میلیونی", 
+          long: "بازدارندگی منطقه‌ای؛ اما کاهش نفوذ تدریجی",
+          year: 2020 },
+        // 52
+        { num: 52, date: "۱۳۹۸–۱۳۹۹ — همه‌گیری کووید-۱۹ در ایران. بالاترین آمار مرگ در منطقه.", 
+          background: "کمبود تجهیزات پزشکی به دلیل تحریم", 
+          short: "تعطیلی‌ها، بحران اقتصادی", 
+          long: "افزایش فقر؛ بی‌اعتمادی به آمار رسمی",
+          year: 2019 },
+        // 53
+        { num: 53, date: "۲۸ خرداد ۱۴۰۰ (۱۸ ژوئن ۲۰۲۱) — انتخاب ابراهیم رئیسی به ریاست‌جمهوری. کم‌ترین مشارکت تاریخ (۴۸٪).", 
+          background: "ردصلاحیت گسترده نامزدها؛ نارضایتی عمومی", 
+          short: "ادامه مذاکرات وین؛ سیاست فشار حداکثری", 
+          long: "تثبیت جریان اصولگرا؛ افزایش فقر و اعتراضات",
+          year: 2021 },
+        // 54
+        { num: 54, date: "۲۵ شهریور ۱۴۰۱ (۱۶ سپتامبر ۲۰۲۲) — کشته شدن مهسا امینی در بازداشت گشت ارشاد. آغاز خیزش زن، زندگی، آزادی.", 
+          background: "نارضایتی انباشته از حجاب اجباری، بیکاری، فساد", 
+          short: "اعتراضات سراسری، شعارهای ضدحکومتی، سرکوب شدید", 
+          long: "تغییر گفتمان اجتماعی؛ گسترش حجاب‌ستیزی؛ الهام‌بخشی منطقه‌ای",
+          year: 2022 },
+        // 55
+        { num: 55, date: "۱۴۰۲–۱۴۰۳ — تداوم ناآرامی‌ها، اعدام‌های اعتراضی، و فشار بین‌المللی (قطعنامه علیه ایران).", 
+          background: "سرکوب و بستن اینترنت", 
+          short: "عضویت ایران در پیمان‌های شانگهای و بریکس", 
+          long: "چرخش به شرق و کاهش امید به غرب",
+          year: 2023 },
+        // 56
+        { num: 56, date: "فروردین ۱۴۰۳ (آوریل ۲۰۲۴) — حمله موشکی اسرائیل به کنسولگری ایران در دمشق و پاسخ موشکی بی‌سابقه ایران به اسرائیل.", 
+          background: "افزایش تنش‌های منطقه‌ای پس از جنگ غزه", 
+          short: "بازدارندگی محدود؛ واکنش‌های دیپلماتیک", 
+          long: "خطر گسترش جنگ فراگیر در خاورمیانه",
+          year: 2024 },
+        // 57
+        { num: 57, date: "پاییز ۱۴۰۴ (۲۰۲۵) — تداوم فشار تحریم‌ها و مذاکرات هسته‌ای جدید با غرب؟ یا افزایش غنیسازی ۶۰٪.", 
+          background: "شکست مذاکرات وین و نزدیک شدن ایران به بمب", 
+          short: "بازگشت قطعنامه‌های شورای امنیت", 
+          long: "سناریوی بحران یا توافق؛ بستگی به تحولات جهانی",
+          year: 2025 },
+        // ردیف جدید 58: جنگ 12 روزه ایران و اسرائیل
+        { num: 58, date: "نوامبر ۲۰۲۵ — جنگ ۱۲ روزه ایران و اسرائیل (حمله متقابل به تأسیسات هسته‌ای و شهرها).", 
+          background: "افزایش تنش پس از مذاکرات نافرجام و غنیسازی ۹۰٪", 
+          short: "تلفات محدود، حملات سایبری، مداخله بین‌المللی", 
+          long: "افزایش توان بازدارندگی یا تشدید تحریم‌ها؛ تغییر معادلات منطقه",
+          year: 2025 },
+        // ردیف جدید 59: اعتراضات دیاسپورا
+        { num: 59, date: "آبان ۲۰۲۵ — اعتراضات همبستگی در مونیخ، لس‌آنجلس و تورنتو در حمایت از زن، زندگی، آزادی.", 
+          background: "کشتار معترضان در ایران و درخواست توجه جهانی", 
+          short: "تظاهرات ده‌هزار نفری، پوشش رسانه‌ای گسترده", 
+          long: "جلب توجه دیپلماتیک، صدور قطعنامه‌های بیشتر علیه ایران",
+          year: 2025 }
+    ];
+
+    const tbody = document.getElementById('tableBody');
+    function renderTable(data) {
+        tbody.innerHTML = '';
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.setAttribute('data-year', row.year);
+            tr.innerHTML = `
+                <td class="number">${row.num}</td>
+                <td class="event-date">${row.date}</td>
+                <td class="background">${row.background}</td>
+                <td class="short-term">${row.short}</td>
+                <td class="long-term">${row.long}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        updateRowCount();
+    }
+
+    // ذخیره داده‌های اصلی
+    let currentData = rowsData.slice(); // برای فیلتر و جستجو
+
+    // عملکردهای جستجو، فیلتر، مرتب‌سازی
+    const searchInput = document.getElementById('searchInput');
+    const yearFilter = document.getElementById('yearFilter');
+    const sortAscBtn = document.getElementById('sortAscBtn');
+    const sortDescBtn = document.getElementById('sortDescBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const excelBtn = document.getElementById('excelBtn');
+    const rowCountSpan = document.getElementById('rowCount');
+
+    function updateRowCount() {
+        rowCountSpan.innerText = `تعداد رویدادها: ${document.querySelectorAll('#tableBody tr').length}`;
+    }
+
+    // پر کردن dropdown سال‌ها
+    function populateYearFilter() {
+        const years = [...new Set(rowsData.map(r => r.year))].sort((a,b) => a - b);
+        yearFilter.innerHTML = '<option value="all">همه سال‌ها</option>';
+        years.forEach(y => {
+            const option = document.createElement('option');
+            option.value = y;
+            option.textContent = y > 0 ? y : `${Math.abs(y)} ق.م`;
+            yearFilter.appendChild(option);
+        });
+    }
+
+    // اعمال فیلتر و جستجو
+    function filterData() {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        const yearVal = yearFilter.value;
+
+        const filtered = rowsData.filter(row => {
+            // جستجو در تمام ستون‌ها
+            const matchesSearch = searchTerm === '' || 
+                row.date.toLowerCase().includes(searchTerm) ||
+                row.background.toLowerCase().includes(searchTerm) ||
+                row.short.toLowerCase().includes(searchTerm) ||
+                row.long.toLowerCase().includes(searchTerm) ||
+                row.num.toString().includes(searchTerm);
+            // فیلتر سال
+            const matchesYear = yearVal === 'all' || row.year.toString() === yearVal;
+            return matchesSearch && matchesYear;
+        });
+        currentData = filtered;
+        renderTable(filtered);
+    }
+
+    // مرتب‌سازی بر اساس سال
+    function sortData(direction = 'asc') {
+        const sorted = [...currentData].sort((a,b) => {
+            return direction === 'asc' ? a.year - b.year : b.year - a.year;
+        });
+        renderTable(sorted);
+    }
+
+    // بازنشانی
+    function resetFilters() {
+        searchInput.value = '';
+        yearFilter.value = 'all';
+        currentData = rowsData.slice();
+        renderTable(rowsData);
+    }
+
+    // دانلود اکسل (CSV)
+    function downloadExcel() {
+        // ایجاد محتوای CSV
+        const headers = ['#', 'شرح مختصر (تاریخ و رویداد)', 'پیش‌زمینه', 'پیامد کوتاه‌مدت', 'تأثیر بلندمدت'];
+        const rows = currentData.map(r => [
+            r.num,
+            r.date,
+            r.background,
+            r.short,
+            r.long
+        ]);
+        let csvContent = headers.map(h => `"${h}"`).join(',') + '\n';
+        rows.forEach(row => {
+            const escapedRow = row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(',');
+            csvContent += escapedRow + '\n';
+        });
+
+        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' }); // BOM برای یونیکد
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'history_iran.csv';
+        link.click();
+    }
+
+    // رویدادها
+    searchInput.addEventListener('input', filterData);
+    yearFilter.addEventListener('change', filterData);
+    sortAscBtn.addEventListener('click', () => sortData('asc'));
+    sortDescBtn.addEventListener('click', () => sortData('desc'));
+    resetBtn.addEventListener('click', resetFilters);
+    excelBtn.addEventListener('click', downloadExcel);
+
+    // مقداردهی اولیه
+    populateYearFilter();
+    renderTable(rowsData);
+})();
+</script>
+</body>
+</html>
