@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 Last Seat Flight · Negotiation Plot & Seat Map</title>
+    <style>
+        :root {
+            --bg: #1b1e16;
+            --panel: #24281d;
+            --border: #3a3d2a;
+            --text: #e2dfc8;
+            --dim: #9b987a;
+            --gold: #d4a843;
+            --accent: #f0c060;
+            --danger: #e05555;
+            --success: #5cb870;
+            --info: #5c9cce;
+            --seat-bg: #2a2d20;
+            --seat-taken: #3a3d2f;
+            --seat-last: #4a3a1c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 20% 10%, rgba(180, 140, 60, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(90, 160, 100, 0.05) 0%, transparent 50%);
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .left-panel {
+            flex: 1 1 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .right-panel {
+            flex: 1.8 1 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--panel);
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .game-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(180deg, #f0d878, #c49a2a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+        .subtitle {
+            color: var(--dim);
+            font-size: 0.9em;
+            margin-bottom: 12px;
+        }
+
+        .param-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .param-row label {
+            font-size: 0.8em;
+            color: var(--dim);
+            min-width: 70px;
+        }
+        .emoji-btn {
+            font-size: 1.5em;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #2a2d20;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            user-select: none;
+            position: relative;
+        }
+        .emoji-btn:hover {
+            background: #3a3d2e;
+            border-color: #5a5d4f;
+            transform: scale(1.06);
+        }
+        .emoji-btn.selected {
+            border-color: var(--gold);
+            background: #3d3520;
+            box-shadow: 0 0 12px rgba(212, 168, 67, 0.4);
+        }
+        .emoji-btn .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            font-size: 0.55em;
+            padding: 3px 7px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+        .emoji-btn:hover .tooltip {
+            display: block;
+        }
+
+        .run-btn {
+            padding: 10px 24px;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #f0c060, #d4a843);
+            color: #1b1e16;
+            letter-spacing: 0.8px;
+            font-size: 0.95em;
+            align-self: flex-start;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(200,150,50,0.3);
+        }
+        .run-btn:hover {
+            box-shadow: 0 6px 18px rgba(220,170,60,0.5);
+            transform: translateY(-1px);
+        }
+        .run-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .commentator-box {
+            background: #1a1d14;
+            border-radius: 14px;
+            padding: 14px;
+            height: 280px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            line-height: 1.5;
+            color: #c0b890;
+            border: 1px solid #2e3023;
+            scroll-behavior: smooth;
+        }
+        .commentator-box .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+            border-bottom: 1px solid #2a2d1f;
+        }
+        .log-highlight {
+            color: #f0d878;
+            font-weight: 600;
+        }
+
+        .plot-container {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            background: #1c1f16;
+            border-radius: 14px;
+            border: 1px solid #2e3023;
+            margin-bottom: 8px;
+        }
+        canvas#plotCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .agent-emoji {
+            position: absolute;
+            font-size: 2em;
+            pointer-events: none;
+            z-index: 10;
+            transition: left 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.1), bottom 0.8s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+        .legend {
+            display: flex;
+            gap: 18px;
+            font-size: 0.75em;
+            color: var(--dim);
+            justify-content: center;
+            margin-top: 4px;
+        }
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .seat-map {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0 4px;
+        }
+        .seat {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: var(--seat-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            border: 2px solid #3a3d2f;
+            transition: 0.3s;
+            position: relative;
+        }
+        .seat.taken {
+            background: #2d3025;
+            border-color: #5a5d3f;
+            opacity: 0.9;
+        }
+        .seat.last-seat {
+            border: 2px dashed var(--gold);
+            animation: pulseSeat 2s infinite;
+        }
+        @keyframes pulseSeat {
+            0%,
+            100% {
+                border-color: #d4a843;
+                box-shadow: 0 0 6px rgba(212, 168, 67, 0.3);
+            }
+            50% {
+                border-color: #f0c060;
+                box-shadow: 0 0 14px rgba(240, 192, 96, 0.6);
+            }
+        }
+        .seat .price-tag-small {
+            position: absolute;
+            bottom: -16px;
+            font-size: 0.65em;
+            color: #b0a070;
+            white-space: nowrap;
+        }
+        .final-result {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95em;
+            margin-top: 5px;
+            color: #f0d878;
+        }
+        @media (max-width: 700px) {
+            .dashboard {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align:center; margin-bottom: 10px;">
+        <span style="font-size:2.2em;">🌱✈️</span>
+        <div class="game-title">Last Seat Flight Ticket</div>
+        <div class="subtitle">Negotiation Plot · Seat Map · Commentator Log</div>
+    </div>
+
+    <div class="dashboard">
+        <!-- LEFT PANEL: commentary log -->
+        <div class="left-panel">
+            <div class="card">
+                <div style="font-weight:600; margin-bottom:8px;">📋 Commentator Log</div>
+                <div class="commentator-box" id="logBox">
+                    <div class="log-entry">🟢 Awaiting parameters and run...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: plot + controls -->
+        <div class="right-panel">
+            <div class="card">
+                <div class="param-row" id="paramUrgency">
+                    <label>🔥 Urgency:</label>
+                    <span class="emoji-btn selected" data-key="urgency" data-val="high">🔥<span class="tooltip">Critical meeting</span></span>
+                    <span class="emoji-btn" data-key="urgency" data-val="med">⏰<span class="tooltip">Important trip</span></span>
+                    <span class="emoji-btn" data-key="urgency" data-val="low">😌<span class="tooltip">Flexible travel</span></span>
+                </div>
+                <div class="param-row" id="paramTraveler">
+                    <label>🧳 Traveler:</label>
+                    <span class="emoji-btn selected" data-key="traveler" data-val="biz">💼<span class="tooltip">Business</span></span>
+                    <span class="emoji-btn" data-key="traveler" data-val="leisure">🏖️<span class="tooltip">Leisure</span></span>
+                </div>
+                <button class="run-btn" id="runBtn">▶ Run Negotiation</button>
+
+                <!-- Plot with negotiation coordinate system -->
+                <div style="margin-top:12px; font-size:0.8em; color:var(--dim);">📈 Negotiation space (X: agreement point, Y: price)</div>
+                <div class="plot-container" id="plotContainer">
+                    <canvas id="plotCanvas"></canvas>
+                    <!-- Agents will be placed by JS -->
+                </div>
+                <div class="legend">
+                    <span>✈️ Airline</span>
+                    <span>💼/🏖️ Traveler</span>
+                    <span>💺 Last Seat</span>
+                </div>
+
+                <!-- Seat map: filling available seats from user's POV -->
+                <div style="margin-top:10px; font-size:0.8em; color:var(--dim);">🛫 Available seats (user's view)</div>
+                <div class="seat-map" id="seatMap">
+                    <!-- seats dynamically filled -->
+                </div>
+                <div class="final-result" id="finalResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // --- State ---
+            const state = {
+                urgency: 'high',
+                traveler: 'biz'
+            };
+
+            // --- Parameter buttons ---
+            document.querySelectorAll('.emoji-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const key = this.dataset.key;
+                    const val = this.dataset.val;
+                    const container = this.parentElement;
+                    container.querySelectorAll('.emoji-btn').forEach(b => b.classList.remove(
+                        'selected'));
+                    this.classList.add('selected');
+                    state[key] = val;
+                });
+            });
+
+            // --- Logging ---
+            const logBox = document.getElementById('logBox');
+            function log(msg, highlight = false) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry' + (highlight ? ' log-highlight' : '');
+                entry.textContent = '• ' + msg;
+                logBox.appendChild(entry);
+                logBox.scrollTop = logBox.scrollHeight;
+            }
+            function clearLog() {
+                logBox.innerHTML = '';
+            }
+
+            // --- Seat map ---
+            const seatMapDiv = document.getElementById('seatMap');
+            const finalResultDiv = document.getElementById('finalResult');
+            const totalSeats = 5;
+            // Pre-fill 4 seats with increasing historical prices
+            const historicalPrices = [180, 220, 260, 320]; // first 4 seats sold earlier
+            function renderSeatMap(lastSeatState = 'empty', lastPrice = null, sold = null) {
+                seatMapDiv.innerHTML = '';
+                for (let i = 0; i < totalSeats; i++) {
+                    const seat = document.createElement('div');
+                    seat.className = 'seat';
+                    if (i < totalSeats - 1) {
+                        // taken seats
+                        seat.classList.add('taken');
+                        seat.innerHTML = '✔️';
+                        const priceTag = document.createElement('span');
+                        priceTag.className = 'price-tag-small';
+                        priceTag.textContent = '$' + historicalPrices[i];
+                        seat.appendChild(priceTag);
+                    } else {
+                        // last seat
+                        seat.classList.add('last-seat');
+                        if (lastSeatState === 'empty') {
+                            seat.innerHTML = '🆓';
+                        } else if (lastSeatState === 'filled') {
+                            seat.innerHTML = sold ? '💺' : '❌';
+                            const priceTag = document.createElement('span');
+                            priceTag.className = 'price-tag-small';
+                            priceTag.textContent = '$' + (lastPrice !== null ? lastPrice : '?');
+                            seat.appendChild(priceTag);
+                            if (!sold) seat.style.opacity = '0.7';
+                        }
+                    }
+                    seatMapDiv.appendChild(seat);
+                }
+            }
+            // initial seat map
+            renderSeatMap('empty');
+
+            // --- Plot & agents ---
+            const plotContainer = document.getElementById('plotContainer');
+            const canvas = document.getElementById('plotCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Create agent emoji divs
+            const airlineAgent = document.createElement('span');
+            airlineAgent.className = 'agent-emoji';
+            airlineAgent.textContent = '✈️';
+            airlineAgent.style.position = 'absolute';
+            plotContainer.appendChild(airlineAgent);
+
+            const travelerAgent = document.createElement('span');
+            travelerAgent.className = 'agent-emoji';
+            travelerAgent.textContent = '💼'; // will update based on traveler type
+            travelerAgent.style.position = 'absolute';
+            plotContainer.appendChild(travelerAgent);
+
+            function setAgentPositions(airlineX, airlinePriceY, travelerX, travelerPriceY, priceRange) {
+                // X: 0-100% of container width, Y: price mapped to bottom=minPrice, top=maxPrice
+                const containerWidth = plotContainer.clientWidth;
+                const containerHeight = plotContainer.clientHeight;
+                const minPrice = priceRange[0];
+                const maxPrice = priceRange[1];
+                const range = maxPrice - minPrice;
+                const airlineYPercent = range ? ((airlinePriceY - minPrice) / range) * 100 : 50;
+                const travelerYPercent = range ? ((travelerPriceY - minPrice) / range) * 100 : 50;
+
+                airlineAgent.style.left = Math.max(2, Math.min(90, airlineX)) + '%';
+                airlineAgent.style.bottom = Math.max(2, Math.min(95, airlineYPercent)) + '%';
+                travelerAgent.style.left = Math.max(2, Math.min(90, travelerX)) + '%';
+                travelerAgent.style.bottom = Math.max(2, Math.min(95, travelerYPercent)) + '%';
+            }
+
+            // Update traveler emoji based on type
+            function updateTravelerEmoji() {
+                travelerAgent.textContent = state.traveler === 'biz' ? '💼' : '🏖️';
+            }
+            updateTravelerEmoji();
+            // listen to traveler changes
+            document.getElementById('paramTraveler').addEventListener('click', (e) => {
+                if (e.target.closest('.emoji-btn')) {
+                    setTimeout(updateTravelerEmoji, 50);
+                }
+            });
+
+            // Draw static axes on canvas
+            function drawAxes(priceRange) {
+                const w = canvas.width = plotContainer.clientWidth;
+                const h = canvas.height = plotContainer.clientHeight;
+                ctx.clearRect(0, 0, w, h);
+
+                // Grid
+                ctx.strokeStyle = '#2e3122';
+                ctx.lineWidth = 0.8;
+                // Vertical lines at 0%, 25%, 50%, 75%, 100%
+                const xTicks = [0, 0.25, 0.5, 0.75, 1];
+                xTicks.forEach(t => {
+                    const x = t * w;
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, h);
+                    ctx.stroke();
+                });
+                // Horizontal lines for price
+                const [minP, maxP] = priceRange;
+                const yTicks = 5;
+                for (let i = 0; i <= yTicks; i++) {
+                    const y = (i / yTicks) * h;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(w, y);
+                    ctx.stroke();
+                    // price label
+                    const price = minP + (i / yTicks) * (maxP - minP);
+                    ctx.fillStyle = '#9b987a';
+                    ctx.font = '10px Segoe UI';
+                    ctx.fillText('$' + Math.round(price), 3, y - 3);
+                }
+                // Axis labels
+                ctx.fillStyle = '#b0a070';
+                ctx.font = '11px Segoe UI';
+                ctx.fillText('Agreement →', w - 70, h - 6);
+                ctx.fillText('Price ↑', 6, 15);
+            }
+
+            // Resize observer to redraw canvas
+            const resizeObserver = new ResizeObserver(() => {
+                const priceRange = [100, 1200]; // default range, will be updated on run
+                drawAxes(priceRange);
+            });
+            resizeObserver.observe(plotContainer);
+
+            // --- Simulation ---
+            const runBtn = document.getElementById('runBtn');
+
+            runBtn.addEventListener('click', () => {
+                if (runBtn.disabled) return;
+                runBtn.disabled = true;
+                clearLog();
+                finalResultDiv.textContent = '';
+                renderSeatMap('empty');
+                // reset agent positions to start
+                setAgentPositions(5, 900, 5, 150, [100, 1200]);
+
+                const urgency = state.urgency;
+                const traveler = state.traveler;
+                const basePrice = 300;
+                const urgencyMult = urgency === 'high' ? 2.6 : urgency === 'med' ? 1.7 : 1.1;
+                const travelerMult = traveler === 'biz' ? 1.5 : 0.8;
+                const finalPrice = Math.round(basePrice * urgencyMult * travelerMult);
+                // Customer max willingness
+                let maxWillingness;
+                if (traveler === 'biz') {
+                    maxWillingness = urgency === 'high' ? 1200 : urgency === 'med' ? 750 : 500;
+                } else {
+                    maxWillingness = urgency === 'high' ? 500 : urgency === 'med' ? 400 : 300;
+                }
+                const accepted = finalPrice <= maxWillingness;
+
+                // Log initial parameters
+                log(`🧠 Customer mind: urgency=${urgency}, traveler=${traveler}`, true);
+                log(`📊 Base price $${basePrice}, urgency multiplier ${urgencyMult.toFixed(2)}, traveler multiplier ${travelerMult.toFixed(2)}`);
+                log(`💰 Computed last seat price: $${finalPrice}`);
+                log(`🧳 Customer maximum willingness: $${maxWillingness} (${traveler==='biz'?'business budget':'leisure limit'})`);
+
+                // Define negotiation steps with timestamps (seconds)
+                const steps = [
+                    { time: 0.5, msg: '✈️ Airline opens at $' + Math.round(finalPrice * 1.2) + ' (high anchor)',
+                        ax: 8, ap: Math.round(finalPrice * 1.2), tx: 8, tp: Math.round(maxWillingness * 0.4) },
+                    { time: 2.0, msg: '💬 Customer counters at $' + Math.round(maxWillingness * 0.55), ax: 18, ap: Math
+                            .round(finalPrice * 1.1), tx: 18, tp: Math.round(maxWillingness * 0.55) },
+                    { time: 3.8, msg: '✈️ Airline adjusts to $' + Math.round(finalPrice * 1.02), ax: 35, ap: Math.round(
+                            finalPrice * 1.02), tx: 35, tp: Math.round(maxWillingness * 0.7) },
+                    { time: 5.5, msg: '🤝 Agreement zone: airline $' + finalPrice + ' / customer $' + Math.round(
+                            maxWillingness * 0.85), ax: 55, ap: finalPrice, tx: 55, tp: Math.round(maxWillingness *
+                            0.85) },
+                    { time: 7.2, msg: '🕒 Final offer: $' + finalPrice + ' (customer considers...)', ax: 72, ap: finalPrice,
+                        tx: 72, tp: Math.round(maxWillingness * 0.92) },
+                    { time: 9.0, msg: accepted ? '✅ Customer ACCEPTS at $' + finalPrice :
+                            '❌ Customer REJECTS (above willingness)', ax: accepted ? 88 : 20, ap: finalPrice, tx: accepted ?
+                            88 : 60, tp: accepted ? finalPrice : maxWillingness },
+                ];
+
+                const totalDuration = 10.5; // seconds
+                const priceRange = [80, Math.max(finalPrice * 1.3, maxWillingness * 1.2, 1100)];
+                drawAxes(priceRange);
+                // Initial positions
+                setAgentPositions(5, finalPrice * 1.25, 5, maxWillingness * 0.35, priceRange);
+
+                const startTime = performance.now();
+                let stepIndex = 0;
+                let lastLoggedStep = -1;
+
+                function animate(now) {
+                    const elapsed = (now - startTime) / 1000;
+                    if (elapsed >= totalDuration) {
+                        // finalize
+                        renderSeatMap('filled', finalPrice, accepted);
+                        finalResultDiv.textContent = accepted ?
+                            `🎉 Seat sold for $${finalPrice} · Revenue earned!` :
+                            `💔 Seat unsold · Lost revenue opportunity.`;
+                        runBtn.disabled = false;
+                        log(accepted ? '🏁 GAME OVER: Deal closed, seat occupied.' :
+                            '🏁 GAME OVER: Seat remains empty.', true);
+                        return;
+                    }
+
+                    // Progress through steps
+                    while (stepIndex < steps.length && elapsed >= steps[stepIndex].time) {
+                        const step = steps[stepIndex];
+                        if (stepIndex !== lastLoggedStep) {
+                            log(step.msg, stepIndex === steps.length - 1);
+                            lastLoggedStep = stepIndex;
+                        }
+                        // update agent positions
+                        setAgentPositions(step.ax, step.ap, step.tx, step.tp, priceRange);
+                        stepIndex++;
+                    }
+                    // If no more steps, keep last positions
+                    if (stepIndex >= steps.length && lastLoggedStep < steps.length - 1) {
+                        const lastStep = steps[steps.length - 1];
+                        setAgentPositions(lastStep.ax, lastStep.ap, lastStep.tx, lastStep.tp, priceRange);
+                    }
+
+                    // Update seat map at around 7 seconds to show price
+                    if (elapsed > 6.5 && !document.getElementById('seatMap').dataset.priceShown) {
+                        document.getElementById('seatMap').dataset.priceShown = '1';
+                        renderSeatMap('filled', finalPrice, null); // show price but not yet sold/cross
+                    }
+
+                    requestAnimationFrame(animate);
+                }
+
+                requestAnimationFrame(animate);
+            });
+
+            // initial draw
+            drawAxes([100, 1200]);
+            setAgentPositions(5, 900, 5, 150, [100, 1200]);
+            // initial log
+            log('🟢 Set parameters and click "Run Negotiation".');
+            log('💡 X-axis: agreement point (0% far apart → 100% deal). Y-axis: price perspective.');
+        })();
+    </script>
+</body>
+</html>
