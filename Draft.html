@@ -1,1005 +1,462 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌱 Revenue Management Garden - Serious Games</title>
-    <style>
-        :root {
-            --bg: #1a1d13;
-            --card-bg: #23271a;
-            --root: #8b6914;
-            --root-light: #c49a2a;
-            --stem: #4a7c3f;
-            --stem-light: #6db858;
-            --leaf: #3d7a5c;
-            --leaf-light: #5cba8c;
-            --fruit: #b85c38;
-            --fruit-light: #e8784a;
-            --text: #e8e6d9;
-            --text-dim: #a09d8e;
-            --gold: #d4a843;
-            --accent: #f0c060;
-            --border: #3a3d2f;
-            --glow: rgba(240, 192, 96, 0.25);
-            --danger: #e05555;
-            --success: #5cb870;
-            --info: #5c9cce;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roots to Fruits: Pricing Judgment, Then and Now</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-panel: #131a24;
+    --line: #26303c;
+    --ink: #e6edf3;
+    --ink-dim: #8b98a5;
+    --root: #a97142;
+    --stem: #d29922;
+    --leaf: #3fb950;
+    --fruit: #f85149;
+    --mono: "SFMono-Regular", "JetBrains Mono", Consolas, Menlo, monospace;
+    --sans: "Inter", "Segoe UI", system-ui, sans-serif;
+  }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  * { box-sizing: border-box; }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
-            min-height: 100vh;
-            background-image:
-                radial-gradient(ellipse at 15% 10%, rgba(180, 140, 60, 0.08) 0%, transparent 60%),
-                radial-gradient(ellipse at 85% 90%, rgba(90, 160, 100, 0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 50% 50%, rgba(120, 100, 60, 0.04) 0%, transparent 70%);
-        }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+  }
 
-        .garden-header {
-            text-align: center;
-            padding: 24px 20px 10px;
-            position: relative;
-        }
-        .garden-header .tree-row {
-            font-size: 48px;
-            letter-spacing: 6px;
-            animation: gentleSway 4s ease-in-out infinite;
-        }
-        @keyframes gentleSway {
-            0%,
-            100% {
-                transform: rotate(0deg);
-            }
-            25% {
-                transform: rotate(1.5deg);
-            }
-            75% {
-                transform: rotate(-1.5deg);
-            }
-        }
-        .garden-header h1 {
-            font-size: 2.2em;
-            font-weight: 700;
-            letter-spacing: 1px;
-            background: linear-gradient(180deg, #f0d878 0%, #c49a2a 50%, #8b6914 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 4px 0;
-        }
-        .garden-header .subtitle {
-            color: var(--text-dim);
-            font-size: 0.95em;
-            letter-spacing: 2px;
-        }
-        .metaphor-labels {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            flex-wrap: wrap;
-            margin: 8px 0 0;
-            font-size: 0.85em;
-            color: var(--text-dim);
-        }
-        .metaphor-labels span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-        }
-        .metaphor-labels .root-lbl {
-            border-color: #6b4f1a;
-            color: #c49a2a;
-        }
-        .metaphor-labels .stem-lbl {
-            border-color: #3a5c2f;
-            color: #6db858;
-        }
-        .metaphor-labels .leaf-lbl {
-            border-color: #2d5c44;
-            color: #5cba8c;
-        }
-        .metaphor-labels .fruit-lbl {
-            border-color: #7a3d20;
-            color: #e8784a;
-        }
+  .wrap {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 56px 28px 90px;
+  }
 
-        .garden-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 20px;
-            padding: 16px 20px 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+  header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+  }
 
-        .game-card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 18px 16px 16px;
-            border: 1px solid var(--border);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.35s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .game-card:hover {
-            border-color: #5a5d4f;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-            transform: translateY(-2px);
-        }
-        .game-card.root-card {
-            border-left: 4px solid var(--root-light);
-        }
-        .game-card.stem-card {
-            border-left: 4px solid var(--stem-light);
-        }
-        .game-card.leaf-card {
-            border-left: 4px solid var(--leaf-light);
-        }
-        .game-card.fruit-card {
-            border-left: 4px solid var(--fruit-light);
-            background: linear-gradient(180deg, #2a2018 0%, #23271a 40%);
-        }
-        .card-badge {
-            display: inline-block;
-            font-size: 0.7em;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 3px 10px;
-            border-radius: 12px;
-            width: fit-content;
-        }
-        .badge-root {
-            background: #3d2e0f;
-            color: #d4a843;
-        }
-        .badge-stem {
-            background: #1f3318;
-            color: #6db858;
-        }
-        .badge-leaf {
-            background: #1a3328;
-            color: #5cba8c;
-        }
-        .badge-fruit {
-            background: #3d1f10;
-            color: #e8784a;
-        }
-        .card-title {
-            font-size: 1.1em;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .card-desc {
-            font-size: 0.78em;
-            color: var(--text-dim);
-            margin-top: -4px;
-        }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--leaf);
+    margin: 0 0 14px;
+  }
 
-        .param-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-        .param-row label {
-            font-size: 0.75em;
-            color: var(--text-dim);
-            white-space: nowrap;
-            min-width: 60px;
-        }
-        .emoji-btn {
-            font-size: 1.6em;
-            padding: 6px 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            background: #2a2d20;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            user-select: none;
-            line-height: 1;
-            position: relative;
-        }
-        .emoji-btn:hover {
-            background: #3a3d2e;
-            border-color: #5a5d4f;
-            transform: scale(1.08);
-        }
-        .emoji-btn.selected {
-            border-color: var(--gold) !important;
-            background: #3d3520 !important;
-            box-shadow: 0 0 14px var(--glow);
-            animation: pulseSelect 1.5s ease-in-out infinite;
-        }
-        @keyframes pulseSelect {
-            0%,
-            100% {
-                box-shadow: 0 0 10px var(--glow);
-            }
-            50% {
-                box-shadow: 0 0 22px rgba(240, 192, 96, 0.5);
-            }
-        }
-        .emoji-btn .tooltip {
-            display: none;
-            position: absolute;
-            bottom: 110%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000;
-            color: #fff;
-            font-size: 0.55em;
-            padding: 3px 8px;
-            border-radius: 6px;
-            white-space: nowrap;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .emoji-btn:hover .tooltip {
-            display: block;
-        }
+  h1 {
+    font-size: 30px;
+    line-height: 1.25;
+    margin: 0 0 12px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
 
-        .run-btn {
-            padding: 10px 22px;
-            border-radius: 25px;
-            font-weight: 700;
-            font-size: 0.9em;
-            cursor: pointer;
-            border: none;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            align-self: center;
-            color: #1a1d13;
-            background: linear-gradient(135deg, #f0c060, #d4a843);
-            box-shadow: 0 3px 14px rgba(200, 150, 50, 0.3);
-        }
-        .run-btn:hover {
-            box-shadow: 0 6px 22px rgba(220, 170, 60, 0.5);
-            transform: translateY(-1px);
-        }
-        .run-btn:active {
-            transform: scale(0.96);
-        }
-        .run-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
+  header p {
+    color: var(--ink-dim);
+    font-size: 15.5px;
+    max-width: 700px;
+    margin: 0;
+  }
 
-        .arena {
-            position: relative;
-            width: 100%;
-            height: 180px;
-            background: #1a1d14;
-            border-radius: 14px;
-            border: 1px dashed #3a3d2f;
-            overflow: hidden;
-            cursor: default;
-        }
-        .arena .agent {
-            position: absolute;
-            font-size: 2.4em;
-            transition: left 0.6s cubic-bezier(0.25, 0.8, 0.25, 1.2), top 0.6s cubic-bezier(0.25, 0.8, 0.25, 1.2),
-                transform 0.4s ease;
-            pointer-events: none;
-            z-index: 2;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-        }
-        .arena .agent.speaking {
-            animation: bounceTalk 0.4s ease-in-out;
-        }
-        @keyframes bounceTalk {
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-18px) scale(1.15);
-            }
-        }
-        .arena .bubble {
-            position: absolute;
-            background: #2a2d20;
-            color: #f0d878;
-            font-size: 0.7em;
-            padding: 4px 10px;
-            border-radius: 12px;
-            pointer-events: none;
-            z-index: 3;
-            white-space: nowrap;
-            border: 1px solid #5a5d3f;
-            animation: fadeBubble 2s forwards;
-            font-weight: 600;
-        }
-        @keyframes fadeBubble {
-            0% {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            15% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            80% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-        }
-        .arena .price-tag {
-            position: absolute;
-            font-weight: 700;
-            pointer-events: none;
-            z-index: 3;
-            animation: floatUp 2.5s forwards;
-            font-size: 0.85em;
-        }
-        @keyframes floatUp {
-            0% {
-                opacity: 0;
-                transform: translateY(10px) scale(0.7);
-            }
-            25% {
-                opacity: 1;
-                transform: translateY(-10px) scale(1.15);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-55px) scale(0.8);
-            }
-        }
-        .progress-bar {
-            width: 100%;
-            height: 5px;
-            background: #2a2d20;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 2px;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.3s linear;
-            background: linear-gradient(90deg, #8b6914, #f0c060);
-        }
-        .result-box {
-            font-size: 0.85em;
-            padding: 10px 14px;
-            border-radius: 10px;
-            background: #1a1d14;
-            min-height: 36px;
-            text-align: center;
-            font-weight: 500;
-            border: 1px solid #2a2d20;
-            color: #c0b890;
-            transition: all 0.4s;
-        }
-        .result-box.highlight {
-            border-color: var(--gold);
-            color: #f0d878;
-            box-shadow: 0 0 16px var(--glow);
-            animation: resultGlow 1s ease-out;
-        }
-        @keyframes resultGlow {
-            0% {
-                box-shadow: 0 0 30px rgba(240, 192, 96, 0.7);
-            }
-            100% {
-                box-shadow: 0 0 8px var(--glow);
-            }
-        }
+  .diagram-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 36px 0 48px;
+  }
 
-        @media (max-width: 420px) {
-            .garden-grid {
-                grid-template-columns: 1fr;
-                padding: 10px;
-            }
-            .arena {
-                height: 140px;
-            }
-            .arena .agent {
-                font-size: 1.8em;
-            }
-            .garden-header h1 {
-                font-size: 1.5em;
-            }
-            .garden-header .tree-row {
-                font-size: 34px;
-            }
-        }
-    </style>
+  svg { display: block; width: 100%; height: auto; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--line);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-dim);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    font-weight: 650;
+    margin: 44px 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .stage-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 820px) { .stage-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .stage-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--card-accent, var(--leaf));
+    border-radius: 8px;
+    padding: 18px 18px 16px;
+  }
+  .card .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--card-accent, var(--leaf));
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 8px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 15px; }
+  .card p { margin: 0; font-size: 13.2px; color: var(--ink-dim); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.2px;
+    margin-top: 6px;
+  }
+  th, td {
+    text-align: left;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    font-weight: 600;
+  }
+  td:first-child, th:first-child { padding-left: 4px; }
+  .pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(63,185,80,0.14);
+    color: var(--leaf);
+    border: 1px solid rgba(63,185,80,0.3);
+    white-space: nowrap;
+  }
+  .pill.amber { background: rgba(210,153,34,0.14); color: var(--stem); border-color: rgba(210,153,34,0.3); }
+  .pill.red { background: rgba(248,81,73,0.14); color: var(--fruit); border-color: rgba(248,81,73,0.3); }
+  .pill.brown { background: rgba(169,113,66,0.16); color: var(--root); border-color: rgba(169,113,66,0.35); }
+
+  .callout {
+    margin-top: 40px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 20px 22px;
+    font-size: 14px;
+    color: var(--ink-dim);
+  }
+  .callout strong { color: var(--ink); }
+
+  footer {
+    margin-top: 48px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #4a5568;
+  }
+</style>
 </head>
 <body>
+<div class="wrap">
 
-    <div class="garden-header">
-        <div class="tree-row">🌱 🌿 🌳 🍎 🌾</div>
-        <h1>Revenue Management Garden</h1>
-        <p class="subtitle">Serious Games · Agent Simulations · 6s–60s Plays</p>
-        <div class="metaphor-labels">
-            <span class="root-lbl">🪱 Roots — Foundational Pricing</span>
-            <span class="stem-lbl">🌿 Stems — Value Growth</span>
-            <span class="leaf-lbl">🍃 Leaves — Market Expansion</span>
-            <span class="fruit-lbl">🍎 Fruits — Harvested Rewards</span>
-        </div>
+  <header>
+    <p class="eyebrow">Revenue Management · Roots → Stem → Leaves → Fruits</p>
+    <h1>Five everyday prices, one tree: how a hidden rule becomes a badge you react to, and a badge becomes revenue.</h1>
+    <p>Every "surprising" price — a last seat, a loaf of bread, a scoop of ice cream, a foal, a car trim — follows the same growth pattern. A root principle (why value differs) feeds a stem (the algorithm or agent that computes it), which grows leaves (the visible, gamified signal you actually see), which set fruit (the value actually captured). The engine inside the stem used to be a fixed statistical rule before 2000; today it's often an autonomous AI agent working inside limits a human still sets.</p>
+  </header>
+
+  <div class="diagram-panel">
+    <svg viewBox="0 0 1000 700" xmlns="http://www.w3.org/2000/svg" font-family="SFMono-Regular, Consolas, monospace">
+
+      <!-- column headers -->
+      <text x="140" y="24" fill="#e6edf3" font-size="13" text-anchor="middle" font-weight="600">Flights</text>
+      <text x="320" y="24" fill="#e6edf3" font-size="13" text-anchor="middle" font-weight="600">Fresh food</text>
+      <text x="500" y="24" fill="#e6edf3" font-size="13" text-anchor="middle" font-weight="600">Ice cream</text>
+      <text x="680" y="24" fill="#e6edf3" font-size="13" text-anchor="middle" font-weight="600">Horses</text>
+      <text x="860" y="24" fill="#e6edf3" font-size="13" text-anchor="middle" font-weight="600">Cars</text>
+
+      <!-- row label strip -->
+      <text x="10" y="70" fill="#f85149" font-size="10.5" font-weight="700">FRUIT</text>
+      <text x="10" y="200" fill="#3fb950" font-size="10.5" font-weight="700">LEAF</text>
+      <text x="10" y="330" fill="#d29922" font-size="10.5" font-weight="700">STEM</text>
+      <text x="10" y="460" fill="#a97142" font-size="10.5" font-weight="700">ROOT</text>
+
+      <!-- vertical connector lines per column -->
+      <line x1="140" y1="95" x2="140" y2="585" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="320" y1="95" x2="320" y2="585" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="500" y1="95" x2="500" y2="585" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="680" y1="95" x2="680" y2="585" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="860" y1="95" x2="860" y2="585" stroke="#26303c" stroke-width="1.5"/>
+
+      <!-- FRUIT row (y ~38-95) -->
+      <g font-size="9.5">
+        <rect x="70" y="38" width="140" height="52" rx="7" fill="#0d1117" stroke="#f85149"/>
+        <text x="140" y="58" fill="#f85149" text-anchor="middle" font-weight="600">Premium fare</text>
+        <text x="140" y="74" fill="#8b98a5" text-anchor="middle">from urgent flyers</text>
+
+        <rect x="250" y="38" width="140" height="52" rx="7" fill="#0d1117" stroke="#f85149"/>
+        <text x="320" y="58" fill="#f85149" text-anchor="middle" font-weight="600">Less waste,</text>
+        <text x="320" y="74" fill="#8b98a5" text-anchor="middle">freshness premium</text>
+
+        <rect x="430" y="38" width="140" height="52" rx="7" fill="#0d1117" stroke="#f85149"/>
+        <text x="500" y="58" fill="#f85149" text-anchor="middle" font-weight="600">Higher basket</text>
+        <text x="500" y="74" fill="#8b98a5" text-anchor="middle">via bundle upsell</text>
+
+        <rect x="610" y="38" width="140" height="52" rx="7" fill="#0d1117" stroke="#f85149"/>
+        <text x="680" y="58" fill="#f85149" text-anchor="middle" font-weight="600">Premium stud fee</text>
+        <text x="680" y="74" fill="#8b98a5" text-anchor="middle">/ auction price</text>
+
+        <rect x="790" y="38" width="140" height="52" rx="7" fill="#0d1117" stroke="#f85149"/>
+        <text x="860" y="58" fill="#f85149" text-anchor="middle" font-weight="600">Higher ASP</text>
+        <text x="860" y="74" fill="#8b98a5" text-anchor="middle">via trim upgrade</text>
+      </g>
+
+      <!-- LEAF row (y ~168-225) -->
+      <g font-size="9.5">
+        <rect x="70" y="168" width="140" height="52" rx="7" fill="#0d1117" stroke="#3fb950"/>
+        <text x="140" y="188" fill="#3fb950" text-anchor="middle" font-weight="600">Countdown badge</text>
+        <text x="140" y="204" fill="#8b98a5" text-anchor="middle">"3 seats left" heat map</text>
+
+        <rect x="250" y="168" width="140" height="52" rx="7" fill="#0d1117" stroke="#3fb950"/>
+        <text x="320" y="188" fill="#3fb950" text-anchor="middle" font-weight="600">"Baked today" tag</text>
+        <text x="320" y="204" fill="#8b98a5" text-anchor="middle">discount ticks down</text>
+
+        <rect x="430" y="168" width="140" height="52" rx="7" fill="#0d1117" stroke="#3fb950"/>
+        <text x="500" y="188" fill="#3fb950" text-anchor="middle" font-weight="600">"Cherry-pick" badge</text>
+        <text x="500" y="204" fill="#8b98a5" text-anchor="middle">for a flavor pairing</text>
+
+        <rect x="610" y="168" width="140" height="52" rx="7" fill="#0d1117" stroke="#3fb950"/>
+        <text x="680" y="188" fill="#3fb950" text-anchor="middle" font-weight="600">Pedigree stars</text>
+        <text x="680" y="204" fill="#8b98a5" text-anchor="middle">shown on the listing</text>
+
+        <rect x="790" y="168" width="140" height="52" rx="7" fill="#0d1117" stroke="#3fb950"/>
+        <text x="860" y="188" fill="#3fb950" text-anchor="middle" font-weight="600">Trim tier unlocks</text>
+        <text x="860" y="204" fill="#8b98a5" text-anchor="middle">Base → Sport → Premium</text>
+      </g>
+
+      <!-- STEM row (y ~298-360, taller for two-line era note) -->
+      <g font-size="9">
+        <rect x="70" y="298" width="140" height="62" rx="7" fill="#0d1117" stroke="#d29922"/>
+        <text x="140" y="316" fill="#d29922" text-anchor="middle" font-weight="600">EMSR bid-price (pre-2000)</text>
+        <text x="140" y="330" fill="#8b98a5" text-anchor="middle">↓</text>
+        <text x="140" y="344" fill="#58a6ff" text-anchor="middle">AI dynamic-pricing agent</text>
+
+        <rect x="250" y="298" width="140" height="62" rx="7" fill="#0d1117" stroke="#d29922"/>
+        <text x="320" y="316" fill="#d29922" text-anchor="middle" font-weight="600">markdown heuristic</text>
+        <text x="320" y="330" fill="#8b98a5" text-anchor="middle">↓</text>
+        <text x="320" y="344" fill="#58a6ff" text-anchor="middle">AI demand-forecast agent</text>
+
+        <rect x="430" y="298" width="140" height="62" rx="7" fill="#0d1117" stroke="#d29922"/>
+        <text x="500" y="316" fill="#d29922" text-anchor="middle" font-weight="600">market-basket rules</text>
+        <text x="500" y="330" fill="#8b98a5" text-anchor="middle">↓</text>
+        <text x="500" y="344" fill="#58a6ff" text-anchor="middle">AI pairing agent</text>
+
+        <rect x="610" y="298" width="140" height="62" rx="7" fill="#0d1117" stroke="#d29922"/>
+        <text x="680" y="316" fill="#d29922" text-anchor="middle" font-weight="600">BLUP breeding stats</text>
+        <text x="680" y="330" fill="#8b98a5" text-anchor="middle">↓</text>
+        <text x="680" y="344" fill="#58a6ff" text-anchor="middle">AI genomic agent</text>
+
+        <rect x="790" y="298" width="140" height="62" rx="7" fill="#0d1117" stroke="#d29922"/>
+        <text x="860" y="316" fill="#d29922" text-anchor="middle" font-weight="600">trim price sheet</text>
+        <text x="860" y="330" fill="#8b98a5" text-anchor="middle">↓</text>
+        <text x="860" y="344" fill="#58a6ff" text-anchor="middle">AI configurator agent</text>
+      </g>
+
+      <!-- ROOT row (y ~428-480) -->
+      <g font-size="9.5">
+        <rect x="70" y="428" width="140" height="52" rx="7" fill="#0d1117" stroke="#a97142"/>
+        <text x="140" y="448" fill="#a97142" text-anchor="middle" font-weight="600">Scarcity +</text>
+        <text x="140" y="464" fill="#8b98a5" text-anchor="middle">urgency of the buyer</text>
+
+        <rect x="250" y="428" width="140" height="52" rx="7" fill="#0d1117" stroke="#a97142"/>
+        <text x="320" y="448" fill="#a97142" text-anchor="middle" font-weight="600">Perishability</text>
+        <text x="320" y="464" fill="#8b98a5" text-anchor="middle">value decays with time</text>
+
+        <rect x="430" y="428" width="140" height="52" rx="7" fill="#0d1117" stroke="#a97142"/>
+        <text x="500" y="448" fill="#a97142" text-anchor="middle" font-weight="600">Flavor synergy</text>
+        <text x="500" y="464" fill="#8b98a5" text-anchor="middle">whole &gt; sum of parts</text>
+
+        <rect x="610" y="428" width="140" height="52" rx="7" fill="#0d1117" stroke="#a97142"/>
+        <text x="680" y="448" fill="#a97142" text-anchor="middle" font-weight="600">Heritable quality</text>
+        <text x="680" y="464" fill="#8b98a5" text-anchor="middle">parents predict foal</text>
+
+        <rect x="790" y="428" width="140" height="52" rx="7" fill="#0d1117" stroke="#a97142"/>
+        <text x="860" y="448" fill="#a97142" text-anchor="middle" font-weight="600">Feature tiers</text>
+        <text x="860" y="464" fill="#8b98a5" text-anchor="middle">match driver expectations</text>
+      </g>
+
+      <!-- merge lines to shared soil -->
+      <line x1="140" y1="480" x2="140" y2="520" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="320" y1="480" x2="320" y2="520" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="500" y1="480" x2="500" y2="520" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="680" y1="480" x2="680" y2="520" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="860" y1="480" x2="860" y2="520" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="140" y1="520" x2="860" y2="520" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="500" y1="520" x2="500" y2="540" stroke="#26303c" stroke-width="1.5"/>
+
+      <!-- shared soil node -->
+      <rect x="300" y="540" width="400" height="46" rx="8" fill="#131a24" stroke="#26303c" stroke-width="1.5"/>
+      <text x="500" y="562" fill="#e6edf3" font-size="12" text-anchor="middle" font-weight="600">shared soil: willingness-to-pay data</text>
+      <text x="500" y="578" fill="#8b98a5" font-size="10" text-anchor="middle">the same five roots feed every branch above</text>
+
+      <!-- down to human / agent split -->
+      <line x1="500" y1="586" x2="500" y2="606" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="500" y1="606" x2="300" y2="606" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="500" y1="606" x2="700" y2="606" stroke="#26303c" stroke-width="1.5"/>
+      <line x1="300" y1="606" x2="300" y2="624" stroke="#26303c" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <line x1="700" y1="606" x2="700" y2="624" stroke="#26303c" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+      <rect x="180" y="624" width="240" height="56" rx="9" fill="#131a24" stroke="#8957e5" stroke-width="1.5"/>
+      <text x="300" y="646" fill="#8957e5" font-size="12" text-anchor="middle" font-weight="600">Human strategist</text>
+      <text x="300" y="662" fill="#8b98a5" font-size="10" text-anchor="middle">sets the goal and the guardrails</text>
+
+      <rect x="580" y="624" width="240" height="56" rx="9" fill="#131a24" stroke="#58a6ff" stroke-width="1.5"/>
+      <text x="700" y="646" fill="#58a6ff" font-size="12" text-anchor="middle" font-weight="600">Algorithm / AI agent</text>
+      <text x="700" y="662" fill="#8b98a5" font-size="10" text-anchor="middle">computes and executes, inside limits</text>
+
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#26303c"/>
+        </marker>
+      </defs>
+    </svg>
+
+    <div class="legend">
+      <span><i class="dot" style="background:#a97142"></i> Root — the hidden economic principle</span>
+      <span><i class="dot" style="background:#d29922"></i> Stem — the algorithm or agent that computes it</span>
+      <span><i class="dot" style="background:#3fb950"></i> Leaf — the visible, gamified signal</span>
+      <span><i class="dot" style="background:#f85149"></i> Fruit — the value actually captured</span>
     </div>
+  </div>
 
-    <div class="garden-grid" id="gardenGrid">
-        <!-- Game cards injected by JS -->
+  <h2>The four layers, explained</h2>
+  <div class="stage-grid">
+    <div class="card" style="--card-accent:#a97142">
+      <p class="tag">Root</p>
+      <h3>The principle nobody sees</h3>
+      <p>Why the same item can be worth two different amounts: it's scarce, it's decaying, it pairs well, it's genetically better, or it's built to a higher spec. This layer never changes on a screen — it's just true.</p>
     </div>
+    <div class="card" style="--card-accent:#d29922">
+      <p class="tag">Stem</p>
+      <h3>The engine that turns root into number</h3>
+      <p>Before 2000 this was a fixed statistical rule a human calibrated once a season (EMSR tables, markdown schedules, breeding-value regressions). Today it's often an AI agent recalculating continuously, still inside a human-set objective.</p>
+    </div>
+    <div class="card" style="--card-accent:#3fb950">
+      <p class="tag">Leaf</p>
+      <h3>The badge you actually react to</h3>
+      <p>The countdown clock, the "fresh today" tag, the combo score, the pedigree stars, the trim-unlock screen. This is the gamification surface — visible, legible, and designed to nudge a choice.</p>
+    </div>
+    <div class="card" style="--card-accent:#f85149">
+      <p class="tag">Fruit</p>
+      <h3>The value harvested</h3>
+      <p>The margin, the reduced waste, the higher basket, the auction premium, the higher average selling price. This is what the whole tree existed to produce — and what gets fed back into the root data for next season.</p>
+    </div>
+  </div>
 
-    <script>
-        (function() {
-            // ──────────────────────────────────────
-            // GAME DEFINITIONS
-            // ──────────────────────────────────────
-            const games = [{
-                id: 'flight',
-                category: 'root',
-                badge: '🪱 Roots',
-                badgeClass: 'badge-root',
-                cardClass: 'root-card',
-                title: '✈️ Last Seat Flight Ticket',
-                desc: 'Scarcity pricing: the final seat costs more when business urgency is high.',
-                params: [{
-                    key: 'urgency',
-                    label: 'Urgency',
-                    options: [
-                        { emoji: '🔥', val: 'high', tip: 'Critical meeting' },
-                        { emoji: '⏰', val: 'med', tip: 'Important trip' },
-                        { emoji: '😌', val: 'low', tip: 'Flexible travel' }
-                    ],
-                    default: 'high'
-                }, {
-                    key: 'traveler',
-                    label: 'Traveler',
-                    options: [
-                        { emoji: '💼', val: 'biz', tip: 'Business class' },
-                        { emoji: '🏖️', val: 'leisure', tip: 'Leisure traveler' }
-                    ],
-                    default: 'biz'
-                }],
-                agents: ['✈️', '💺', '💼'],
-                agentNames: ['Airline', 'Last Seat', 'Traveler'],
-                durationRange: [8, 18],
-                run: function(state, arena, onPhase, onDone) {
-                    const urgency = state.urgency;
-                    const traveler = state.traveler;
-                    const basePrice = 300;
-                    const urgencyMult = urgency === 'high' ? 2.6 : urgency === 'med' ? 1.7 : 1.1;
-                    const travelerMult = traveler === 'biz' ? 1.5 : 0.8;
-                    const finalPrice = Math.round(basePrice * urgencyMult * travelerMult);
-                    const accepted = traveler === 'biz' || (urgency === 'high' && traveler === 'leisure') ? Math
-                        .random() < 0.55 : Math.random() < 0.35;
+  <h2>Five branches, from principle to payoff</h2>
+  <table>
+    <thead>
+      <tr><th>Branch</th><th>Root (why)</th><th>Stem: rule (pre-2000) → agent (today)</th><th>Leaf (what you see)</th><th>Fruit (what's captured)</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Last seat on a flight</td>
+        <td>Scarcity + urgency of a business traveler</td>
+        <td><span class="pill amber">EMSR bid-price</span> → <span class="pill">AI dynamic pricing agent</span></td>
+        <td>Countdown / seat-map heat colors</td>
+        <td>Premium fare from time-sensitive demand</td>
+      </tr>
+      <tr>
+        <td>Fresh bread vs. wine</td>
+        <td>Perishability: bread decays in value fast, wine doesn't</td>
+        <td><span class="pill amber">Markdown heuristic</span> → <span class="pill">AI demand-forecast agent</span></td>
+        <td>"Baked today" tag, ticking discount</td>
+        <td>Less waste, premium on freshness</td>
+      </tr>
+      <tr>
+        <td>Ice cream flavor combo</td>
+        <td>Complementary tastes are worth more together</td>
+        <td><span class="pill amber">Market-basket rules</span> → <span class="pill">AI pairing agent</span></td>
+        <td>"Cherry-pick" combo badge</td>
+        <td>Higher basket via bundle upsell</td>
+      </tr>
+      <tr>
+        <td>Horse with strong pedigree</td>
+        <td>Healthy, strong parent genes predict a better foal</td>
+        <td><span class="pill amber">BLUP breeding-value stats</span> → <span class="pill">AI genomic-prediction agent</span></td>
+        <td>Pedigree star rating on the listing</td>
+        <td>Premium stud fee / auction price</td>
+      </tr>
+      <tr>
+        <td>Expensive car trims</td>
+        <td>Security, comfort, speed, and looks match driver expectations</td>
+        <td><span class="pill amber">Trim price sheet</span> → <span class="pill">AI configurator agent</span></td>
+        <td>Base → Sport → Premium unlock screen</td>
+        <td>Higher average selling price</td>
+      </tr>
+    </tbody>
+  </table>
 
-                    return {
-                        finalPrice,
-                        accepted,
-                        narrative: accepted ?
-                            `💺 Last seat sold at <b>$${finalPrice}</b> — ${urgency==='high'?'Urgency drove premium pricing.':'Deal struck.'}` :
-                            `💺 Seat unsold at $${finalPrice} — ${traveler==='leisure'?'Leisure traveler balked at the price.':'No deal reached.'}`,
-                        phases: [
-                            { t: 0.05, msg: '✈️ Airline lists last seat...', pos: { a0: [15, 40], a1: [70, 45], a2: [
-                                    85, 70
-                                ] } },
-                            { t: 0.2, msg: `💺 Only 1 seat remains! Base: $${basePrice}`, pos: { a0: [20, 35],
-                                    a1: [60, 40], a2: [80, 65] } },
-                            { t: 0.4, msg: `${urgency==='high'?'🔥 High urgency detected!':urgency==='med'?'⏰ Moderate urgency.':'😌 Low urgency.'}`, pos: { a0: [
-                                    25, 30
-                                ], a1: [50, 38], a2: [65, 55] } },
-                            { t: 0.6, msg: `💰 Dynamic price: $${finalPrice}`, pos: { a0: [30, 28], a1: [42,
-                                    35
-                                ], a2: [50, 48] } },
-                            { t: 0.8, msg: accepted ? '✅ Traveler accepts!' :
-                                '❌ Traveler declines.', pos: { a0: [35, 30], a1: [38, 40], a2: [40, 50] } },
-                        ]
-                    };
-                }
-            }, {
-                id: 'freshfood',
-                category: 'root',
-                badge: '🪱 Roots',
-                badgeClass: 'badge-root',
-                cardClass: 'root-card',
-                title: '🥖 Fresh Food Perishability',
-                desc: 'Fresh bread loses value fast; wine ages gracefully. Quality-based pricing over time.',
-                params: [{
-                    key: 'product',
-                    label: 'Product',
-                    options: [
-                        { emoji: '🥖', val: 'bread', tip: 'Fresh bread' },
-                        { emoji: '🍷', val: 'wine', tip: 'Aged wine' },
-                        { emoji: '🧀', val: 'cheese', tip: 'Artisan cheese' }
-                    ],
-                    default: 'bread'
-                }, {
-                    key: 'freshness',
-                    label: 'Initial',
-                    options: [
-                        { emoji: '⭐', val: 'high', tip: 'Peak quality' },
-                        { emoji: '👍', val: 'med', tip: 'Good quality' },
-                        { emoji: '👎', val: 'low', tip: 'Near expiry' }
-                    ],
-                    default: 'high'
-                }],
-                agents: ['🛒', '🥖', '🏪'],
-                agentNames: ['Customer', 'Product', 'Shop'],
-                durationRange: [7, 16],
-                run: function(state, arena, onPhase, onDone) {
-                    const product = state.product;
-                    const freshness = state.freshness;
-                    const perishable = product === 'bread';
-                    const ageable = product === 'wine';
-                    const startPrice = freshness === 'high' ? (perishable ? 5 : ageable ? 45 : 12) :
-                        freshness === 'med' ? (perishable ? 3 : ageable ? 50 : 9) : (perishable ? 1 : ageable ?
-                            58 : 6);
-                    const endPrice = perishable ? Math.max(0.5, startPrice * (freshness === 'high' ? 0.3 :
-                        freshness === 'med' ? 0.4 : 0.6)) :
-                        ageable ? startPrice * (freshness === 'high' ? 1.15 : freshness === 'med' ? 1.08 : 1.02) :
-                        startPrice * 0.85;
-                    const sold = perishable ? (freshness === 'high' ? Math.random() < 0.85 : Math.random() < 0.5) :
-                        Math.random() < 0.7;
+  <h2>Human ↔ algorithm interplay, then and now</h2>
+  <table>
+    <thead>
+      <tr><th>Era</th><th>Who sets the goal</th><th>Who computes / executes</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="pill brown">Pre-2000</span></td>
+        <td>Human analyst, once a season</td>
+        <td>Fixed statistical rule (EMSR tables, breeding-value regressions, trim price sheets)</td>
+        <td>An airline revenue analyst sets seat-protection levels; the model just applies them</td>
+      </tr>
+      <tr>
+        <td><span class="pill amber">2000s–2010s</span></td>
+        <td>Human sets an objective function and bounds</td>
+        <td>Optimization / ML model recalculates continuously within those bounds</td>
+        <td>Fares auto-adjust hourly, but only inside a floor and ceiling a person approved</td>
+      </tr>
+      <tr>
+        <td><span class="pill">Today</span></td>
+        <td>Human sets goals and guardrails, reviews exceptions</td>
+        <td>Autonomous AI agent monitors signals, re-prices, and explains its own reasoning</td>
+        <td>An agent notices a demand spike, re-prices, and flags the change for human sign-off</td>
+      </tr>
+    </tbody>
+  </table>
 
-                    return {
-                        finalPrice: Math.round(endPrice * 100) / 100,
-                        accepted: sold,
-                        narrative: perishable ?
-                            `🥖 Bread started at $${startPrice}, dropped to <b>$${endPrice.toFixed(2)}</b> — freshness decayed. ${sold?'Sold!':'Unsold.'}` :
-                            ageable ? `🍷 Wine started at $${startPrice}, appreciated to <b>$${endPrice.toFixed(2)}</b> — aged well. ${sold?'Sold!':'Held for later.'}` :
-                            `🧀 Cheese held at ~$${endPrice.toFixed(2)}. ${sold?'Customer bought it.':'Left on shelf.'}`,
-                        phases: [
-                            { t: 0.05, msg: `🏪 Shop displays ${product==='bread'?'🥖 bread':product==='wine'?'🍷 wine':'🧀 cheese'} at $${startPrice}`, pos: { a0: [
-                                    75, 55
-                                ], a1: [45, 40], a2: [15, 30] } },
-                            { t: 0.25, msg: perishable ? '⏳ Freshness fading...' :
-                                ageable ? '🍇 Aging gracefully...' : '🔍 Customer inspects...', pos: { a0: [60,
-                                    50
-                                ], a1: [42, 42], a2: [20, 32] } },
-                            { t: 0.5, msg: `💲 Price adjusts to $${endPrice.toFixed(2)}`, pos: { a0: [45, 45],
-                                    a1: [38, 44], a2: [28, 34] } },
-                            { t: 0.75, msg: sold ? '🤝 Deal closed!' : '🚶 Customer walks away.',
-                                pos: { a0: [30, 40], a1: [35, 46], a2: [35, 36] } },
-                        ]
-                    };
-                }
-            }, {
-                id: 'combo',
-                category: 'stem',
-                badge: '🌿 Stems',
-                badgeClass: 'badge-stem',
-                cardClass: 'stem-card',
-                title: '🍦 Flavor Combination Premium',
-                desc: 'Compatible ice-cream flavors create a cherry-pick combo worth more than the sum.',
-                params: [{
-                    key: 'flavor1',
-                    label: 'Flavor A',
-                    options: [
-                        { emoji: '🍫', val: 'chocolate', tip: 'Rich chocolate' },
-                        { emoji: '🍓', val: 'strawberry', tip: 'Sweet berry' },
-                        { emoji: '🥭', val: 'mango', tip: 'Tropical mango' }
-                    ],
-                    default: 'chocolate'
-                }, {
-                    key: 'flavor2',
-                    label: 'Flavor B',
-                    options: [
-                        { emoji: '🍌', val: 'banana', tip: 'Creamy banana' },
-                        { emoji: '🫐', val: 'blueberry', tip: 'Tangy blueberry' },
-                        { emoji: '🌿', val: 'mint', tip: 'Cool mint' }
-                    ],
-                    default: 'banana'
-                }],
-                agents: ['🍦', '😋', '🎨'],
-                agentNames: ['Shop', 'Customer', 'Mixologist'],
-                durationRange: [9, 20],
-                run: function(state, arena, onPhase, onDone) {
-                    const f1 = state.flavor1;
-                    const f2 = state.flavor2;
-                    const compatMap = {
-                        'chocolate-banana': 0.9,
-                        'chocolate-blueberry': 0.55,
-                        'chocolate-mint': 0.75,
-                        'strawberry-banana': 0.8,
-                        'strawberry-blueberry': 0.7,
-                        'strawberry-mint': 0.4,
-                        'mango-banana': 0.85,
-                        'mango-blueberry': 0.6,
-                        'mango-mint': 0.35
-                    };
-                    const compat = compatMap[f1 + '-' + f2] || 0.5;
-                    const basePrice = 6;
-                    const premium = Math.round(basePrice * (1 + compat) * 100) / 100;
-                    const sold = compat > 0.55 ? Math.random() < 0.8 : Math.random() < 0.35;
+  <div class="callout">
+    <strong>Why this is a gamification loop, not just pricing:</strong> the root and stem stay invisible on purpose — a customer never sees the EMSR table or the AI agent's forecast. What they see is the <strong>leaf</strong>: a badge, a countdown, a star rating, a combo score, an unlock screen. That leaf is designed to make a hidden rule feel like a game you can win by acting now, pairing well, or trading up — and the <strong>fruit</strong> is the same revenue outcome the root principle predicted all along, just captured through a choice the customer felt good making.
+  </div>
 
-                    return {
-                        finalPrice: premium,
-                        accepted: sold,
-                        narrative: sold ?
-                            `🍦 Combo <b>$${premium}</b> (${Math.round(compat*100)}% compatible) — Cherry-pick success! 🍒` :
-                            `🍦 Combo at $${premium} — ${compat<0.5?'Flavors clash.':'Customer hesitated.'} No sale.`,
-                        phases: [
-                            { t: 0.05, msg: `🎨 Mixologist combines ${f1} + ${f2}...`, pos: { a0: [20, 35],
-                                    a1: [75, 55], a2: [48, 30] } },
-                            { t: 0.25, msg: `🔬 Compatibility: ${Math.round(compat*100)}%`,
-                                pos: { a0: [25, 32], a1: [68, 50], a2: [44, 28] } },
-                            { t: 0.5, msg: `💲 Premium price: $${premium}`, pos: { a0: [30, 30], a1: [55, 42],
-                                    a2: [40, 26] } },
-                            { t: 0.75, msg: sold ? '😋 Customer loves it! 🍒' : '😐 Not convinced.',
-                                pos: { a0: [35, 28], a1: [42, 38], a2: [36, 24] } },
-                        ]
-                    };
-                }
-            }, {
-                id: 'horse',
-                category: 'stem',
-                badge: '🌿 Stems',
-                badgeClass: 'badge-stem',
-                cardClass: 'stem-card',
-                title: '🐴 Horse Breeding Genetics',
-                desc: 'Strong parent genes produce desirable offspring — speed, stamina & temperament.',
-                params: [{
-                    key: 'sire',
-                    label: 'Sire ♂',
-                    options: [
-                        { emoji: '🏇', val: 'champion', tip: 'Champion racer' },
-                        { emoji: '🐴', val: 'strong', tip: 'Strong workhorse' },
-                        { emoji: '🦄', val: 'rare', tip: 'Rare lineage' }
-                    ],
-                    default: 'champion'
-                }, {
-                    key: 'dam',
-                    label: 'Dam ♀',
-                    options: [
-                        { emoji: '🐎', val: 'elegant', tip: 'Elegant mare' },
-                        { emoji: '🏇', val: 'fast', tip: 'Speed demon' },
-                        { emoji: '🐴', val: 'steady', tip: 'Steady temperament' }
-                    ],
-                    default: 'elegant'
-                }],
-                agents: ['👨‍🌾', '🐴', '💎'],
-                agentNames: ['Breeder', 'Foal', 'Buyer'],
-                durationRange: [10, 22],
-                run: function(state, arena, onPhase, onDone) {
-                    const sire = state.sire;
-                    const dam = state.dam;
-                    const geneScore = (sire === 'champion' ? 90 : sire === 'rare' ? 85 : 65) +
-                        (dam === 'fast' ? 88 : dam === 'elegant' ? 80 : 62);
-                    const avgScore = Math.round(geneScore / 2);
-                    const value = avgScore * 180;
-                    const sold = avgScore > 70 ? Math.random() < 0.85 : Math.random() < 0.5;
+  <footer>generated as a reference diagram · edit the SVG, tables, or content freely for your own branches</footer>
 
-                    return {
-                        finalPrice: value,
-                        accepted: sold,
-                        narrative: sold ?
-                            `🐴 Foal valued at <b>$${value.toLocaleString()}</b> (Gene score: ${avgScore}) — Desirable lineage!` :
-                            `🐴 Foal at $${value.toLocaleString()} — Buyer passed. Gene score: ${avgScore}.`,
-                        phases: [
-                            { t: 0.05, msg: `👨‍🌾 Breeder pairs ${sire} sire + ${dam} dam`, pos: { a0: [15,
-                                    30
-                                ], a1: [50, 50], a2: [80, 60] } },
-                            { t: 0.3, msg: `🧬 Gene score emerging: ${avgScore}`, pos: { a0: [20, 28],
-                                a1: [42, 38], a2: [70, 52] } },
-                            { t: 0.55, msg: `💎 Value estimate: $${value.toLocaleString()}`,
-                                pos: { a0: [25, 26], a1: [36, 32], a2: [55, 42] } },
-                            { t: 0.8, msg: sold ? '🤝 Buyer impressed! Sold!' :
-                                '🚶 Buyer unconvinced.', pos: { a0: [30, 28], a1: [34, 36], a2: [40, 38] } },
-                        ]
-                    };
-                }
-            }, {
-                id: 'car',
-                category: 'fruit',
-                badge: '🍎 Fruits',
-                badgeClass: 'badge-fruit',
-                cardClass: 'fruit-card',
-                title: '🚗 Luxury Car Feature Matching',
-                desc: 'Expensive cars match driver expectations: security, speed, luxury & looks.',
-                params: [{
-                    key: 'priority',
-                    label: 'Priority',
-                    options: [
-                        { emoji: '🛡️', val: 'security', tip: 'Safety first' },
-                        { emoji: '🏎️', val: 'speed', tip: 'Performance' },
-                        { emoji: '✨', val: 'luxury', tip: 'Prestige & comfort' }
-                    ],
-                    default: 'luxury'
-                }, {
-                    key: 'brand',
-                    label: 'Brand',
-                    options: [
-                        { emoji: '🏁', val: 'sport', tip: 'Sports marque' },
-                        { emoji: '👑', val: 'premium', tip: 'Premium luxury' },
-                        { emoji: '🛡️', val: 'safe', tip: 'Safety leader' }
-                    ],
-                    default: 'premium'
-                }],
-                agents: ['🚗', '🏎️', '💼'],
-                agentNames: ['Brand', 'Driver', 'Competitor'],
-                durationRange: [8, 19],
-                run: function(state, arena, onPhase, onDone) {
-                    const priority = state.priority;
-                    const brand = state.brand;
-                    const matchScore = (
-                        (priority === 'security' && brand === 'safe') ? 95 :
-                        (priority === 'speed' && brand === 'sport') ? 92 :
-                        (priority === 'luxury' && brand === 'premium') ? 90 :
-                        (priority === 'luxury' && brand === 'sport') ? 60 :
-                        (priority === 'speed' && brand === 'premium') ? 65 :
-                        (priority === 'security' && brand === 'premium') ? 70 : 45
-                    );
-                    const price = 45000 + matchScore * 800;
-                    const sold = matchScore > 60 ? Math.random() < 0.82 : Math.random() < 0.3;
-
-                    return {
-                        finalPrice: price,
-                        accepted: sold,
-                        narrative: sold ?
-                            `🚗 <b>$${price.toLocaleString()}</b> — ${matchScore}% match on ${priority}. Driver satisfied!` :
-                            `🚗 $${price.toLocaleString()} — Only ${matchScore}% match. ${brand==='sport'&&priority==='security'?'Safety concerns.':priority==='speed'&&brand==='safe'?'Too slow.':'Mismatch.'}`,
-                        phases: [
-                            { t: 0.05, msg: `🚗 ${brand} brand presents vehicle...`, pos: { a0: [20, 35],
-                                a1: [75, 55], a2: [50, 70] } },
-                            { t: 0.25, msg: `🎯 Driver prioritizes: ${priority}`, pos: { a0: [25, 32],
-                                a1: [65, 48], a2: [48, 62] } },
-                            { t: 0.5, msg: `📊 Match: ${matchScore}% | Price: $${price.toLocaleString()}`,
-                                pos: { a0: [30, 30], a1: [52, 40], a2: [44, 50] } },
-                            { t: 0.78, msg: sold ? '🤝 Keys handed over!' :
-                                '🚶 Driver walks to competitor.', pos: { a0: [35, 28], a1: [40, 35],
-                                a2: [42, 42] } },
-                        ]
-                    };
-                }
-            }];
-
-            // ──────────────────────────────────────
-            // BUILD UI
-            // ──────────────────────────────────────
-            const grid = document.getElementById('gardenGrid');
-            const gameStates = {};
-
-            games.forEach((game, idx) => {
-                const card = document.createElement('div');
-                card.className = `game-card ${game.cardClass}`;
-                card.innerHTML = `
-                <span class="card-badge ${game.badgeClass}">${game.badge}</span>
-                <div class="card-title">${game.title}</div>
-                <div class="card-desc">${game.desc}</div>
-                <div class="param-row" id="params-${game.id}"></div>
-                <button class="run-btn" id="run-${game.id}" data-game="${game.id}">▶ Run Simulation</button>
-                <div class="arena" id="arena-${game.id}"></div>
-                <div class="progress-bar"><div class="progress-fill" id="progress-${game.id}" style="width:0%"></div></div>
-                <div class="result-box" id="result-${game.id}">⏳ Ready to run...</div>
-              `;
-                grid.appendChild(card);
-
-                // Build param buttons
-                const paramsRow = card.querySelector(`#params-${game.id}`);
-                game.params.forEach(param => {
-                    const label = document.createElement('label');
-                    label.textContent = param.label + ':';
-                    paramsRow.appendChild(label);
-                    param.options.forEach(opt => {
-                        const btn = document.createElement('span');
-                        btn.className = 'emoji-btn' + (opt.val === param.default ?
-                            ' selected' : '');
-                        btn.innerHTML = `${opt.emoji}<span class="tooltip">${opt.tip}</span>`;
-                        btn.dataset.paramKey = param.key;
-                        btn.dataset.paramVal = opt.val;
-                        btn.dataset.gameId = game.id;
-                        btn.addEventListener('click', () => {
-                            const siblings = paramsRow.querySelectorAll(
-                                `[data-param-key="${param.key}"]`);
-                            siblings.forEach(s => s.classList.remove('selected'));
-                            btn.classList.add('selected');
-                        });
-                        paramsRow.appendChild(btn);
-                    });
-                });
-
-                // Initialize state
-                gameStates[game.id] = {};
-                game.params.forEach(p => {
-                    gameStates[game.id][p.key] = p.default;
-                });
-                // Update state on clicks
-                paramsRow.addEventListener('click', (e) => {
-                    const btn = e.target.closest('.emoji-btn');
-                    if (!btn) return;
-                    const key = btn.dataset.paramKey;
-                    const val = btn.dataset.paramVal;
-                    if (key && val && btn.dataset.gameId === game.id) {
-                        gameStates[game.id][key] = val;
-                    }
-                });
-
-                // Run button
-                const runBtn = card.querySelector(`#run-${game.id}`);
-                const arena = card.querySelector(`#arena-${game.id}`);
-                const progressBar = card.querySelector(`#progress-${game.id}`);
-                const resultBox = card.querySelector(`#result-${game.id}`);
-
-                runBtn.addEventListener('click', () => {
-                    runSimulation(game, gameStates[game.id], arena, progressBar, resultBox,
-                        runBtn);
-                });
-            });
-
-            // ──────────────────────────────────────
-            // SIMULATION ENGINE
-            // ──────────────────────────────────────
-            function runSimulation(game, state, arena, progressBar, resultBox, runBtn) {
-                // Disable button during run
-                runBtn.disabled = true;
-                resultBox.classList.remove('highlight');
-                resultBox.innerHTML = '🔄 Simulation running...';
-                progressBar.style.width = '0%';
-                arena.innerHTML = '';
-
-                const [minDur, maxDur] = game.durationRange;
-                const totalDuration = minDur + Math.random() * (maxDur - minDur); // seconds
-                const totalMs = totalDuration * 1000;
-                const startTime = performance.now();
-
-                // Get simulation data
-                const simData = game.run(state, arena,
-                    (phaseMsg) => { /* optional phase callback */ },
-                    () => { /* done callback */ }
-                );
-
-                // Create agent elements
-                const agentEls = [];
-                game.agents.forEach((emoji, i) => {
-                    const el = document.createElement('span');
-                    el.className = 'agent';
-                    el.textContent = emoji;
-                    el.style.left = '10%';
-                    el.style.top = '40%';
-                    el.title = game.agentNames[i];
-                    arena.appendChild(el);
-                    agentEls.push(el);
-                });
-
-                // Create floating bubbles container
-                const bubblesLayer = document.createElement('div');
-                bubblesLayer.style.cssText =
-                    'position:absolute;inset:0;pointer-events:none;z-index:3;';
-                arena.appendChild(bubblesLayer);
-
-                let lastPhaseIdx = -1;
-                let bubbleTimeout = null;
-
-                function spawnBubble(msg, x, y) {
-                    const b = document.createElement('span');
-                    b.className = 'bubble';
-                    b.textContent = msg;
-                    b.style.left = x + '%';
-                    b.style.top = y + '%';
-                    bubblesLayer.appendChild(b);
-                    setTimeout(() => b.remove(), 2200);
-                }
-
-                function updateAgents(positions) {
-                    if (!positions) return;
-                    Object.keys(positions).forEach((key, i) => {
-                        const pos = positions[key];
-                        if (agentEls[i]) {
-                            agentEls[i].style.left = pos[0] + '%';
-                            agentEls[i].style.top = pos[1] + '%';
-                        }
-                    });
-                }
-
-                function animate(timestamp) {
-                    const elapsed = timestamp - startTime;
-                    const progress = Math.min(elapsed / totalMs, 1);
-                    progressBar.style.width = (progress * 100) + '%';
-
-                    // Determine current phase
-                    let currentPhaseIdx = -1;
-                    for (let i = simData.phases.length - 1; i >= 0; i--) {
-                        if (progress >= simData.phases[i].t) {
-                            currentPhaseIdx = i;
-                            break;
-                        }
-                    }
-
-                    if (currentPhaseIdx !== lastPhaseIdx && currentPhaseIdx >= 0) {
-                        lastPhaseIdx = currentPhaseIdx;
-                        const phase = simData.phases[currentPhaseIdx];
-                        updateAgents(phase.pos);
-                        // Animate the speaking agent
-                        const speakingAgentIdx = currentPhaseIdx % game.agents.length;
-                        if (agentEls[speakingAgentIdx]) {
-                            agentEls[speakingAgentIdx].classList.add('speaking');
-                            setTimeout(() => agentEls[speakingAgentIdx].classList.remove('speaking'),
-                                400);
-                        }
-                        // Spawn bubble near center
-                        const bx = 20 + Math.random() * 50;
-                        const by = 8 + Math.random() * 20;
-                        spawnBubble(phase.msg, bx, by);
-                        resultBox.innerHTML = '🔄 ' + phase.msg;
-                    }
-
-                    // Price tag near end
-                    if (progress > 0.65 && progress < 0.9 && !arena.dataset.priceShown) {
-                        arena.dataset.priceShown = '1';
-                        const tag = document.createElement('span');
-                        tag.className = 'price-tag';
-                        tag.textContent = '$' + simData.finalPrice.toLocaleString();
-                        tag.style.left = '38%';
-                        tag.style.top = '22%';
-                        tag.style.color = simData.accepted ? '#5cb870' : '#e05555';
-                        tag.style.fontSize = '1.1em';
-                        arena.appendChild(tag);
-                        setTimeout(() => tag.remove(), 2600);
-                    }
-
-                    if (progress < 1) {
-                        requestAnimationFrame(animate);
-                    } else {
-                        // Done
-                        progressBar.style.width = '100%';
-                        resultBox.innerHTML = simData.narrative;
-                        resultBox.classList.add('highlight');
-                        runBtn.disabled = false;
-                        arena.dataset.priceShown = '';
-                        // Final positions
-                        const lastPhase = simData.phases[simData.phases.length - 1];
-                        if (lastPhase) updateAgents(lastPhase.pos);
-                        // Final bubble
-                        spawnBubble(simData.accepted ? '✅ Done!' : '❌ No deal', 40, 15);
-                    }
-                }
-
-                // Initial positions
-                if (simData.phases.length > 0) {
-                    updateAgents(simData.phases[0].pos);
-                }
-
-                requestAnimationFrame(animate);
-            }
-
-            // ──────────────────────────────────────
-            // INIT: Auto-run first simulation for each game after short delay
-            // ──────────────────────────────────────
-            setTimeout(() => {
-                document.querySelectorAll('.run-btn').forEach((btn, i) => {
-                    if (i < 2) {
-                        setTimeout(() => btn.click(), i * 600);
-                    }
-                });
-            }, 800);
-
-            console.log(' Revenue Management Garden ready!');
-            console.log(' Roots: Flight tickets & Fresh foods');
-            console.log(' Stems: Flavor combos & Horse breeding');
-            console.log(' Fruits: Luxury cars');
-            console.log('   Click any "Run Simulation" button to play!');
-            console.log('   Each simulation runs 6-60 seconds with animated agents.');
-
-        })();
-    </script>
+</div>
 </body>
 </html>
