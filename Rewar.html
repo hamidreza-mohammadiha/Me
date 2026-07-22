@@ -604,7 +604,7 @@
             <div class="ctrl-group">
                 <label>⚙️ Dynamic Coeff</label>
                 <span class="slider-val" id="coeffVal">1.00</span>
-                <input type="range" id="coeffSlider" min="0.618" max="2.718" step="0.01" value="1.00" />
+                <input type="range" id="coeffSlider" min="0.70" max="1.30" step="0.01" value="1.00" />
             </div>
             <div class="ctrl-group" style="min-width:80px;">
                 <label>⏱️ Speed</label>
@@ -987,11 +987,11 @@
             function generatePassenger() {
                 const isBusiness = Math.random() < 0.35;
                 // Value v: uniform between 200 and 600
-                const v = 200 + Math.random() * 200;
+                const v = 200 + Math.random() * 400;
                 // Catch: utility of catching the flight
                 let catchMin, catchMax;
                 if (isBusiness) {
-                    catchMin = v;
+                    catchMin = 0;
                     catchMax = 2 * v;
                 } else {
                     catchMin = 0.5 * v;
@@ -999,7 +999,7 @@
                 }
                 const catchVal = catchMin + Math.random() * (catchMax - catchMin);
                 // Lose: utility of waiting
-                const lose = isBusiness ? -1 * v : -0.1*v;
+                const lose = isBusiness ? -0.1 * v : -v;
                 return {
                     type: isBusiness ? 'business' : 'leisure',
                     v: v,
@@ -1009,16 +1009,27 @@
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            //  DYNAMIC PRICE
+            //  DYNAMIC PRICE (Simplified)
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             function calcDynamicPrice(state) {
-                const elapsed = state.elapsed;
-                const expected = TOTAL_SEATS * Math.min(1, elapsed / TOTAL_TIME);
-                const actual = state.dynSoldCount;
-                const pace = Math.max(0.25, Math.min(3.5, actual / Math.max(1, expected)));
-                const raw = STATIC_PRICE * pace * state.coefficient;
-                const clamped = Math.round(Math.max(STATIC_PRICE * 0.45, Math.min(STATIC_PRICE * 2.8, raw)));
-                state.paceRatio = pace;
+                // 1. Calculate supply-based multiplier
+                // More seats sold -> higher price. Less seats sold -> lower price.
+                const ratio = state.dynSoldCount / TOTAL_SEATS; // 0 to 1
+                // Multiplier ranges from 0.6 (all empty) to 2.0 (all full)
+                const multiplier = 0.6 + ratio * 1.4;
+
+                // 2. Apply coefficient (user controlled)
+                let raw = STATIC_PRICE * multiplier * state.coefficient;
+
+                // 3. Add random variance (-$10 to +$10)
+                const variance = (Math.random() - 0.5) * 20;
+                raw += variance;
+
+                // 4. Clamp to reasonable bounds (e.g., 50% to 250% of static price)
+                const clamped = Math.round(Math.max(STATIC_PRICE * 0.5, Math.min(STATIC_PRICE * 2.5, raw)));
+
+                // 5. Update state
+                state.paceRatio = multiplier; // Keep the variable for UI compatibility, though it's now a supply ratio
                 state.currentDynPrice = clamped;
                 return clamped;
             }
@@ -1084,7 +1095,7 @@
                     const seatIdx = decision.dynSeatIdx;
                     state.seats[seatIdx] = { airline: 'dyn', price: state.currentDynPrice, seatType: getSeatType(seatIdx) };
                     state.dynSoldCount++;
-                    state.dynRevenue += state.currentDynPrice - 200;
+                    state.dynRevenue += state.currentDynPrice;
                     state.dynSatisfactions.push(computeSatisfaction(passenger, state.currentDynPrice));
                     state.dynBookings.push({
                         time: time,
@@ -1104,7 +1115,7 @@
                     const seatIdx = decision.stcSeatIdx;
                     state.seats[seatIdx] = { airline: 'stc', price: STATIC_PRICE, seatType: getSeatType(seatIdx) };
                     state.stcSoldCount++;
-                    state.stcRevenue += STATIC_PRICE - 200;
+                    state.stcRevenue += STATIC_PRICE;
                     state.stcSatisfactions.push(computeSatisfaction(passenger, STATIC_PRICE));
                     state.stcBookings.push({
                         time: time,
@@ -1157,7 +1168,7 @@
                         state.seats[seatIdx] = { airline: 'dyn', price: state.currentDynPrice, seatType: getSeatType(
                             seatIdx) };
                         state.dynSoldCount++;
-                        state.dynRevenue += state.currentDynPrice - 200;
+                        state.dynRevenue += state.currentDynPrice;
                         state.dynSatisfactions.push(computeSatisfaction(p, state.currentDynPrice));
                         state.dynBookings.push({
                             time: time,
@@ -1179,7 +1190,7 @@
                         const seatIdx = decision.stcSeatIdx;
                         state.seats[seatIdx] = { airline: 'stc', price: STATIC_PRICE, seatType: getSeatType(seatIdx) };
                         state.stcSoldCount++;
-                        state.stcRevenue += STATIC_PRICE - 200;
+                        state.stcRevenue += STATIC_PRICE;
                         state.stcSatisfactions.push(computeSatisfaction(p, STATIC_PRICE));
                         state.stcBookings.push({
                             time: time,
@@ -1344,8 +1355,8 @@
                 for (let i = 0; i <= 8; i++) {
                     const x = (i / 8) * w;
                     ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, h);
+                    ctx.moveTo(0, x);
+                    ctx.lineTo(w, x);
                     ctx.stroke();
                 }
 
