@@ -1146,7 +1146,7 @@
                 const actual = state.dynSoldCount;
                 const pace = Math.max(0.25, Math.min(3.5, actual / Math.max(1, expected)));
                 const raw = STATIC_PRICE * pace * state.coefficient;
-                const clamped = Math.round(Math.max(STATIC_PRICE * 0.45, Math.min(STATIC_PRICE * 2.8, raw)));
+                const clamped = Math.round(Math.max(STATIC_PRICE / 1.618, Math.min(STATIC_PRICE * 2.718, raw)));
                 state.paceRatio = pace;
                 state.currentDynPrice = clamped;
                 return clamped;
