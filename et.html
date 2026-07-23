@@ -113,18 +113,18 @@
             -webkit-appearance: none;
             width: 120px;
             height: 7px;
-            border-radius: 4px;
+            border-radius: 2px;
             background: var(--slider-track);
             outline: none;
             cursor: pointer;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 26px;
-            height: 26px;
+            width: 6px;
+            height: 14px;
             border-radius: 50%;
             background: var(--accent);
-            border: 2px solid #8b6914;
+            border: 1px solid #8b6914;
             cursor: pointer;
             box-shadow: 0 0 12px rgba(212, 168, 67, 0.4);
             transition: 0.15s;
@@ -376,7 +376,7 @@
                 grid-template-columns: 1fr;
             }
         }
-        .dash-panel {
+        .log-panel {
             background: var(--panel);
             border-radius: 16px;
             padding: 14px 16px;
@@ -488,7 +488,7 @@
             background: #12140e;
             border-radius: 10px;
             padding: 10px 14px;
-            height: 130px;
+            height: 300px;
             overflow-y: auto;
             font-family: 'Courier New', monospace;
             font-size: 0.7em;
@@ -602,7 +602,7 @@
                 <input type="range" id="lambdaSlider" min="0.10" max="1.80" step="0.05" value="0.65" />
             </div>
             <div class="ctrl-group">
-                <label>⚙️ Dynamic Coeff</label>
+                <label>⚙️ Dynamic Pricing Adjustment</label>
                 <span class="slider-val" id="coeffVal">1.00</span>
                 <input type="range" id="coeffSlider" min="0.618" max="2.718" step="0.01" value="1.00" />
             </div>
@@ -701,7 +701,12 @@
                     </div>
                 </div>
             </div>
+
+                
+
         </div>
+
+            
 
         <!-- ─── COMMENTARY ─── -->
         <div class="log-panel">
@@ -714,6 +719,130 @@
                 <div class="entry">🔄 Shared market: passengers choose the best option.</div>
             </div>
         </div>
+
+
+        <section class="seat-panel" style="font-size: xx-small;">
+
+                <h2>Customer Behavior</h2>
+
+                <p>
+                    Each customer arrives randomly and observes the
+                    <strong>current dynamic price</strong>,
+                    <strong>fixed static price</strong>,
+                    <strong>available seats</strong>,
+                    <strong>seat quality</strong>, and their own
+                    <strong>willingness to pay</strong>,
+                    <strong>urgency</strong>, and
+                    <strong>passenger type</strong>.
+                    The customer computes the utility of
+                    <em>buying from the Dynamic Airline</em>,
+                    <em>buying from the Static Airline</em>,
+                    <em>waiting</em>, or
+                    <em>leaving the market</em>,
+                    then selects the action with the
+                    <strong>highest utility</strong>.
+                    Customers who wait enter a
+                    <strong>spillover queue</strong> and periodically
+                    re-evaluate their decision as prices and seat availability change.
+                </p>
+                <br><br>
+                <h2>Dynamic Airline Behavior</h2>
+
+                <p>
+                    The Dynamic Airline continuously observes
+                    <strong>elapsed booking time</strong>,
+                    <strong>seats sold</strong>,
+                    <strong>remaining capacity</strong>,
+                    <strong>expected sales</strong>, and
+                    <strong>booking pace</strong>.
+                    It updates its ticket price according to
+                    <strong>Dynamic Price = Static Price × Booking Pace Ratio × Pricing Coefficient</strong>,
+                    while enforcing predefined
+                    <strong>minimum</strong> and
+                    <strong>maximum</strong> price limits.
+                    The updated price is immediately offered to all arriving and waiting customers.
+                </p>
+                <br><br>
+                <h2>Static Airline Behavior</h2>
+
+                <p>
+                    The Static Airline follows a
+                    <strong>fixed-pricing strategy</strong>.
+                    It maintains the same ticket price throughout the booking horizon,
+                    accepts reservations whenever seats remain available,
+                    and <strong>never adjusts its price</strong>
+                    regardless of demand or booking pace.
+                </p>
+                <br><br>
+                <h2>Customer Decision Set</h2>
+
+                <p>
+                    <strong>Actions:</strong>
+                    Buy Dynamic Ticket &bull;
+                    Buy Static Ticket &bull;
+                    Wait &bull;
+                    Leave Market
+                </p>
+                <br><br>
+                <h2>Dynamic Airline Decision Set</h2>
+
+                <p>
+                    <strong>Actions:</strong>
+                    Increase Price &bull;
+                    Decrease Price &bull;
+                    Maintain Price
+                </p>
+                <br><br>
+                <h2>Static Airline Decision Set</h2>
+
+                <p>
+                    <strong>Actions:</strong>
+                    Maintain Fixed Price
+                </p>
+                <br><br>
+                <h2>Customer Information Set</h2>
+
+                <p>
+                    Customers know the
+                    <strong>current dynamic price</strong>,
+                    <strong>static price</strong>,
+                    <strong>available seats</strong>,
+                    <strong>seat quality</strong>, and their own
+                    <strong>willingness to pay</strong>,
+                    <strong>urgency</strong>, and
+                    <strong>passenger type</strong>.
+                    They do <strong>not</strong> know future arrivals,
+                    future prices, or other customers' preferences.
+                </p>
+                <br><br>
+                <h2>Dynamic Airline Information Set</h2>
+
+                <p>
+                    The Dynamic Airline observes
+                    <strong>booking time</strong>,
+                    <strong>actual bookings</strong>,
+                    <strong>remaining seats</strong>,
+                    <strong>expected booking pace</strong>,
+                    <strong>demand arrival rate</strong>, and the
+                    <strong>pricing coefficient</strong>
+                    to determine its next ticket price.
+                </p>
+                <br><br>
+                <h2>Static Airline Information Set</h2>
+
+                <p>
+                    The Static Airline observes only its
+                    <strong>remaining seat inventory</strong>
+                    and <strong>incoming demand</strong>,
+                    while maintaining a
+                    <strong>constant ticket price</strong>
+                    throughout the simulation.
+                </p>
+
+            </section>
+
+
+
     </div>
 
     <!-- ─── PASSENGER FLY CONTAINER ─── -->
