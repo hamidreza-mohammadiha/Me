@@ -616,7 +616,7 @@
                 <button class="btn btn-reset" id="btnReset">↻ Reset</button>
             </div>
             <div style="font-size:0.65em;color:var(--dim);text-align:center;">
-                Static price = 1.618×$200 = <b style="color:#7aaad4;">$324</b>
+                Static price = 1.367×$200 = <b style="color:#7aaad4;">$273</b>
             </div>
         </div>
 
@@ -632,7 +632,7 @@
                 <div class="seat-stats">
                     <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-dyn" id="dynSold">0/24</span></div>
                     <div class="stat-item"><span class="lbl">Revenue</span><br><span class="num num-rev" id="dynRev">$0</span></div>
-                    <div class="stat-item"><span class="lbl">Curr Price</span><br><span class="num num-dyn" id="dynPrice">$324</span></div>
+                    <div class="stat-item"><span class="lbl">Curr Price</span><br><span class="num num-dyn" id="dynPrice">$273</span></div>
                     <div class="stat-item"><span class="lbl">Avg Sat</span><br><span class="num num-dyn" id="dynSat">—</span></div>
                 </div>
             </div>
@@ -641,13 +641,13 @@
             <div class="seat-panel">
                 <div class="panel-head">
                     <h2 style="color:var(--static-blue);">🔵 Static Airline</h2>
-                    <span class="badge badge-stc">fixed $324 · cost‑plus</span>
+                    <span class="badge badge-stc">fixed $273 · cost‑plus</span>
                 </div>
                 <div class="seat-grid" id="stcGrid"></div>
                 <div class="seat-stats">
                     <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-stc" id="stcSold">0/24</span></div>
                     <div class="stat-item"><span class="lbl">Revenue</span><br><span class="num num-rev" id="stcRev">$0</span></div>
-                    <div class="stat-item"><span class="lbl">Price</span><br><span class="num num-stc">$324</span></div>
+                    <div class="stat-item"><span class="lbl">Price</span><br><span class="num num-stc">$273</span></div>
                     <div class="stat-item"><span class="lbl">Avg Sat</span><br><span class="num num-stc" id="stcSat">—</span></div>
                 </div>
             </div>
@@ -712,8 +712,8 @@
         <div class="log-panel">
             <div class="panel-head">📋 Commentator Log</div>
             <div class="log-box" id="logBox">
-                <div class="entry">🟢 Ready. Static price = <b>$324</b> (1.618×$200).</div>
-                <div class="entry">💡 Dynamic = $324 × pace_ratio × coefficient.</div>
+                <div class="entry">🟢 Ready. Static price = <b>$273</b> (1.618×$200).</div>
+                <div class="entry">💡 Dynamic = $273 × pace_ratio × coefficient.</div>
                 <div class="entry">🧑‍🤝‍🧑 Leisure: Lose = −v · Catch ~ U(0.5v, 1.5v)</div>
                 <div class="entry">💼 Business: Lose = −0.1v · Catch ~ U(0, 2v)</div>
                 <div class="entry">🔄 Shared market: passengers choose the best option.</div>
@@ -856,8 +856,8 @@
             //  CONSTANTS
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             const BASE_COST = 200;
-            const STATIC_MARKUP = 1.618;
-            const STATIC_PRICE = Math.round(BASE_COST * STATIC_MARKUP); // 324
+            const STATIC_MARKUP = 1.367;
+            const STATIC_PRICE = Math.round(BASE_COST * STATIC_MARKUP); // 273
             const TOTAL_SEATS = 24;
             const TOTAL_TIME = 40; // seconds
             const COLS = 6;
@@ -1146,7 +1146,7 @@
                 const actual = state.dynSoldCount;
                 const pace = Math.max(0.25, Math.min(3.5, actual / Math.max(1, expected)));
                 const raw = STATIC_PRICE * pace * state.coefficient;
-                const clamped = Math.round(Math.max(STATIC_PRICE / 1.618, Math.min(STATIC_PRICE * 2.718, raw)));
+                const clamped = Math.round(Math.max(STATIC_PRICE / 1.367, Math.min(STATIC_PRICE * 2.718, raw)));
                 state.paceRatio = pace;
                 state.currentDynPrice = clamped;
                 return clamped;
@@ -1854,7 +1854,7 @@
                 urgencyStc.textContent = '1.00';
                 clearLog();
                 logEntry('🟢 Ready. Static price = $' + STATIC_PRICE + ' (1.618×$' + BASE_COST + ').');
-                logEntry('💡 Dynamic = $324 × pace_ratio × coefficient.');
+                logEntry('💡 Dynamic = $273 × pace_ratio × coefficient.');
                 logEntry('🧑‍🤝‍🧑 Leisure: Lose = −v · Catch ~ U(0.5v, 1.5v)');
                 logEntry('💼 Business: Lose = −0.1v · Catch ~ U(0, 2v)');
                 logEntry('🔄 Shared market: passengers choose the best option.');
