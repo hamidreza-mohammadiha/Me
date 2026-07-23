@@ -598,8 +598,8 @@
         <div class="controls">
             <div class="ctrl-group">
                 <label>📊 Demand λ (arrivals/s)</label>
-                <span class="slider-val" id="lambdaVal">0.65</span>
-                <input type="range" id="lambdaSlider" min="0.10" max="1.80" step="0.05" value="0.65" />
+                <span class="slider-val" id="lambdaVal">1.0</span>
+                <input type="range" id="lambdaSlider" min="0.5" max="2.5" step="0.01" value="1.0" />
             </div>
             <div class="ctrl-group">
                 <label>⚙️ Dynamic Pricing Adjustment</label>
@@ -630,7 +630,7 @@
                 </div>
                 <div class="seat-grid" id="dynGrid"></div>
                 <div class="seat-stats">
-                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-dyn" id="dynSold">0/24</span></div>
+                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-dyn" id="dynSold">0/40</span></div>
                     <div class="stat-item"><span class="lbl">Revenue</span><br><span class="num num-rev" id="dynRev">$0</span></div>
                     <div class="stat-item"><span class="lbl">Curr Price</span><br><span class="num num-dyn" id="dynPrice">$273</span></div>
                     <div class="stat-item"><span class="lbl">Avg Sat</span><br><span class="num num-dyn" id="dynSat">—</span></div>
@@ -645,7 +645,7 @@
                 </div>
                 <div class="seat-grid" id="stcGrid"></div>
                 <div class="seat-stats">
-                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-stc" id="stcSold">0/24</span></div>
+                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-stc" id="stcSold">0/40</span></div>
                     <div class="stat-item"><span class="lbl">Revenue</span><br><span class="num num-rev" id="stcRev">$0</span></div>
                     <div class="stat-item"><span class="lbl">Price</span><br><span class="num num-stc">$273</span></div>
                     <div class="stat-item"><span class="lbl">Avg Sat</span><br><span class="num num-stc" id="stcSat">—</span></div>
@@ -661,14 +661,17 @@
                     <canvas id="revenueChart"></canvas>
                 </div>
                 <div class="chart-legend">
-                    <span><span class="dot" style="background:var(--dynamic-gold);"></span> Dyn Rev</span>
-                    <span><span class="dot" style="background:var(--static-blue);"></span> Stc Rev</span>
+                    <span><span class="dot" style="background:var(--dynamic-gold);"></span> Dyn Revenue</span>
+                    <span><span class="dot" style="background:var(--static-blue);"></span> Stc Revenue</span>
                     <span><span class="dot" style="background:#5cb870;"></span> Dyn Sat</span>
                     <span><span class="dot" style="background:#7ab8e0;"></span> Stc Sat</span>
                     <span><span class="dot" style="background:#8a7a50;border:1px solid #5a4a30;"></span> Static price line</span>
                 </div>
-                <div style="text-align:center;margin-top:6px;" id="winnerBadge"></div>
+                    <div style="text-align:center;margin-top:6px;" id="winnerBadge"></div>
             </div>
+
+
+
 
             <div class="dash-panel">
                 <div class="panel-head">📊 Market Share &amp; Urgency</div>
@@ -858,7 +861,7 @@
             const BASE_COST = 200;
             const STATIC_MARKUP = 1.367;
             const STATIC_PRICE = Math.round(BASE_COST * STATIC_MARKUP); // 273
-            const TOTAL_SEATS = 24;
+            const TOTAL_SEATS = 40;
             const TOTAL_TIME = 40; // seconds
             const COLS = 6;
             const ROWS = 4;
@@ -1462,7 +1465,7 @@
                 ctx.fillRect(0, 0, w, h);
 
                 ctx.strokeStyle = '#26291e';
-                ctx.lineWidth = 0.5;
+                ctx.lineWidth = 0.2;
                 for (let i = 0; i <= 5; i++) {
                     const y = (i / 5) * h;
                     ctx.beginPath();
