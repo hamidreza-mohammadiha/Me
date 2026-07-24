@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>✈️ Dynamic vs Static Pricing · Shared Market Serious Game</title>
+    <title>✈️ Dynamic vs Static Pricing · Shared Market Game</title>
     <style>
         /* ─── ROOT ─── */
         :root {
@@ -113,18 +113,18 @@
             -webkit-appearance: none;
             width: 120px;
             height: 7px;
-            border-radius: 4px;
+            border-radius: 2px;
             background: var(--slider-track);
             outline: none;
             cursor: pointer;
         }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 26px;
-            height: 26px;
+            width: 6px;
+            height: 14px;
             border-radius: 50%;
             background: var(--accent);
-            border: 2px solid #8b6914;
+            border: 1px solid #8b6914;
             cursor: pointer;
             box-shadow: 0 0 12px rgba(212, 168, 67, 0.4);
             transition: 0.15s;
@@ -376,7 +376,7 @@
                 grid-template-columns: 1fr;
             }
         }
-        .dash-panel {
+        .log-panel {
             background: var(--panel);
             border-radius: 16px;
             padding: 14px 16px;
@@ -488,7 +488,7 @@
             background: #12140e;
             border-radius: 10px;
             padding: 10px 14px;
-            height: 130px;
+            height: 300px;
             overflow-y: auto;
             font-family: 'Courier New', monospace;
             font-size: 0.7em;
@@ -512,7 +512,7 @@
             color: #e87878;
         }
 
-        /* ─── PASSENGER ANIMATION OVERLAY ─── */
+        /* ─── PASSENGER FLY OVERLAY ─── */
         .passenger-fly {
             position: fixed;
             pointer-events: none;
@@ -553,7 +553,7 @@
             border-radius: 4px;
         }
 
-        /* ─── RESPONSIVE TWEAKS ─── */
+        /* ─── RESPONSIVE ─── */
         @media (max-width: 600px) {
             .controls {
                 flex-direction: column;
@@ -587,24 +587,24 @@
 <body>
     <div class="app">
 
-        <!-- ─── HEADER ─── -->
+        <!-- HEADER -->
         <header class="header">
             <div class="icon-row">✈️ 🛫 💺</div>
             <h1>Dynamic vs Static · Shared Market</h1>
-            <p class="sub">Poisson arrivals · Leisure / Business · Utility-based waiting · Spillover</p>
+            <p class="sub">Expected marginal seat revenue - Metaheuristics</p>
         </header>
 
-        <!-- ─── CONTROLS ─── -->
+        <!-- CONTROLS -->
         <div class="controls">
             <div class="ctrl-group">
                 <label>📊 Demand λ (arrivals/s)</label>
-                <span class="slider-val" id="lambdaVal">0.65</span>
-                <input type="range" id="lambdaSlider" min="0.10" max="1.80" step="0.05" value="0.65" />
+                <span class="slider-val" id="lambdaVal">1.0</span>
+                <input type="range" id="lambdaSlider" min="0.5" max="2.5" step="0.01" value="1.0" />
             </div>
             <div class="ctrl-group">
-                <label>⚙️ Dynamic Coeff</label>
+                <label>⚙️ Dynamic Pricing Adjustment</label>
                 <span class="slider-val" id="coeffVal">1.00</span>
-                <input type="range" id="coeffSlider" min="0.70" max="1.30" step="0.01" value="1.00" />
+                <input type="range" id="coeffSlider" min="0.618" max="2.718" step="0.01" value="1.00" />
             </div>
             <div class="ctrl-group" style="min-width:80px;">
                 <label>⏱️ Speed</label>
@@ -616,11 +616,11 @@
                 <button class="btn btn-reset" id="btnReset">↻ Reset</button>
             </div>
             <div style="font-size:0.65em;color:var(--dim);text-align:center;">
-                Static price = 1.618×$200 = <b style="color:#7aaad4;">$324</b>
+                Static price = 1.367×$200 = <b style="color:#7aaad4;">$273</b>
             </div>
         </div>
 
-        <!-- ─── SEAT MAPS ─── -->
+        <!-- SEAT MAPS -->
         <div class="main-grid">
             <!-- Dynamic -->
             <div class="seat-panel">
@@ -630,9 +630,9 @@
                 </div>
                 <div class="seat-grid" id="dynGrid"></div>
                 <div class="seat-stats">
-                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-dyn" id="dynSold">0/24</span></div>
+                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-dyn" id="dynSold">0/40</span></div>
                     <div class="stat-item"><span class="lbl">Revenue</span><br><span class="num num-rev" id="dynRev">$0</span></div>
-                    <div class="stat-item"><span class="lbl">Curr Price</span><br><span class="num num-dyn" id="dynPrice">$324</span></div>
+                    <div class="stat-item"><span class="lbl">Curr Price</span><br><span class="num num-dyn" id="dynPrice">$273</span></div>
                     <div class="stat-item"><span class="lbl">Avg Sat</span><br><span class="num num-dyn" id="dynSat">—</span></div>
                 </div>
             </div>
@@ -641,31 +641,29 @@
             <div class="seat-panel">
                 <div class="panel-head">
                     <h2 style="color:var(--static-blue);">🔵 Static Airline</h2>
-                    <span class="badge badge-stc">fixed $324 · cost‑plus</span>
+                    <span class="badge badge-stc">fixed $273 · cost‑plus</span>
                 </div>
                 <div class="seat-grid" id="stcGrid"></div>
                 <div class="seat-stats">
-                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-stc" id="stcSold">0/24</span></div>
+                    <div class="stat-item"><span class="lbl">Sold</span><br><span class="num num-stc" id="stcSold">0/40</span></div>
                     <div class="stat-item"><span class="lbl">Revenue</span><br><span class="num num-rev" id="stcRev">$0</span></div>
-                    <div class="stat-item"><span class="lbl">Price</span><br><span class="num num-stc">$324</span></div>
+                    <div class="stat-item"><span class="lbl">Price</span><br><span class="num num-stc">$273</span></div>
                     <div class="stat-item"><span class="lbl">Avg Sat</span><br><span class="num num-stc" id="stcSat">—</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- ─── DASHBOARD ─── -->
+        <!-- DASHBOARD -->
         <div class="dash-grid">
             <div class="dash-panel">
-                <div class="panel-head">📈 Cumulative Revenue &amp; Satisfaction</div>
+                <div class="panel-head">📈 PnL% Comparison (Profit Margin over Time)</div>
                 <div class="chart-wrap">
-                    <canvas id="revenueChart"></canvas>
+                    <canvas id="pnlChart"></canvas>
                 </div>
                 <div class="chart-legend">
-                    <span><span class="dot" style="background:var(--dynamic-gold);"></span> Dyn Rev</span>
-                    <span><span class="dot" style="background:var(--static-blue);"></span> Stc Rev</span>
-                    <span><span class="dot" style="background:#5cb870;"></span> Dyn Sat</span>
-                    <span><span class="dot" style="background:#7ab8e0;"></span> Stc Sat</span>
-                    <span><span class="dot" style="background:#8a7a50;border:1px solid #5a4a30;"></span> Static price line</span>
+                    <span><span class="dot" style="background:var(--dynamic-gold);"></span> Dyn PnL%</span>
+                    <span><span class="dot" style="background:var(--static-blue);"></span> Stc PnL%</span>
+                    <span><span class="dot" style="background:#4a4a3a;border:1px solid #6a6a50;"></span> 0% ref</span>
                 </div>
                 <div style="text-align:center;margin-top:6px;" id="winnerBadge"></div>
             </div>
@@ -703,20 +701,132 @@
             </div>
         </div>
 
-        <!-- ─── COMMENTARY ─── -->
+        <!-- COMMENTARY LOG -->
         <div class="log-panel">
             <div class="panel-head">📋 Commentator Log</div>
             <div class="log-box" id="logBox">
-                <div class="entry">🟢 Ready. Static price = <b>$324</b> (1.618×$200).</div>
-                <div class="entry">💡 Dynamic = $324 × pace_ratio × coefficient.</div>
+                <div class="entry">🟢 Ready. Static price = <b>$273</b> (1.367×$200).</div>
+                <div class="entry">💡 Dynamic = $273 × pace_ratio × coefficient.</div>
                 <div class="entry">🧑‍🤝‍🧑 Leisure: Lose = −v · Catch ~ U(0.5v, 1.5v)</div>
                 <div class="entry">💼 Business: Lose = −0.1v · Catch ~ U(0, 2v)</div>
                 <div class="entry">🔄 Shared market: passengers choose the best option.</div>
+                <div class="entry">⏳ Waiting is now rational: passengers weigh future price drops vs urgency.</div>
             </div>
         </div>
+
+        <!-- INFO PANEL -->
+        <section class="seat-panel" style="font-size: xx-small;">
+            <h2>Customer Behavior</h2>
+            <p>
+                Each customer arrives randomly and observes the
+                <strong>current dynamic price</strong>,
+                <strong>fixed static price</strong>,
+                <strong>available seats</strong>,
+                <strong>seat quality</strong>, and their own
+                <strong>willingness to pay</strong>,
+                <strong>urgency</strong>, and
+                <strong>passenger type</strong>.
+                The customer computes the utility of
+                <em>buying from the Dynamic Airline</em>,
+                <em>buying from the Static Airline</em>,
+                <em>waiting</em>, or
+                <em>leaving the market</em>,
+                then selects the action with the
+                <strong>highest utility</strong>.
+                Customers who wait enter a
+                <strong>spillover queue</strong> and periodically
+                re-evaluate their decision as prices and seat availability change.
+            </p>
+            <br><br>
+            <h2>Dynamic Airline Behavior</h2>
+            <p>
+                The Dynamic Airline continuously observes
+                <strong>elapsed booking time</strong>,
+                <strong>seats sold</strong>,
+                <strong>remaining capacity</strong>,
+                <strong>expected sales</strong>, and
+                <strong>booking pace</strong>.
+                It updates its ticket price according to
+                <strong>Dynamic Price = Static Price × Booking Pace Ratio × Pricing Coefficient</strong>,
+                while enforcing predefined
+                <strong>minimum</strong> and
+                <strong>maximum</strong> price limits.
+                The updated price is immediately offered to all arriving and waiting customers.
+            </p>
+            <br><br>
+            <h2>Static Airline Behavior</h2>
+            <p>
+                The Static Airline follows a
+                <strong>fixed-pricing strategy</strong>.
+                It maintains the same ticket price throughout the booking horizon,
+                accepts reservations whenever seats remain available,
+                and <strong>never adjusts its price</strong>
+                regardless of demand or booking pace.
+            </p>
+            <br><br>
+            <h2>Customer Decision Set</h2>
+            <p>
+                <strong>Actions:</strong>
+                Buy Dynamic Ticket &bull;
+                Buy Static Ticket &bull;
+                Wait &bull;
+                Leave Market
+            </p>
+            <br><br>
+            <h2>Dynamic Airline Decision Set</h2>
+            <p>
+                <strong>Actions:</strong>
+                Increase Price &bull;
+                Decrease Price &bull;
+                Maintain Price
+            </p>
+            <br><br>
+            <h2>Static Airline Decision Set</h2>
+            <p>
+                <strong>Actions:</strong>
+                Maintain Fixed Price
+            </p>
+            <br><br>
+            <h2>Customer Information Set</h2>
+            <p>
+                Customers know the
+                <strong>current dynamic price</strong>,
+                <strong>static price</strong>,
+                <strong>available seats</strong>,
+                <strong>seat quality</strong>, and their own
+                <strong>willingness to pay</strong>,
+                <strong>urgency</strong>, and
+                <strong>passenger type</strong>.
+                They do <strong>not</strong> know future arrivals,
+                future prices, or other customers' preferences.
+            </p>
+            <br><br>
+            <h2>Dynamic Airline Information Set</h2>
+            <p>
+                The Dynamic Airline observes
+                <strong>booking time</strong>,
+                <strong>actual bookings</strong>,
+                <strong>remaining seats</strong>,
+                <strong>expected booking pace</strong>,
+                <strong>demand arrival rate</strong>, and the
+                <strong>pricing coefficient</strong>
+                to determine its next ticket price.
+            </p>
+            <br><br>
+            <h2>Static Airline Information Set</h2>
+            <p>
+                The Static Airline observes only its
+                <strong>remaining seat inventory</strong>
+                and <strong>incoming demand</strong>,
+                while maintaining a
+                <strong>constant ticket price</strong>
+                throughout the simulation.
+            </p>
+        </section>
+
     </div>
 
-    <!-- ─── PASSENGER FLY CONTAINER ─── -->
+    <!-- PASSENGER FLY CONTAINER -->
     <div id="flyContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;"></div>
 
     <script>
@@ -727,20 +837,15 @@
             //  CONSTANTS
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             const BASE_COST = 200;
-            const STATIC_MARKUP = 1.618;
-            const STATIC_PRICE = Math.round(BASE_COST * STATIC_MARKUP); // 324
-            const TOTAL_SEATS = 24;
+            const STATIC_MARKUP = 1.367; // consistent with code
+            const STATIC_PRICE = Math.round(BASE_COST * STATIC_MARKUP); // 273
+            const TOTAL_SEATS = 40;
             const TOTAL_TIME = 40; // seconds
             const COLS = 6;
             const ROWS = 4;
-            const AISLE_INDEX = 3; // 0-based column where aisle sits (after col 2)
+            const AISLE_INDEX = 3;
 
-            // Seat types: 0=Window, 1=Middle, 2=Aisle
-            // Layout: [Window][Middle][Aisle] | [Aisle][Middle][Window]
-            const SEAT_TYPES = [
-                'Window', 'Middle', 'Aisle',
-                'Aisle', 'Middle', 'Window'
-            ];
+            const SEAT_TYPES = ['Window', 'Middle', 'Aisle', 'Aisle', 'Middle', 'Window'];
             const SEAT_ICONS = ['🪟', '🪑', '🚪', '🚪', '🪑', '🪟'];
             const SEAT_PREF = { 'Window': 0.35, 'Aisle': 0.15, 'Middle': 0 };
 
@@ -758,8 +863,8 @@
             const dynGrid = document.getElementById('dynGrid');
             const stcGrid = document.getElementById('stcGrid');
             const logBox = document.getElementById('logBox');
-            const revenueCanvas = document.getElementById('revenueChart');
-            const ctx = revenueCanvas.getContext('2d');
+            const pnlCanvas = document.getElementById('pnlChart');
+            const ctx = pnlCanvas.getContext('2d');
 
             const dynSold = document.getElementById('dynSold');
             const stcSold = document.getElementById('stcSold');
@@ -780,7 +885,7 @@
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             //  STATE
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            let S = null; // will hold simulation state
+            let S = null;
 
             function makeState() {
                 return {
@@ -791,59 +896,47 @@
                     coefficient: parseFloat(coeffSlider.value),
                     speed: parseFloat(speedSlider.value),
 
-                    // Seats: array of { airline: 'dyn'|'stc'|null, price, seatType, row, col }
                     seats: new Array(TOTAL_SEATS).fill(null),
 
-                    // Bookings
-                    dynBookings: [], // { time, price, wtp, satisfaction, seatIdx, passengerType }
+                    dynBookings: [],
                     stcBookings: [],
 
-                    // Revenue
                     dynRevenue: 0,
                     stcRevenue: 0,
 
-                    // Satisfaction tracking
                     dynSatisfactions: [],
                     stcSatisfactions: [],
 
-                    // Counts
                     dynSoldCount: 0,
                     stcSoldCount: 0,
 
-                    // Arrivals
                     arrivalTimes: [],
                     nextArrivalIdx: 0,
                     totalPassengers: 0,
 
-                    // Dynamic price
                     currentDynPrice: STATIC_PRICE,
                     paceRatio: 1,
 
-                    // Spillover
-                    spilloverQueue: [], // passengers who waited and are reconsidering
+                    spilloverQueue: [],
 
-                    // Last filled seat for animation
                     lastFilledSeat: -1,
                     lastFilledAirline: null,
 
-                    // Flags
                     dynFullLogged: false,
                     stcFullLogged: false,
 
-                    // Animation
                     animId: null,
 
-                    // Passenger type counts
                     leisureCount: 0,
                     businessCount: 0,
 
-                    // For chart
-                    history: [], // snapshots for chart
+                    // PnL% history: array of { time, dynPnl, stcPnl }
+                    pnlHistory: [],
                 };
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            //  SEAT MAP BUILDERS
+            //  SEAT HELPERS
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             function buildSeatGrid(gridEl, airline) {
                 gridEl.innerHTML = '';
@@ -924,7 +1017,6 @@
                     cell.style.color = '';
                 });
 
-                // Clear last-filled after animation
                 if (state.lastFilledSeat >= 0 && state.lastFilledAirline === airline) {
                     setTimeout(() => {
                         state.lastFilledSeat = -1;
@@ -937,7 +1029,6 @@
             function getSeatTypeIdx(seatIdx) {
                 const row = Math.floor(seatIdx / (COLS - 1));
                 const colInRow = seatIdx % (COLS - 1);
-                // Map to actual column with aisle
                 const actualCol = colInRow >= AISLE_INDEX ? colInRow + 1 : colInRow;
                 return actualCol > AISLE_INDEX ? actualCol - 1 : actualCol;
             }
@@ -951,13 +1042,11 @@
             }
 
             function findBestSeat(state, airline, price) {
-                // Find the best available seat based on preference
                 let bestIdx = -1;
                 let bestScore = -Infinity;
                 for (let i = 0; i < TOTAL_SEATS; i++) {
                     if (state.seats[i] !== null) continue;
                     const pref = getSeatPreference(i);
-                    // Slight random tie-breaker
                     const score = pref + Math.random() * 0.05;
                     if (score > bestScore) {
                         bestScore = score;
@@ -986,20 +1075,17 @@
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             function generatePassenger() {
                 const isBusiness = Math.random() < 0.35;
-                // Value v: uniform between 200 and 600
-                const v = 200 + Math.random() * 400;
-                // Catch: utility of catching the flight
+                const v = 200 + Math.random() * 200;
                 let catchMin, catchMax;
                 if (isBusiness) {
-                    catchMin = 0;
+                    catchMin = v;
                     catchMax = 2 * v;
                 } else {
                     catchMin = 0.5 * v;
                     catchMax = 1.5 * v;
                 }
                 const catchVal = catchMin + Math.random() * (catchMax - catchMin);
-                // Lose: utility of waiting
-                const lose = isBusiness ? -0.1 * v : -v;
+                const lose = isBusiness ? -1 * v : -0.1 * v;
                 return {
                     type: isBusiness ? 'business' : 'leisure',
                     v: v,
@@ -1009,29 +1095,43 @@
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            //  DYNAMIC PRICE (Simplified)
+            //  DYNAMIC PRICE
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             function calcDynamicPrice(state) {
-                // 1. Calculate supply-based multiplier
-                // More seats sold -> higher price. Less seats sold -> lower price.
-                const ratio = state.dynSoldCount / TOTAL_SEATS; // 0 to 1
-                // Multiplier ranges from 0.6 (all empty) to 2.0 (all full)
-                const multiplier = 0.6 + ratio * 1.4;
-
-                // 2. Apply coefficient (user controlled)
-                let raw = STATIC_PRICE * multiplier * state.coefficient;
-
-                // 3. Add random variance (-$10 to +$10)
-                const variance = (Math.random() - 0.5) * 20;
-                raw += variance;
-
-                // 4. Clamp to reasonable bounds (e.g., 50% to 250% of static price)
-                const clamped = Math.round(Math.max(STATIC_PRICE * 0.5, Math.min(STATIC_PRICE * 2.5, raw)));
-
-                // 5. Update state
-                state.paceRatio = multiplier; // Keep the variable for UI compatibility, though it's now a supply ratio
+                const elapsed = state.elapsed;
+                const expected = TOTAL_SEATS * Math.min(1, elapsed / TOTAL_TIME);
+                const actual = state.dynSoldCount;
+                const pace = Math.max(0.25, Math.min(3.5, actual / Math.max(1, expected)));
+                const raw = STATIC_PRICE * pace * state.coefficient;
+                const clamped = Math.round(Math.max(STATIC_PRICE / 1.367, Math.min(STATIC_PRICE * 2.718, raw)));
+                state.paceRatio = pace;
                 state.currentDynPrice = clamped;
                 return clamped;
+            }
+
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            //  WAIT UTILITY  —  FIXED: now rational, can be > 0
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            function computeWaitUtility(passenger, state, time) {
+                const totalSold = state.dynSoldCount + state.stcSoldCount;
+                const remainingSeats = Math.max(0, TOTAL_SEATS - totalSold);
+                const remainingTime = Math.max(0, TOTAL_TIME - time);
+
+                const seatFactor = remainingSeats / TOTAL_SEATS; // 0..1, high = many seats
+                const timeFactor = remainingTime / TOTAL_TIME; // 0..1, high = lots of time
+                const priceGap = Math.max(0, (state.currentDynPrice - STATIC_PRICE) / STATIC_PRICE); // premium
+
+                // Opportunity: seats + time + price gap
+                const opportunity = seatFactor * timeFactor * priceGap;
+
+                // Expected benefit: if you wait, you might get a better deal
+                const expectedBenefit = opportunity * passenger.catchVal * 0.22;
+
+                // Cost of waiting: business travelers are more urgent
+                const urgencyPenalty = passenger.type === 'business' ? 18 : 6;
+                const timePenalty = (1 - timeFactor) * 12; // more costly when time is short
+
+                return expectedBenefit - urgencyPenalty - timePenalty;
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1052,7 +1152,9 @@
 
                 const uDyn = dynAvail ? passenger.catchVal - dynPrice + dynPref : -Infinity;
                 const uStc = stcAvail ? passenger.catchVal - stcPrice + stcPref : -Infinity;
-                const uWait = passenger.lose;
+
+                // ── FIX: wait utility is now a rational function ──
+                const uWait = computeWaitUtility(passenger, state, time);
                 const uLeave = 0;
 
                 const options = [
@@ -1095,13 +1197,14 @@
                     const seatIdx = decision.dynSeatIdx;
                     state.seats[seatIdx] = { airline: 'dyn', price: state.currentDynPrice, seatType: getSeatType(seatIdx) };
                     state.dynSoldCount++;
-                    state.dynRevenue += state.currentDynPrice;
-                    state.dynSatisfactions.push(computeSatisfaction(passenger, state.currentDynPrice));
+                    state.dynRevenue += state.currentDynPrice - 200;
+                    const sat = computeSatisfaction(passenger, state.currentDynPrice);
+                    state.dynSatisfactions.push(sat);
                     state.dynBookings.push({
                         time: time,
                         price: state.currentDynPrice,
                         wtp: Math.round(passenger.catchVal - state.currentDynPrice + getSeatPreference(seatIdx)),
-                        satisfaction: computeSatisfaction(passenger, state.currentDynPrice),
+                        satisfaction: sat,
                         seatIdx: seatIdx,
                         passengerType: passenger.type,
                     });
@@ -1111,17 +1214,19 @@
                     logEntry(`🟡 t=${time.toFixed(1)}s · ${passenger.type} buys DYNAMIC $${state.currentDynPrice} (seat ${seatIdx+1}) · U=${decision.utility.toFixed(1)}`,
                         decision.utility > 0);
                     showPassengerFly(time, passenger, 'dyn', seatIdx);
+                    recordPnl(state, time);
                 } else if (action === 'stc' && decision.stcAvail) {
                     const seatIdx = decision.stcSeatIdx;
                     state.seats[seatIdx] = { airline: 'stc', price: STATIC_PRICE, seatType: getSeatType(seatIdx) };
                     state.stcSoldCount++;
-                    state.stcRevenue += STATIC_PRICE;
-                    state.stcSatisfactions.push(computeSatisfaction(passenger, STATIC_PRICE));
+                    state.stcRevenue += STATIC_PRICE - 200;
+                    const sat = computeSatisfaction(passenger, STATIC_PRICE);
+                    state.stcSatisfactions.push(sat);
                     state.stcBookings.push({
                         time: time,
                         price: STATIC_PRICE,
                         wtp: Math.round(passenger.catchVal - STATIC_PRICE + getSeatPreference(seatIdx)),
-                        satisfaction: computeSatisfaction(passenger, STATIC_PRICE),
+                        satisfaction: sat,
                         seatIdx: seatIdx,
                         passengerType: passenger.type,
                     });
@@ -1131,11 +1236,12 @@
                     logEntry(`🔵 t=${time.toFixed(1)}s · ${passenger.type} buys STATIC $${STATIC_PRICE} (seat ${seatIdx+1}) · U=${decision.utility.toFixed(1)}`,
                         decision.utility > 0);
                     showPassengerFly(time, passenger, 'stc', seatIdx);
+                    recordPnl(state, time);
                 } else if (action === 'wait') {
                     passenger._spillover = true;
                     passenger._waitTime = time;
                     state.spilloverQueue.push(passenger);
-                    logEntry(`⏳ t=${time.toFixed(1)}s · ${passenger.type} WAITS (Lose=${passenger.lose.toFixed(1)}) · will re-evaluate later`,
+                    logEntry(`⏳ t=${time.toFixed(1)}s · ${passenger.type} WAITS (U_wait=${decision.uWait.toFixed(1)}) · will re-evaluate`,
                         false);
                     showPassengerFly(time, passenger, 'wait', -1);
                 } else {
@@ -1156,25 +1262,27 @@
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            //  SPILLOVER PROCESSING  (now called every frame)
+            //  SPILLOVER PROCESSING  (called every frame)
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             function processSpillover(state, time) {
                 const toRemove = [];
                 for (let i = 0; i < state.spilloverQueue.length; i++) {
                     const p = state.spilloverQueue[i];
                     const decision = makeDecision(state, p, time);
+
                     if (decision.action === 'dyn' && decision.dynAvail) {
                         const seatIdx = decision.dynSeatIdx;
                         state.seats[seatIdx] = { airline: 'dyn', price: state.currentDynPrice, seatType: getSeatType(
                             seatIdx) };
                         state.dynSoldCount++;
-                        state.dynRevenue += state.currentDynPrice;
-                        state.dynSatisfactions.push(computeSatisfaction(p, state.currentDynPrice));
+                        state.dynRevenue += state.currentDynPrice - 200;
+                        const sat = computeSatisfaction(p, state.currentDynPrice);
+                        state.dynSatisfactions.push(sat);
                         state.dynBookings.push({
                             time: time,
                             price: state.currentDynPrice,
                             wtp: Math.round(p.catchVal - state.currentDynPrice + getSeatPreference(seatIdx)),
-                            satisfaction: computeSatisfaction(p, state.currentDynPrice),
+                            satisfaction: sat,
                             seatIdx: seatIdx,
                             passengerType: p.type,
                             spillover: true,
@@ -1186,17 +1294,19 @@
                             true);
                         showPassengerFly(time, p, 'dyn', seatIdx);
                         calcDynamicPrice(state);
+                        recordPnl(state, time);
                     } else if (decision.action === 'stc' && decision.stcAvail) {
                         const seatIdx = decision.stcSeatIdx;
                         state.seats[seatIdx] = { airline: 'stc', price: STATIC_PRICE, seatType: getSeatType(seatIdx) };
                         state.stcSoldCount++;
-                        state.stcRevenue += STATIC_PRICE;
-                        state.stcSatisfactions.push(computeSatisfaction(p, STATIC_PRICE));
+                        state.stcRevenue += STATIC_PRICE - 200;
+                        const sat = computeSatisfaction(p, STATIC_PRICE);
+                        state.stcSatisfactions.push(sat);
                         state.stcBookings.push({
                             time: time,
                             price: STATIC_PRICE,
                             wtp: Math.round(p.catchVal - STATIC_PRICE + getSeatPreference(seatIdx)),
-                            satisfaction: computeSatisfaction(p, STATIC_PRICE),
+                            satisfaction: sat,
                             seatIdx: seatIdx,
                             passengerType: p.type,
                             spillover: true,
@@ -1207,22 +1317,40 @@
                         logEntry(`♻️ t=${time.toFixed(1)}s · SPILLOVER: ${p.type} buys STATIC $${STATIC_PRICE} (seat ${seatIdx+1}) after waiting`,
                             true);
                         showPassengerFly(time, p, 'stc', seatIdx);
+                        recordPnl(state, time);
                     } else if (decision.action === 'leave') {
                         toRemove.push(i);
                         logEntry(`🚶 t=${time.toFixed(1)}s · ${p.type} gives up waiting and LEAVES`, false);
                     } else if (decision.action === 'wait') {
-                        // Check timeout
                         const waitTime = time - (p._waitTime || time);
                         if (waitTime > 15) {
                             toRemove.push(i);
                             logEntry(`⏰ t=${time.toFixed(1)}s · ${p.type} times out waiting and LEAVES`, false);
                         }
-                        // otherwise they stay in queue
                     }
                 }
-                // Remove in reverse
                 for (let i = toRemove.length - 1; i >= 0; i--) {
                     state.spilloverQueue.splice(toRemove[i], 1);
+                }
+            }
+
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            //  PnL% RECORDING
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            function computePnlPct(state) {
+                const dynCost = state.dynSoldCount * 200;
+                const stcCost = state.stcSoldCount * 200;
+                const dynPnl = dynCost > 0 ? (state.dynRevenue / dynCost) * 100 : 0;
+                const stcPnl = stcCost > 0 ? (state.stcRevenue / stcCost) * 100 : 0;
+                return { dynPnl, stcPnl };
+            }
+
+            function recordPnl(state, time) {
+                const { dynPnl, stcPnl } = computePnlPct(state);
+                state.pnlHistory.push({ time, dynPnl, stcPnl });
+                // Keep history manageable
+                if (state.pnlHistory.length > 500) {
+                    state.pnlHistory = state.pnlHistory.slice(-300);
                 }
             }
 
@@ -1318,24 +1446,25 @@
             function clearLog() {
                 logBox.innerHTML = '';
                 logEntry('🟢 Log cleared. Ready.');
-                logEntry('💡 Static price = $' + STATIC_PRICE + ' (1.618×$200)');
+                logEntry('💡 Static price = $' + STATIC_PRICE + ' (1.367×$200)');
                 logEntry('🧑‍🤝‍🧑 Leisure: Lose = −v · Catch ~ U(0.5v, 1.5v)');
                 logEntry('💼 Business: Lose = −0.1v · Catch ~ U(0, 2v)');
                 logEntry('🔄 Shared market: passengers choose best option.');
+                logEntry('⏳ Waiting is now rational: weighs future price drops vs urgency.');
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-            //  CHART
+            //  CHART  —  PnL% COMPARISON (simplified)
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             function resizeChart() {
-                const rect = revenueCanvas.parentElement.getBoundingClientRect();
-                revenueCanvas.width = rect.width - 4;
-                revenueCanvas.height = 180;
+                const rect = pnlCanvas.parentElement.getBoundingClientRect();
+                pnlCanvas.width = Math.max(rect.width - 4, 100);
+                pnlCanvas.height = 180;
             }
 
-            function drawChart(state) {
-                const w = revenueCanvas.width;
-                const h = revenueCanvas.height;
+            function drawPnlChart(state) {
+                const w = pnlCanvas.width;
+                const h = pnlCanvas.height;
                 ctx.clearRect(0, 0, w, h);
 
                 if (w < 10 || h < 10) return;
@@ -1343,10 +1472,47 @@
                 ctx.fillStyle = '#12140e';
                 ctx.fillRect(0, 0, w, h);
 
+                const history = state.pnlHistory;
+                if (history.length === 0) {
+                    ctx.fillStyle = '#5a5a4a';
+                    ctx.font = '11px Segoe UI';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('PnL% data will appear here as bookings occur', w / 2, h / 2 + 4);
+                    return;
+                }
+
+                // Determine y-range: max of dyn and stc pnl, min of dyn and stc pnl, with padding
+                let maxPnl = -Infinity;
+                let minPnl = Infinity;
+                for (const p of history) {
+                    if (p.dynPnl > maxPnl) maxPnl = p.dynPnl;
+                    if (p.stcPnl > maxPnl) maxPnl = p.stcPnl;
+                    if (p.dynPnl < minPnl) minPnl = p.dynPnl;
+                    if (p.stcPnl < minPnl) minPnl = p.stcPnl;
+                }
+                // Ensure 0 is visible
+                if (maxPnl < 5) maxPnl = 5;
+                if (minPnl > -5) minPnl = -5;
+                // Add padding
+                const range = maxPnl - minPnl;
+                if (range < 10) {
+                    const mid = (maxPnl + minPnl) / 2;
+                    maxPnl = mid + 10;
+                    minPnl = mid - 10;
+                }
+                const pad = Math.max(5, range * 0.12);
+                maxPnl += pad;
+                minPnl -= pad;
+
+                const scaleY = h / (maxPnl - minPnl);
+                const maxTime = Math.max(history[history.length - 1].time, 1);
+                const scaleX = w / maxTime;
+
+                // Grid
                 ctx.strokeStyle = '#26291e';
-                ctx.lineWidth = 0.5;
+                ctx.lineWidth = 0.3;
                 for (let i = 0; i <= 5; i++) {
-                    const y = (i / 5) * h;
+                    const y = h - (i / 5) * h;
                     ctx.beginPath();
                     ctx.moveTo(0, y);
                     ctx.lineTo(w, y);
@@ -1355,106 +1521,104 @@
                 for (let i = 0; i <= 8; i++) {
                     const x = (i / 8) * w;
                     ctx.beginPath();
-                    ctx.moveTo(0, x);
-                    ctx.lineTo(w, x);
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, h);
                     ctx.stroke();
                 }
 
-                const dynData = state.dynBookings;
-                const stcData = state.stcBookings;
-
-                const maxRev = Math.max(
-                    state.dynRevenue + (TOTAL_SEATS - state.dynSoldCount) * STATIC_PRICE * 2.2,
-                    state.stcRevenue + (TOTAL_SEATS - state.stcSoldCount) * STATIC_PRICE * 1.1,
-                    800
-                );
-                const scaleY = h / (maxRev * 1.2);
-                const scaleX = w / TOTAL_TIME;
-
-                if (dynData.length > 0) {
-                    ctx.strokeStyle = '#d4a843';
-                    ctx.lineWidth = 2.5;
-                    ctx.beginPath();
-                    let cum = 0;
-                    ctx.moveTo(0, h);
-                    for (const bk of dynData) {
-                        cum += bk.price;
-                        const x = bk.time * scaleX;
-                        const y = h - cum * scaleY;
-                        ctx.lineTo(x, y);
-                    }
-                    const cx = state.elapsed * scaleX;
-                    const cy = h - state.dynRevenue * scaleY;
-                    ctx.lineTo(cx, cy);
-                    ctx.stroke();
-
-                    let cumSat = 0;
-                    for (let i = 0; i < dynData.length; i++) {
-                        const bk = dynData[i];
-                        const sat = state.dynSatisfactions[i] || 0.5;
-                        cumSat += sat;
-                        const sx = bk.time * scaleX;
-                        const sy = h - (cumSat / (i + 1)) * h * 1.0;
-                        ctx.fillStyle = '#5cb870';
-                        ctx.beginPath();
-                        ctx.arc(sx, Math.max(8, Math.min(h - 8, sy)), 3.5, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-
-                if (stcData.length > 0) {
-                    ctx.strokeStyle = '#5a7fa8';
-                    ctx.lineWidth = 2.5;
-                    ctx.setLineDash([5, 3]);
-                    ctx.beginPath();
-                    let cum = 0;
-                    ctx.moveTo(0, h);
-                    for (const bk of stcData) {
-                        cum += bk.price;
-                        const x = bk.time * scaleX;
-                        const y = h - cum * scaleY;
-                        ctx.lineTo(x, y);
-                    }
-                    const cx = state.elapsed * scaleX;
-                    const cy = h - state.stcRevenue * scaleY;
-                    ctx.lineTo(cx, cy);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-
-                    let cumSat = 0;
-                    for (let i = 0; i < stcData.length; i++) {
-                        const bk = stcData[i];
-                        const sat = state.stcSatisfactions[i] || 0.5;
-                        cumSat += sat;
-                        const sx = bk.time * scaleX;
-                        const sy = h - (cumSat / (i + 1)) * h * 1.0;
-                        ctx.fillStyle = '#7ab8e0';
-                        ctx.beginPath();
-                        ctx.arc(sx, Math.max(8, Math.min(h - 8, sy)), 3.5, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-
-                const refY = h - STATIC_PRICE * TOTAL_SEATS * scaleY;
-                if (refY > 5 && refY < h - 5) {
-                    ctx.strokeStyle = '#5a4a30';
+                // Zero reference line
+                const zeroY = h - (0 - minPnl) * scaleY;
+                if (zeroY > 0 && zeroY < h) {
+                    ctx.strokeStyle = '#4a4a3a';
                     ctx.lineWidth = 0.8;
                     ctx.setLineDash([4, 5]);
                     ctx.beginPath();
-                    ctx.moveTo(0, refY);
-                    ctx.lineTo(w, refY);
+                    ctx.moveTo(0, zeroY);
+                    ctx.lineTo(w, zeroY);
                     ctx.stroke();
                     ctx.setLineDash([]);
-                    ctx.fillStyle = '#8a7a50';
-                    ctx.font = '8px Segoe UI';
-                    ctx.fillText('max static', 3, refY - 3);
+                    ctx.fillStyle = '#6a6a50';
+                    ctx.font = '7px Segoe UI';
+                    ctx.fillText('0%', 2, zeroY - 2);
                 }
 
+                // Static PnL% line (flat, since static price is fixed)
+                const stcPnl = state.stcSoldCount > 0 ?
+                    (state.stcRevenue / (state.stcSoldCount * 200)) * 100 :
+                    0;
+                if (state.stcSoldCount > 0) {
+                    const stcY = h - (stcPnl - minPnl) * scaleY;
+                    if (stcY > 0 && stcY < h) {
+                        ctx.strokeStyle = '#5a7fa8';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([3, 3]);
+                        ctx.beginPath();
+                        ctx.moveTo(0, stcY);
+                        ctx.lineTo(w, stcY);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                        // Label
+                        ctx.fillStyle = '#5a7fa8';
+                        ctx.font = '7px Segoe UI';
+                        const label = 'Stc ' + stcPnl.toFixed(1) + '%';
+                        ctx.fillText(label, w - 50, stcY - 3);
+                    }
+                }
+
+                // Dynamic PnL% line (over time)
+                if (history.length > 1) {
+                    ctx.strokeStyle = '#d4a843';
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    let first = true;
+                    for (const p of history) {
+                        const x = p.time * scaleX;
+                        const y = h - (p.dynPnl - minPnl) * scaleY;
+                        if (first) { ctx.moveTo(x, y);
+                            first = false; } else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+
+                    // Scatter dots for each booking
+                    for (const p of history) {
+                        const x = p.time * scaleX;
+                        const y = h - (p.dynPnl - minPnl) * scaleY;
+                        if (y > 0 && y < h) {
+                            ctx.fillStyle = '#d4a843';
+                            ctx.beginPath();
+                            ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.fillStyle = 'rgba(212,168,67,0.08)';
+                            ctx.beginPath();
+                            ctx.arc(x, y, 6, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+                }
+
+                // Labels
                 ctx.fillStyle = '#8d8a72';
-                ctx.font = '9px Segoe UI';
-                ctx.fillText('time →', w - 40, h - 4);
-                ctx.fillText('$' + Math.round(maxRev * 1.1), 3, 12);
-                ctx.fillText('$0', 3, h - 4);
+                ctx.font = '8px Segoe UI';
+                ctx.textAlign = 'center';
+                ctx.fillText('time →', w - 30, h - 4);
+                ctx.textAlign = 'right';
+                ctx.fillText(maxPnl.toFixed(0) + '%', w - 3, 12);
+                ctx.fillText(minPnl.toFixed(0) + '%', w - 3, h - 4);
+                ctx.textAlign = 'left';
+                ctx.fillText('PnL%', 4, 12);
+
+                // Current PnL% label at the end
+                if (history.length > 0) {
+                    const last = history[history.length - 1];
+                    const x = last.time * scaleX;
+                    const yDyn = h - (last.dynPnl - minPnl) * scaleY;
+                    if (yDyn > 0 && yDyn < h) {
+                        ctx.fillStyle = '#d4a843';
+                        ctx.font = '7px Segoe UI';
+                        ctx.textAlign = 'left';
+                        ctx.fillText('Dyn ' + last.dynPnl.toFixed(1) + '%', x + 4, yDyn - 2);
+                    }
+                }
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1494,9 +1658,8 @@
                 const avgDynPrice = state.dynBookings.length > 0 ?
                     state.dynBookings.reduce((s, b) => s + b.price, 0) / state.dynBookings.length :
                     STATIC_PRICE;
-                const avgStcPrice = STATIC_PRICE;
                 urgencyDyn.textContent = (avgDynPrice / STATIC_PRICE).toFixed(2);
-                urgencyStc.textContent = (avgStcPrice / STATIC_PRICE).toFixed(2);
+                urgencyStc.textContent = '1.00';
 
                 if (state.running === false && state.dynRevenue + state.stcRevenue > 0) {
                     const d = state.dynRevenue;
@@ -1517,7 +1680,7 @@
                     winnerBadge.innerHTML = '';
                 }
 
-                drawChart(state);
+                drawPnlChart(state);
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1572,22 +1735,23 @@
                         }
                     }
 
-                    // ─── FIX: Process spillover queue every frame (continuous re-evaluation) ───
-                    // Previously this was limited to every 1.2 seconds, causing stale waiting passengers.
-                    // Now we evaluate all waiting passengers on every animation tick so they can book
-                    // immediately when seats become available or prices change.
+                    // Process spillover queue every frame
                     if (state.spilloverQueue.length > 0) {
                         processSpillover(state, state.elapsed);
                         updateUI(state);
                     }
 
-                    // Update dynamic price (and thus urgency) continuously
+                    // Update dynamic price continuously
                     calcDynamicPrice(state);
 
-                    // Update UI every frame
+                    // Record PnL periodically even without bookings (so chart updates)
+                    if (state.pnlHistory.length === 0 || state.elapsed - state.pnlHistory[state.pnlHistory.length - 1]
+                        .time > 0.3) {
+                        recordPnl(state, state.elapsed);
+                    }
+
                     updateUI(state);
 
-                    // Check end conditions
                     if (state.elapsed >= TOTAL_TIME) {
                         state.running = false;
                         logEntry('🏁 TIME UP! Booking window closed.', true);
@@ -1650,7 +1814,7 @@
                 btnRun.disabled = false;
                 winnerBadge.innerHTML = '';
                 clearLog();
-                logEntry('🟢 Reset. Adjust joysticks and run.');
+                logEntry('🟢 Reset. Adjust sliders and run.');
                 buildSeatGrid(dynGrid, 'dyn');
                 buildSeatGrid(stcGrid, 'stc');
                 resizeChart();
@@ -1669,6 +1833,7 @@
                 urgencyDyn.textContent = '1.00';
                 urgencyStc.textContent = '1.00';
                 flyContainer.innerHTML = '';
+                drawPnlChart(S);
             }
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1735,25 +1900,28 @@
                 urgencyDyn.textContent = '1.00';
                 urgencyStc.textContent = '1.00';
                 clearLog();
-                logEntry('🟢 Ready. Static price = $' + STATIC_PRICE + ' (1.618×$' + BASE_COST + ').');
-                logEntry('💡 Dynamic = $324 × pace_ratio × coefficient.');
+                logEntry('🟢 Ready. Static price = $' + STATIC_PRICE + ' (1.367×$' + BASE_COST + ').');
+                logEntry('💡 Dynamic = $273 × pace_ratio × coefficient.');
                 logEntry('🧑‍🤝‍🧑 Leisure: Lose = −v · Catch ~ U(0.5v, 1.5v)');
                 logEntry('💼 Business: Lose = −0.1v · Catch ~ U(0, 2v)');
                 logEntry('🔄 Shared market: passengers choose the best option.');
+                logEntry('⏳ Waiting is now rational: passengers weigh future price drops vs urgency.');
                 logEntry('🎮 Run to see dynamic vs static battle for seats!');
+                drawPnlChart(S);
             }
 
             window.addEventListener('resize', () => {
                 resizeChart();
-                if (S) drawChart(S);
+                if (S) drawPnlChart(S);
             });
 
             init();
             console.log('✈️ Dynamic vs Static Pricing · Shared Market Serious Game');
-            console.log('   Static price: $' + STATIC_PRICE + ' (1.618×$' + BASE_COST + ')');
+            console.log('   Static price: $' + STATIC_PRICE + ' (1.367×$' + BASE_COST + ')');
             console.log('   Total seats: ' + TOTAL_SEATS + ' · Time: ' + TOTAL_TIME + 's');
             console.log('   Leisure: Lose=−v, Catch~U(0.5v,1.5v)');
             console.log('   Business: Lose=−0.1v, Catch~U(0,2v)');
+            console.log('   ⏳ Waiting utility now rational: seats × time × price gap - urgency');
 
         })();
     </script>
