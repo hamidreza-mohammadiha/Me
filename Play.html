@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Playbook of Sales Gamification</title>
+
+    <!-- Google Fonts: Space Grotesk for headlines, Inter for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ---------- RESET & BASE ---------- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #0b0e14;
+            --bg-card: #151c26;
+            --bg-card-hover: #1c2634;
+            --text-primary: #f0f3f8;
+            --text-secondary: #a8b8cc;
+            --text-muted: #6a7f99;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.5);
+            --radius-card: 16px;
+            --radius-pill: 100px;
+            --transition-smooth: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+            /* Accent colors per category */
+            --accent-chance: #f5a623;
+            --accent-discount: #4caf50;
+            --accent-bundle: #2196f3;
+            --accent-competitive: #ff5722;
+            --accent-loyalty: #9c27b0;
+            --accent-social: #009688;
+
+            --accent-chance-dim: rgba(245, 166, 35, 0.15);
+            --accent-discount-dim: rgba(76, 175, 80, 0.15);
+            --accent-bundle-dim: rgba(33, 150, 243, 0.15);
+            --accent-competitive-dim: rgba(255, 87, 34, 0.15);
+            --accent-loyalty-dim: rgba(156, 39, 176, 0.15);
+            --accent-social-dim: rgba(0, 150, 136, 0.15);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ---------- SCROLLBAR ---------- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* ---------- PROGRESS BAR (sticky) ---------- */
+        .progress-wrap {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-chance), var(--accent-discount), var(--accent-bundle), var(--accent-competitive), var(--accent-loyalty), var(--accent-social));
+            border-radius: 0 4px 4px 0;
+            transition: width 0.15s ease-out;
+            box-shadow: 0 0 20px rgba(245, 166, 35, 0.3);
+        }
+
+        /* ---------- CONTAINER ---------- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ---------- SLIDE SECTIONS ---------- */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 0 60px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .slide.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .slide-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: clamp(2.4rem, 6vw, 4.2rem);
+            line-height: 1.1;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .slide-title .highlight {
+            background: linear-gradient(135deg, var(--accent-chance), var(--accent-discount));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .slide-sub {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            font-weight: 400;
+        }
+
+        /* ---------- TITLE SLIDE ---------- */
+        #title {
+            justify-content: center;
+            text-align: center;
+            min-height: 100vh;
+            padding: 40px 0;
+        }
+        #title .slide-title {
+            font-size: clamp(3rem, 8vw, 5.6rem);
+            margin-bottom: 12px;
+        }
+        #title .slide-sub {
+            max-width: 600px;
+            margin: 0 auto 32px;
+            font-size: 1.25rem;
+        }
+        .title-badge {
+            display: inline-block;
+            padding: 8px 24px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+        }
+        .title-badge span {
+            color: var(--accent-chance);
+        }
+        .scroll-hint {
+            margin-top: 48px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            animation: bounceDown 2s infinite;
+        }
+        @keyframes bounceDown {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+        /* ---------- OVERVIEW GRID ---------- */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+            width: 100%;
+        }
+        .overview-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .overview-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-card);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .overview-card .oc-icon {
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .overview-card .oc-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .overview-card .oc-count {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .overview-card .oc-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* ---------- CATEGORY SLIDES ---------- */
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .category-header .cat-icon {
+            font-size: 2.4rem;
+        }
+        .category-header .cat-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 4px 14px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .category-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 640px;
+            margin-bottom: 24px;
+        }
+        .category-desc strong {
+            color: var(--text-primary);
+        }
+
+        /* Mechanics cards grid */
+        .mechanics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .mechanic-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            padding: 24px 22px;
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .mechanic-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-card);
+            border-color: rgba(255, 255, 255, 0.1);
+            background: var(--bg-card-hover);
+        }
+        .mechanic-card .mc-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        .mechanic-card .mc-tag {
+            display: inline-block;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .mechanic-card .mc-desc {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            margin-bottom: 10px;
+        }
+        .mechanic-card .mc-example {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border-left: 2px solid var(--border-subtle);
+            margin-bottom: 10px;
+        }
+        .mechanic-card .mc-example strong {
+            color: var(--text-secondary);
+        }
+        .mechanic-card .mc-pitfall {
+            font-size: 0.82rem;
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.08);
+            padding: 6px 12px;
+            border-radius: 6px;
+            border-left: 2px solid #f87171;
+        }
+        .mechanic-card .mc-pitfall::before {
+            content: "⚠️ ";
+        }
+
+        /* Category accent border on cards */
+        .cat-chance .mechanic-card {
+            border-left: 3px solid var(--accent-chance);
+        }
+        .cat-chance .cat-badge {
+            color: var(--accent-chance);
+            border-color: var(--accent-chance);
+        }
+        .cat-discount .mechanic-card {
+            border-left: 3px solid var(--accent-discount);
+        }
+        .cat-discount .cat-badge {
+            color: var(--accent-discount);
+            border-color: var(--accent-discount);
+        }
+        .cat-bundle .mechanic-card {
+            border-left: 3px solid var(--accent-bundle);
+        }
+        .cat-bundle .cat-badge {
+            color: var(--accent-bundle);
+            border-color: var(--accent-bundle);
+        }
+        .cat-competitive .mechanic-card {
+            border-left: 3px solid var(--accent-competitive);
+        }
+        .cat-competitive .cat-badge {
+            color: var(--accent-competitive);
+            border-color: var(--accent-competitive);
+        }
+        .cat-loyalty .mechanic-card {
+            border-left: 3px solid var(--accent-loyalty);
+        }
+        .cat-loyalty .cat-badge {
+            color: var(--accent-loyalty);
+            border-color: var(--accent-loyalty);
+        }
+        .cat-social .mechanic-card {
+            border-left: 3px solid var(--accent-social);
+        }
+        .cat-social .cat-badge {
+            color: var(--accent-social);
+            border-color: var(--accent-social);
+        }
+
+        /* ---------- ANIMATION DEMO CONTAINERS ---------- */
+        .demo-area {
+            margin: 24px 0 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 160px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: var(--radius-card);
+            padding: 20px;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .demo-area canvas {
+            border-radius: 12px;
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Wheel specific */
+        .wheel-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+        }
+        .wheel-wrapper canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(245, 166, 35, 0.2);
+            transition: box-shadow 0.3s ease;
+        }
+        .wheel-wrapper:hover canvas {
+            box-shadow: 0 0 60px rgba(245, 166, 35, 0.35);
+        }
+        .wheel-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-primary);
+            border: 2px solid var(--accent-chance);
+            color: var(--text-primary);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+            z-index: 2;
+            letter-spacing: 0.04em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wheel-btn:hover {
+            transform: translate(-50%, -50%) scale(1.08);
+            background: var(--accent-chance);
+            color: #0b0e14;
+        }
+        .wheel-btn:active {
+            transform: translate(-50%, -50%) scale(0.92);
+        }
+        .wheel-result {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-chance);
+            min-height: 1.6em;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        /* Progress slider demo */
+        .slider-demo {
+            width: 100%;
+            max-width: 400px;
+        }
+        .slider-demo .track {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 100px;
+            position: relative;
+            overflow: visible;
+        }
+        .slider-demo .track .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-discount), #66bb6a);
+            border-radius: 100px;
+            transition: width 0.6s ease;
+        }
+        .slider-demo .track .tier-marks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2px;
+            pointer-events: none;
+        }
+        .slider-demo .track .tier-marks span {
+            display: block;
+            width: 2px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            position: relative;
+        }
+        .slider-demo .track .tier-marks span::after {
+            content: attr(data-label);
+            position: absolute;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .slider-demo .value-display {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .slider-demo .value-display .num {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+        }
+
+        /* Stack demo */
+        .stack-demo {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            min-height: 120px;
+            padding: 8px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .stack-demo .item {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, border-color 0.4s ease;
+            opacity: 0.5;
+            transform: scale(0.8) translateY(20px);
+        }
+        .stack-demo .item.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        .stack-demo .item.free {
+            border-color: var(--accent-bundle);
+            background: var(--accent-bundle-dim);
+            color: var(--accent-bundle);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        .stack-demo .item.free.show {
+            animation: freePop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes freePop {
+            0% {
+                transform: scale(0.4) rotate(-10deg);
+            }
+            60% {
+                transform: scale(1.25) rotate(4deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+        .stack-demo .plus {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            font-weight: 300;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .stack-demo .plus.show {
+            opacity: 1;
+        }
+        .stack-demo .equals {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            font-weight: 300;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .stack-demo .equals.show {
+            opacity: 1;
+        }
+
+        /* Leaderboard demo */
+        .lb-demo {
+            width: 100%;
+            max-width: 380px;
+        }
+        .lb-demo .lb-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            transition: transform 0.5s ease, opacity 0.4s ease;
+            opacity: 0;
+            transform: translateX(-16px);
+        }
+        .lb-demo .lb-row.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .lb-demo .lb-row .rank {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            width: 28px;
+            text-align: center;
+        }
+        .lb-demo .lb-row .name {
+            flex: 1;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .lb-demo .lb-row .bar-wrap {
+            flex: 2;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        .lb-demo .lb-row .bar-wrap .bar {
+            height: 100%;
+            border-radius: 100px;
+            transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            width: 0%;
+        }
+        .lb-demo .lb-row .score {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            min-width: 36px;
+            text-align: right;
+        }
+        .lb-demo .lb-row.gold .rank {
+            color: var(--accent-chance);
+        }
+        .lb-demo .lb-row.silver .rank {
+            color: #b0b8c0;
+        }
+        .lb-demo .lb-row.bronze .rank {
+            color: #cd7f32;
+        }
+
+        /* Badge demo */
+        .badge-demo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .badge-demo .badge {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            font-weight: 700;
+            transition: background 0.6s ease, box-shadow 0.6s ease, transform 0.4s ease;
+            background: #3a3f4a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-muted);
+            position: relative;
+        }
+        .badge-demo .badge.bronze {
+            background: linear-gradient(135deg, #cd7f32, #a8642a);
+            color: #f5e6d3;
+            box-shadow: 0 0 40px rgba(205, 127, 50, 0.3);
+        }
+        .badge-demo .badge.silver {
+            background: linear-gradient(135deg, #c0c8d0, #8a94a0);
+            color: #f0f3f8;
+            box-shadow: 0 0 40px rgba(192, 200, 208, 0.3);
+        }
+        .badge-demo .badge.gold {
+            background: linear-gradient(135deg, #f5a623, #d4891a);
+            color: #fff8e7;
+            box-shadow: 0 0 60px rgba(245, 166, 35, 0.4);
+            animation: goldPulse 2s ease-in-out infinite;
+        }
+        @keyframes goldPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 40px rgba(245, 166, 35, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 80px rgba(245, 166, 35, 0.55);
+            }
+        }
+        .badge-demo .badge .badge-label {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.8;
+            position: absolute;
+            bottom: 14px;
+        }
+        .badge-demo .badge-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .badge-demo .badge-controls button {
+            padding: 6px 18px;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-subtle);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .badge-demo .badge-controls button:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+        }
+        .badge-demo .badge-controls button.active {
+            border-color: var(--accent-loyalty);
+            color: var(--accent-loyalty);
+            background: var(--accent-loyalty-dim);
+        }
+
+        /* Social demo - simple network */
+        .social-demo {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px 20px;
+            padding: 8px 0;
+            min-height: 100px;
+            align-items: center;
+        }
+        .social-demo .node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .social-demo .node.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .social-demo .node .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+        .social-demo .node .avatar.referral {
+            border-color: var(--accent-social);
+            background: var(--accent-social-dim);
+            color: var(--accent-social);
+        }
+        .social-demo .node .label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .social-demo .connector {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .social-demo .connector.show {
+            opacity: 1;
+        }
+
+        /* ---------- COMPARISON MATRIX ---------- */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        .comparison-table th {
+            text-align: left;
+            padding: 12px 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 2px solid var(--border-subtle);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .comparison-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+        .comparison-table td:first-child {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .comparison-table .rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            color: var(--accent-chance);
+        }
+        .comparison-table .rating .dot {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .comparison-table .rating .dot.empty {
+            color: var(--text-muted);
+            opacity: 0.25;
+        }
+        .comparison-table .row-cat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .comparison-table .row-cat .dot-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ---------- DECISION GUIDE ---------- */
+        .decision-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 24px;
+            max-width: 700px;
+            width: 100%;
+        }
+        .decision-flow .flow-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-card);
+            border: 1px solid var(--border-subtle);
+        }
+        .decision-flow .flow-row .q {
+            font-weight: 600;
+            font-size: 0.95rem;
+            min-width: 120px;
+        }
+        .decision-flow .flow-row .options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .decision-flow .flow-row .options .pill {
+            padding: 4px 16px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+        .decision-flow .flow-row .options .pill:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+        }
+        .decision-flow .flow-row .options .pill.selected {
+            border-color: var(--accent-chance);
+            color: var(--accent-chance);
+            background: var(--accent-chance-dim);
+        }
+        .decision-flow .flow-arrow {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            padding: 2px 0;
+        }
+        .decision-flow .flow-result {
+            padding: 16px 24px;
+            border-radius: var(--radius-card);
+            background: linear-gradient(135deg, var(--accent-chance-dim), var(--accent-discount-dim));
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+        }
+        .decision-flow .flow-result .empty {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 820px) {
+            .container {
+                padding: 0 16px;
+            }
+            .slide {
+                padding: 60px 0 40px;
+                min-height: auto;
+            }
+            .mechanics-grid {
+                grid-template-columns: 1fr;
+            }
+            .overview-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            .comparison-table {
+                font-size: 0.75rem;
+            }
+            .comparison-table th,
+            .comparison-table td {
+                padding: 8px 10px;
+            }
+            .demo-area {
+                min-height: 120px;
+                padding: 14px;
+            }
+            .stack-demo .item {
+                width: 48px;
+                height: 48px;
+                font-size: 1rem;
+            }
+            .wheel-wrapper {
+                width: 160px;
+                height: 160px;
+            }
+            .wheel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.65rem;
+            }
+            .badge-demo .badge {
+                width: 80px;
+                height: 80px;
+                font-size: 2.2rem;
+            }
+            .decision-flow .flow-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .decision-flow .flow-row .q {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .overview-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .slide-title {
+                font-size: clamp(1.8rem, 8vw, 2.6rem);
+            }
+            #title .slide-title {
+                font-size: clamp(2.2rem, 10vw, 3.4rem);
+            }
+            .mechanic-card {
+                padding: 18px 16px;
+            }
+            .comparison-table {
+                font-size: 0.65rem;
+            }
+            .comparison-table th,
+            .comparison-table td {
+                padding: 6px 6px;
+            }
+            .demo-area {
+                padding: 10px;
+                min-height: 100px;
+            }
+            .stack-demo .item {
+                width: 40px;
+                height: 40px;
+                font-size: 0.8rem;
+            }
+            .wheel-wrapper {
+                width: 130px;
+                height: 130px;
+            }
+            .wheel-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 0.55rem;
+            }
+        }
+
+        /* ---------- UTILITY ---------- */
+        .text-accent {
+            color: var(--accent-chance);
+        }
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mt-24 {
+            margin-top: 24px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .gap-16 {
+            gap: 16px;
+        }
+
+        /* ---------- REDUCED MOTION ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .slide {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .lb-demo .lb-row {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .stack-demo .item {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .social-demo .node {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+            .social-demo .connector {
+                opacity: 1 !important;
+            }
+            .stack-demo .plus,
+            .stack-demo .equals {
+                opacity: 1 !important;
+            }
+            .overview-card:hover {
+                transform: none !important;
+            }
+            .mechanic-card:hover {
+                transform: none !important;
+            }
+            .badge-demo .badge.gold {
+                animation: none !important;
+            }
+            .scroll-hint {
+                animation: none !important;
+            }
+            .wheel-btn:hover {
+                transform: translate(-50%, -50%) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== PROGRESS BAR ========== -->
+    <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 1: TITLE                                               -->
+        <!-- ============================================================ -->
+        <section class="slide visible" id="title" data-index="0">
+            <h1 class="slide-title">
+                The Playbook of<br /><span class="highlight">Sales Gamification</span>
+            </h1>
+            <p class="slide-sub">
+                Discover 6 proven gamification mechanics that boost sales rep performance,
+                energize channel partners, and convert more customers — each powered by a
+                distinct psychological driver like competition, status, or urgency.
+                <br />
+                <span style="color: var(--text-muted); font-size: 0.85rem; display: inline-block; margin-top: 4px;">
+                    With real‑world examples, common pitfalls, and a decision guide for every audience.
+                </span>
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
+                <span style="background:var(--bg-card);padding:4px 16px;border-radius:var(--radius-pill);font-size:0.8rem;color:var(--text-secondary);border:1px solid var(--border-subtle);">B2B</span>
+                <span style="background:var(--bg-card);padding:4px 16px;border-radius:var(--radius-pill);font-size:0.8rem;color:var(--text-secondary);border:1px solid var(--border-subtle);">B2C</span>
+                <span style="background:var(--bg-card);padding:4px 16px;border-radius:var(--radius-pill);font-size:0.8rem;color:var(--text-secondary);border:1px solid var(--border-subtle);">Channel</span>
+            </div>
+            <div class="scroll-hint">↓ Scroll to explore</div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 2: OVERVIEW                                            -->
+        <!-- ============================================================ -->
+        <section class="slide" id="overview" data-index="1">
+            <span class="slide-label">Overview</span>
+            <h2 class="slide-title">The 6 Mechanics</h2>
+            <p class="slide-sub">Click any category to jump directly to that section.</p>
+
+            <div class="overview-grid" id="overviewGrid">
+                <a class="overview-card" href="#chance" data-cat="chance">
+                    <span class="oc-icon">🎰</span>
+                    <span class="oc-label">Chance-based</span>
+                    <span class="oc-count">3 mechanics</span>
+                    <span class="oc-dot" style="background:var(--accent-chance);"></span>
+                </a>
+                <a class="overview-card" href="#discount" data-cat="discount">
+                    <span class="oc-icon">📉</span>
+                    <span class="oc-label">Threshold Discounts</span>
+                    <span class="oc-count">3 mechanics</span>
+                    <span class="oc-dot" style="background:var(--accent-discount);"></span>
+                </a>
+                <a class="overview-card" href="#bundle" data-cat="bundle">
+                    <span class="oc-icon">📦</span>
+                    <span class="oc-label">Bundling &amp; Volume</span>
+                    <span class="oc-count">3 mechanics</span>
+                    <span class="oc-dot" style="background:var(--accent-bundle);"></span>
+                </a>
+                <a class="overview-card" href="#competitive" data-cat="competitive">
+                    <span class="oc-icon">🏆</span>
+                    <span class="oc-label">Competitive / Ranking</span>
+                    <span class="oc-count">4 mechanics</span>
+                    <span class="oc-dot" style="background:var(--accent-competitive);"></span>
+                </a>
+                <a class="overview-card" href="#loyalty" data-cat="loyalty">
+                    <span class="oc-icon">⭐</span>
+                    <span class="oc-label">Progression / Loyalty</span>
+                    <span class="oc-count">3 mechanics</span>
+                    <span class="oc-dot" style="background:var(--accent-loyalty);"></span>
+                </a>
+                <a class="overview-card" href="#social" data-cat="social">
+                    <span class="oc-icon">👥</span>
+                    <span class="oc-label">Social</span>
+                    <span class="oc-count">2 mechanics</span>
+                    <span class="oc-dot" style="background:var(--accent-social);"></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 3: CHANCE-BASED                                        -->
+        <!-- ============================================================ -->
+        <section class="slide cat-chance" id="chance" data-index="2">
+            <div class="category-header">
+                <span class="cat-icon">🎰</span>
+                <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Chance-based</h2>
+                <span class="cat-badge">Variable Reward</span>
+            </div>
+            <p class="category-desc">
+                <strong>Definition:</strong> Mechanics that introduce randomness — prize draws,
+                spin-the-wheel, scratch cards, mystery boxes. <strong>Driver:</strong> anticipation,
+                dopamine from variable rewards, and the "near-miss" effect.
+            </p>
+
+            <div class="mechanics-grid">
+                <div class="mechanic-card">
+                    <div class="mc-name">Prize Draws / Raffles</div>
+                    <div class="mc-tag">Chance</div>
+                    <div class="mc-desc">Enter to win a prize after a qualifying action (purchase, demo, lead).</div>
+                    <div class="mc-example"><strong>Example:</strong> Salesforce Dreamforce — attendees who visit 5+ booths enter a raffle for a MacBook.</div>
+                    <div class="mc-pitfall">Can attract non-serious participants; low perceived probability of winning.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Spin-the-Wheel</div>
+                    <div class="mc-tag">Chance</div>
+                    <div class="mc-desc">Interactive wheel with segments offering discounts, prizes, or "try again."</div>
+                    <div class="mc-example"><strong>Example:</strong> E-commerce exit-intent popup — spin for 10–50% off.</div>
+                    <div class="mc-pitfall">Can feel gimmicky; overuse dilutes brand value.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Mystery Boxes</div>
+                    <div class="mc-tag">Chance</div>
+                    <div class="mc-desc">Customers pay a fixed price for a box with unknown value (surprise mechanics).</div>
+                    <div class="mc-example"><strong>Example:</strong> Razer — "Mystery Box" with gaming gear worth up to 3× the price.</div>
+                    <div class="mc-pitfall">Regulatory scrutiny in some regions; can feel like gambling.</div>
+                </div>
+            </div>
+
+            <!-- Demo: Spinning Wheel -->
+            <div class="demo-area">
+                <div class="wheel-wrapper" id="wheelWrapper">
+                    <canvas id="wheelCanvas" width="400" height="400"></canvas>
+                    <button class="wheel-btn" id="spinBtn" aria-label="Spin the wheel">SPIN</button>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div class="wheel-result" id="wheelResult">Click SPIN to try your luck</div>
+                    <span style="font-size:0.7rem;color:var(--text-muted);">← Interactive: chance-based reward</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 4: THRESHOLD DISCOUNTS                                 -->
+        <!-- ============================================================ -->
+        <section class="slide cat-discount" id="discount" data-index="3">
+            <div class="category-header">
+                <span class="cat-icon">📉</span>
+                <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Threshold Discounts</h2>
+                <span class="cat-badge">Loss Aversion · Urgency</span>
+            </div>
+            <p class="category-desc">
+                <strong>Definition:</strong> Discounts unlocked at specific spending or volume thresholds.
+                <strong>Driver:</strong> goal gradient, loss aversion (fear of missing the threshold),
+                and urgency from countdowns.
+            </p>
+
+            <div class="mechanics-grid">
+                <div class="mechanic-card">
+                    <div class="mc-name">Fixed Discount at Target</div>
+                    <div class="mc-tag">Threshold</div>
+                    <div class="mc-desc">A set discount (e.g., 20%) is applied once the cart reaches a minimum value.</div>
+                    <div class="mc-example"><strong>Example:</strong> "Spend $100, get 20% off" — common in retail and DTC.</div>
+                    <div class="mc-pitfall">Customers may add unneeded items to hit the threshold, increasing returns.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Scaling / Progressive Discounts</div>
+                    <div class="mc-tag">Threshold</div>
+                    <div class="mc-desc">Discount percentage increases stepwise with higher spend (e.g., 10% at $100, 15% at $200).</div>
+                    <div class="mc-example"><strong>Example:</strong> B2B software — "Buy 10 licenses → 10% off; 25+ → 20% off."</div>
+                    <div class="mc-pitfall">Margin erosion at higher tiers; complexity in communication.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Flash Countdown Discounts</div>
+                    <div class="mc-tag">Threshold</div>
+                    <div class="mc-desc">Time-limited discount with a visible countdown timer (e.g., "40% off — ends in 2h").</div>
+                    <div class="mc-example"><strong>Example:</strong> Booking.com — "Last 2 rooms at this price!" with countdown.</div>
+                    <div class="mc-pitfall">Discount fatigue; customers may wait for the next flash sale.</div>
+                </div>
+            </div>
+
+            <!-- Demo: Animated slider with tiers -->
+            <div class="demo-area">
+                <div class="slider-demo">
+                    <div class="track">
+                        <div class="fill" id="sliderFill" style="width:0%;"></div>
+                        <div class="tier-marks">
+                            <span data-label="$0"></span>
+                            <span data-label="$100"></span>
+                            <span data-label="$250"></span>
+                            <span data-label="$500"></span>
+                            <span data-label="$1k+"></span>
+                        </div>
+                    </div>
+                    <div class="value-display">
+                        <span>Spend</span>
+                        <span class="num" id="sliderValue">$0</span>
+                        <span>Discount <strong id="sliderDiscount" style="color:var(--accent-discount);">0%</strong></span>
+                    </div>
+                    <span style="font-size:0.7rem;color:var(--text-muted);text-align:center;display:block;margin-top:4px;">
+                        ↑ Scroll to this section to see the progress animate
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 5: BUNDLING & VOLUME                                   -->
+        <!-- ============================================================ -->
+        <section class="slide cat-bundle" id="bundle" data-index="4">
+            <div class="category-header">
+                <span class="cat-icon">📦</span>
+                <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Bundling &amp; Volume</h2>
+                <span class="cat-badge">Perceived Value · Anchoring</span>
+            </div>
+            <p class="category-desc">
+                <strong>Definition:</strong> Incentives tied to purchasing multiple items or higher volume.
+                <strong>Driver:</strong> anchoring (perceived savings), reciprocity, and the
+                "endowment effect" — customers value what they already have.
+            </p>
+
+            <div class="mechanics-grid">
+                <div class="mechanic-card">
+                    <div class="mc-name">Bundling Discounts</div>
+                    <div class="mc-tag">Bundle</div>
+                    <div class="mc-desc">Multiple products sold together at a reduced price vs. buying separately.</div>
+                    <div class="mc-example"><strong>Example:</strong> Microsoft 365 — bundled apps at a lower total than individual subscriptions.</div>
+                    <div class="mc-pitfall">Can cannibalize high-margin individual sales.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">BOGO / Free 3rd-or-4th Product</div>
+                    <div class="mc-tag">Bundle</div>
+                    <div class="mc-desc">Buy one, get one free — or buy 3, get the 4th free (volume incentive).</div>
+                    <div class="mc-example"><strong>Example:</strong> "Buy 2, get 3rd free" — common in CPG and retail.</div>
+                    <div class="mc-pitfall">Inventory strain; customers may stockpile and delay future purchases.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Volume-Tier Pricing</div>
+                    <div class="mc-tag">Bundle</div>
+                    <div class="mc-desc">Per-unit price decreases as order quantity increases (wholesale-style).</div>
+                    <div class="mc-example"><strong>Example:</strong> Alibaba — "1–99 units: $10/ea; 100–999: $8/ea; 1000+: $6/ea."</div>
+                    <div class="mc-pitfall">Smaller customers may feel penalized; complex to communicate.</div>
+                </div>
+            </div>
+
+            <!-- Demo: Stack animation -->
+            <div class="demo-area">
+                <div class="stack-demo" id="stackDemo">
+                    <div class="item" data-idx="0">1</div>
+                    <div class="plus" data-idx="1">+</div>
+                    <div class="item" data-idx="2">2</div>
+                    <div class="plus" data-idx="3">+</div>
+                    <div class="item" data-idx="4">3</div>
+                    <div class="equals" data-idx="5">=</div>
+                    <div class="item free" data-idx="6">FREE!</div>
+                </div>
+                <span style="font-size:0.7rem;color:var(--text-muted);">↑ Scroll to see the bundle stack up</span>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 6: COMPETITIVE / RANKING                               -->
+        <!-- ============================================================ -->
+        <section class="slide cat-competitive" id="competitive" data-index="5">
+            <div class="category-header">
+                <span class="cat-icon">🏆</span>
+                <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Competitive / Ranking</h2>
+                <span class="cat-badge">Status · Competition</span>
+            </div>
+            <p class="category-desc">
+                <strong>Definition:</strong> Mechanics that pit individuals or teams against each other.
+                <strong>Driver:</strong> social comparison, status seeking, and the thrill
+                of competition (especially in 1v1 or knockout formats).
+            </p>
+
+            <div class="mechanics-grid">
+                <div class="mechanic-card">
+                    <div class="mc-name">Tiered Leagues &amp; Knockouts</div>
+                    <div class="mc-tag">Competitive</div>
+                    <div class="mc-desc">Participants are grouped into leagues (e.g., Bronze → Diamond) with promotions/relegation.</div>
+                    <div class="mc-example"><strong>Example:</strong> HubSpot's partner program — tiers based on revenue and certifications.</div>
+                    <div class="mc-pitfall">Demotivation for those stuck in lower tiers; sandbagging to stay in a winnable tier.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Leaderboards</div>
+                    <div class="mc-tag">Competitive</div>
+                    <div class="mc-desc">Real-time ranking of performance (sales, points, etc.) with visibility to all.</div>
+                    <div class="mc-example"><strong>Example:</strong> Salesforce's "Top Performer" dashboard visible to the whole sales org.</div>
+                    <div class="mc-pitfall">Can demotivate lower-ranked reps; may encourage short-term gaming.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">1v1 Duels</div>
+                    <div class="mc-tag">Competitive</div>
+                    <div class="mc-desc">Two participants compete head-to-head in a timed challenge (e.g., most calls in 1 hour).</div>
+                    <div class="mc-example"><strong>Example:</strong> Sales contests where two reps are paired and the winner gets a prize.</div>
+                    <div class="mc-pitfall">Can create unhealthy rivalry; losers may feel demoralized.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Team Quests</div>
+                    <div class="mc-tag">Competitive</div>
+                    <div class="mc-desc">Teams compete against each other to achieve a collective goal (e.g., revenue, demos).</div>
+                    <div class="mc-example"><strong>Example:</strong> Regional sales teams competing for a "President's Club" trip.</div>
+                    <div class="mc-pitfall">Free-riding within teams; top performers may carry the load.</div>
+                </div>
+            </div>
+
+            <!-- Demo: Leaderboard with animated bars -->
+            <div class="demo-area">
+                <div class="lb-demo" id="lbDemo">
+                    <div class="lb-row gold" data-rank="1">
+                        <span class="rank">#1</span>
+                        <span class="name">Sarah K.</span>
+                        <div class="bar-wrap"><div class="bar" style="background:var(--accent-chance);width:0%;"></div></div>
+                        <span class="score">$124k</span>
+                    </div>
+                    <div class="lb-row silver" data-rank="2">
+                        <span class="rank">#2</span>
+                        <span class="name">James R.</span>
+                        <div class="bar-wrap"><div class="bar" style="background:#b0b8c0;width:0%;"></div></div>
+                        <span class="score">$98k</span>
+                    </div>
+                    <div class="lb-row bronze" data-rank="3">
+                        <span class="rank">#3</span>
+                        <span class="name">Maya L.</span>
+                        <div class="bar-wrap"><div class="bar" style="background:#cd7f32;width:0%;"></div></div>
+                        <span class="score">$76k</span>
+                    </div>
+                    <div class="lb-row" data-rank="4">
+                        <span class="rank">#4</span>
+                        <span class="name">Alex P.</span>
+                        <div class="bar-wrap"><div class="bar" style="background:var(--text-muted);width:0%;"></div></div>
+                        <span class="score">$52k</span>
+                    </div>
+                    <div class="lb-row" data-rank="5">
+                        <span class="rank">#5</span>
+                        <span class="name">Taylor W.</span>
+                        <div class="bar-wrap"><div class="bar" style="background:var(--text-muted);width:0%;"></div></div>
+                        <span class="score">$31k</span>
+                    </div>
+                    <span style="font-size:0.7rem;color:var(--text-muted);text-align:center;display:block;margin-top:4px;">
+                        ↑ Scroll to see the leaderboard fill up
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 7: PROGRESSION / LOYALTY                               -->
+        <!-- ============================================================ -->
+        <section class="slide cat-loyalty" id="loyalty" data-index="6">
+            <div class="category-header">
+                <span class="cat-icon">⭐</span>
+                <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Progression / Loyalty</h2>
+                <span class="cat-badge">Achievement · Progress</span>
+            </div>
+            <p class="category-desc">
+                <strong>Definition:</strong> Mechanics that reward ongoing engagement through points,
+                badges, streaks, and tier progression. <strong>Driver:</strong> the "endowed progress"
+                effect, status from achievement, and the desire to reach the next level.
+            </p>
+
+            <div class="mechanics-grid">
+                <div class="mechanic-card">
+                    <div class="mc-name">Points &amp; Badges</div>
+                    <div class="mc-tag">Loyalty</div>
+                    <div class="mc-desc">Earn points for actions; redeem for rewards or unlock badges for milestones.</div>
+                    <div class="mc-example"><strong>Example:</strong> Starbucks Rewards — stars earned per purchase, redeemable for free drinks.</div>
+                    <div class="mc-pitfall">Points inflation; diminishing perceived value over time.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Streaks &amp; Milestones</div>
+                    <div class="mc-tag">Loyalty</div>
+                    <div class="mc-desc">Reward consecutive actions (daily logins, weekly sales) or milestone achievements.</div>
+                    <div class="mc-example"><strong>Example:</strong> Duolingo — daily streaks keep users coming back; sales teams with "100% quota" streaks.</div>
+                    <div class="mc-pitfall">Loss of streak can demotivate; may encourage "token" actions just to keep the streak alive.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Tier Progression (Bronze → Silver → Gold)</div>
+                    <div class="mc-tag">Loyalty</div>
+                    <div class="mc-desc">Users advance through tiers based on cumulative activity, unlocking better perks.</div>
+                    <div class="mc-example"><strong>Example:</strong> American Express — Green → Gold → Platinum with increasing benefits.</div>
+                    <div class="mc-pitfall">Customers may "churn" after reaching the top tier; sandbagging near tier cutoffs.</div>
+                </div>
+            </div>
+
+            <!-- Demo: Badge upgrade -->
+            <div class="demo-area">
+                <div class="badge-demo">
+                    <div class="badge" id="badgeDisplay">
+                        ★
+                        <span class="badge-label">Bronze</span>
+                    </div>
+                    <div class="badge-controls">
+                        <button data-tier="bronze" class="active">Bronze</button>
+                        <button data-tier="silver">Silver</button>
+                        <button data-tier="gold">Gold</button>
+                    </div>
+                    <span style="font-size:0.7rem;color:var(--text-muted);">↑ Click a tier to see the badge upgrade</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 8: SOCIAL                                              -->
+        <!-- ============================================================ -->
+        <section class="slide cat-social" id="social" data-index="7">
+            <div class="category-header">
+                <span class="cat-icon">👥</span>
+                <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Social</h2>
+                <span class="cat-badge">Social Proof · Belonging</span>
+            </div>
+            <p class="category-desc">
+                <strong>Definition:</strong> Mechanics that leverage social connections and networks.
+                <strong>Driver:</strong> social validation, reciprocity (referral rewards),
+                and the desire to belong to a community.
+            </p>
+
+            <div class="mechanics-grid">
+                <div class="mechanic-card">
+                    <div class="mc-name">Referral Gamification</div>
+                    <div class="mc-tag">Social</div>
+                    <div class="mc-desc">Reward users for referring others, often with a points or tier system for referrals.</div>
+                    <div class="mc-example"><strong>Example:</strong> Uber — "Give $20, get $20" referral credits; Dropbox's extra storage for referrals.</div>
+                    <div class="mc-pitfall">Can attract low-quality referrals; gaming through fake accounts.</div>
+                </div>
+                <div class="mechanic-card">
+                    <div class="mc-name">Team-Based Challenges</div>
+                    <div class="mc-tag">Social</div>
+                    <div class="mc-desc">Groups work together toward a shared goal, with rewards split among the team.</div>
+                    <div class="mc-example"><strong>Example:</strong> Strava — club challenges where members log miles together; sales teams with group quotas.</div>
+                    <div class="mc-pitfall">Free-riding; high performers may feel they carry the team.</div>
+                </div>
+            </div>
+
+            <!-- Demo: Social network referral chain -->
+            <div class="demo-area">
+                <div class="social-demo" id="socialDemo">
+                    <div class="node" data-idx="0">
+                        <div class="avatar">👤</div>
+                        <span class="label">You</span>
+                    </div>
+                    <span class="connector" data-idx="1">→</span>
+                    <div class="node" data-idx="2">
+                        <div class="avatar referral">A</div>
+                        <span class="label">Referral</span>
+                    </div>
+                    <span class="connector" data-idx="3">→</span>
+                    <div class="node" data-idx="4">
+                        <div class="avatar referral">B</div>
+                        <span class="label">Referral</span>
+                    </div>
+                    <span class="connector" data-idx="5">→</span>
+                    <div class="node" data-idx="6">
+                        <div class="avatar referral">C</div>
+                        <span class="label">Referral</span>
+                    </div>
+                    <span style="font-size:0.7rem;color:var(--text-muted);display:block;width:100%;text-align:center;margin-top:4px;">
+                        ↑ Scroll to see the referral chain build
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 9: COMPARISON MATRIX                                   -->
+        <!-- ============================================================ -->
+        <section class="slide" id="comparison" data-index="8">
+            <span class="slide-label">Compare</span>
+            <h2 class="slide-title">Which mechanic wins?</h2>
+            <p class="slide-sub">A high-level comparison across 4 dimensions. <span style="color:var(--text-muted);">(● = low, ●●● = high)</span></p>
+
+            <div style="overflow-x:auto;width:100%;">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Mechanic</th>
+                            <th>Cost to Implement</th>
+                            <th>Effect on Margin</th>
+                            <th>Rep Motivation</th>
+                            <th>Risk of Gaming</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="row-cat"><span class="dot-color" style="background:var(--accent-chance);"></span> Chance</div></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot empty">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                        </tr>
+                        <tr>
+                            <td><div class="row-cat"><span class="dot-color" style="background:var(--accent-discount);"></span> Threshold Discounts</div></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                        </tr>
+                        <tr>
+                            <td><div class="row-cat"><span class="dot-color" style="background:var(--accent-bundle);"></span> Bundling / Volume</div></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                        </tr>
+                        <tr>
+                            <td><div class="row-cat"><span class="dot-color" style="background:var(--accent-competitive);"></span> Competitive / Ranking</div></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot empty">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                        </tr>
+                        <tr>
+                            <td><div class="row-cat"><span class="dot-color" style="background:var(--accent-loyalty);"></span> Progression / Loyalty</div></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                        </tr>
+                        <tr>
+                            <td><div class="row-cat"><span class="dot-color" style="background:var(--accent-social);"></span> Social</div></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot empty">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot empty">●</span></span></td>
+                            <td><span class="rating"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;text-align:right;">
+                ● low · ●● medium · ●●● high
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 10: DECISION GUIDE                                     -->
+        <!-- ============================================================ -->
+        <section class="slide" id="decision" data-index="9">
+            <span class="slide-label">Choose</span>
+            <h2 class="slide-title">How to choose</h2>
+            <p class="slide-sub">Select your primary goal, and we'll recommend a mechanic.</p>
+
+            <div class="decision-flow" id="decisionFlow">
+                <!-- Step 1 -->
+                <div class="flow-row">
+                    <span class="q">🎯 What's your goal?</span>
+                    <div class="options" id="goalOptions">
+                        <span class="pill" data-value="awareness">Awareness</span>
+                        <span class="pill" data-value="conversion">Conversion</span>
+                        <span class="pill" data-value="loyalty">Loyalty</span>
+                        <span class="pill" data-value="competition">Competition</span>
+                        <span class="pill" data-value="referral">Referrals</span>
+                    </div>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <!-- Step 2 -->
+                <div class="flow-row">
+                    <span class="q">👥 Who's your audience?</span>
+                    <div class="options" id="audienceOptions">
+                        <span class="pill" data-value="b2b">B2B Sales</span>
+                        <span class="pill" data-value="b2c">B2C Customers</span>
+                        <span class="pill" data-value="channel">Channel Partners</span>
+                        <span class="pill" data-value="internal">Internal Teams</span>
+                    </div>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <!-- Result -->
+                <div class="flow-result" id="decisionResult">
+                    <span class="empty">Select a goal and audience above</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- FOOTER / CLOSING                                             -->
+        <!-- ============================================================ -->
+        <section class="slide" id="closing" data-index="10" style="justify-content:center;text-align:center;min-height:60vh;">
+            <h2 class="slide-title" style="font-size:clamp(2rem,5vw,3.6rem);">
+                🚀 Ready to <span class="highlight">play</span>?
+            </h2>
+            <p class="slide-sub" style="max-width:500px;margin:0 auto 24px;">
+                The best gamification strategy combines mechanics that align with your
+                business goals, audience psychology, and operational reality.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;font-size:0.9rem;color:var(--text-muted);">
+                <span style="background:var(--bg-card);padding:6px 20px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);">🎰 Chance</span>
+                <span style="background:var(--bg-card);padding:6px 20px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);">📉 Discounts</span>
+                <span style="background:var(--bg-card);padding:6px 20px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);">📦 Bundling</span>
+                <span style="background:var(--bg-card);padding:6px 20px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);">🏆 Competitive</span>
+                <span style="background:var(--bg-card);padding:6px 20px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);">⭐ Loyalty</span>
+                <span style="background:var(--bg-card);padding:6px 20px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);">👥 Social</span>
+            </div>
+            <p style="margin-top:40px;font-size:0.8rem;color:var(--text-muted);">
+                Presented by HamidReza 🍫 Sorbon Confectionary Business
+            </p>
+            <div> <span>July</span> · 2026</div>
+        </section>
+                    
+
+
+    </div><!-- /container -->
+
+    <!-- ================================================================ -->
+    <!-- JAVASCRIPT                                                       -->
+    <!-- ================================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ---------- PREFERS REDUCED MOTION ----------
+            const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            // ---------- PROGRESS BAR ----------
+            const progressBar = document.getElementById('progressBar');
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+
+            function updateProgress() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                progressBar.style.width = Math.min(pct, 100) + '%';
+                progressBar.setAttribute('aria-valuenow', Math.round(Math.min(pct, 100)));
+            }
+            window.addEventListener('scroll', updateProgress, { passive: true });
+            window.addEventListener('resize', updateProgress, { passive: true });
+            updateProgress();
+
+            // ---------- INTERSECTION OBSERVER: reveal slides ----------
+            const slideObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Trigger category-specific animations when slide becomes visible
+                        const id = entry.target.id;
+                        if (id === 'discount') animateSlider();
+                        if (id === 'bundle') animateStack();
+                        if (id === 'competitive') animateLeaderboard();
+                        if (id === 'social') animateSocial();
+                        if (id === 'loyalty') { /* badge is click-driven */ }
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            slides.forEach(slide => {
+                slideObserver.observe(slide);
+            });
+
+            // Also check initial visibility
+            setTimeout(() => {
+                slides.forEach(slide => {
+                    const rect = slide.getBoundingClientRect();
+                    if (rect.top < window.innerHeight * 0.8 && rect.bottom > 0) {
+                        slide.classList.add('visible');
+                    }
+                });
+            }, 100);
+
+            // ---------- OVERVIEW CLICK JUMP ----------
+            document.querySelectorAll('.overview-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = card.getAttribute('href');
+                    if (target) {
+                        document.querySelector(target).scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // ================================================================
+            // 1. CHANCE: SPINNING WHEEL (Canvas)
+            // ================================================================
+            (function wheel() {
+                const canvas = document.getElementById('wheelCanvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const btn = document.getElementById('spinBtn');
+                const resultEl = document.getElementById('wheelResult');
+
+                const segments = [
+                    { label: '10% off', color: '#f5a623' },
+                    { label: 'Free Ship', color: '#4caf50' },
+                    { label: '$20 Gift', color: '#2196f3' },
+                    { label: 'Try Again', color: '#ff5722' },
+                    { label: '50% off', color: '#9c27b0' },
+                    { label: 'Bonus', color: '#009688' },
+                ];
+                const segCount = segments.length;
+                const arc = (2 * Math.PI) / segCount;
+
+                let currentRotation = 0;
+                let spinning = false;
+
+                function drawWheel(rotation) {
+                    const w = canvas.width;
+                    const h = canvas.height;
+                    const cx = w / 2;
+                    const cy = h / 2;
+                    const r = Math.min(w, h) / 2 - 8;
+
+                    ctx.clearRect(0, 0, w, h);
+
+                    for (let i = 0; i < segCount; i++) {
+                        const start = i * arc + rotation;
+                        const end = start + arc;
+
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.arc(cx, cy, r, start, end);
+                        ctx.closePath();
+                        ctx.fillStyle = segments[i].color;
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        // Label
+                        const mid = start + arc / 2;
+                        const labelR = r * 0.65;
+                        const lx = cx + Math.cos(mid) * labelR;
+                        const ly = cy + Math.sin(mid) * labelR;
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 18px Inter, sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                        ctx.shadowBlur = 6;
+                        ctx.fillText(segments[i].label, lx, ly);
+                        ctx.shadowBlur = 0;
+                    }
+
+                    // Center dot
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, 14, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#0b0e14';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Pointer (top)
+                    const px = cx;
+                    const py = 10;
+                    ctx.beginPath();
+                    ctx.moveTo(px - 8, py);
+                    ctx.lineTo(px + 8, py);
+                    ctx.lineTo(px, py + 14);
+                    ctx.closePath();
+                    ctx.fillStyle = '#f5a623';
+                    ctx.fill();
+                    ctx.shadowColor = 'rgba(245,166,35,0.5)';
+                    ctx.shadowBlur = 12;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
+
+                function spin() {
+                    if (spinning) return;
+                    spinning = true;
+                    btn.disabled = true;
+                    resultEl.textContent = 'Spinning...';
+
+                    const spins = 5 + Math.random() * 3;
+                    const targetAngle = spins * 2 * Math.PI + Math.random() * 2 * Math.PI;
+                    const startRot = currentRotation;
+                    const duration = 2500 + Math.random() * 800;
+                    const startTime = performance.now();
+
+                    function animateSpin(time) {
+                        const elapsed = time - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        // EaseOutQuart
+                        const ease = 1 - Math.pow(1 - progress, 4);
+                        const rot = startRot + targetAngle * ease;
+                        currentRotation = rot;
+                        drawWheel(rot);
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animateSpin);
+                        } else {
+                            currentRotation = rot;
+                            drawWheel(rot);
+                            // Determine winning segment
+                            const normalized = ((rot % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+                            // Pointer is at top: angle = -PI/2
+                            const pointerAngle = -Math.PI / 2;
+                            let angleFromPointer = (pointerAngle - normalized + 2 * Math.PI) % (2 * Math.PI);
+                            let segIndex = Math.floor(angleFromPointer / arc) % segCount;
+                            if (segIndex < 0) segIndex += segCount;
+                            const win = segments[segIndex];
+                            resultEl.textContent = '🎉 ' + win.label + '!';
+                            spinning = false;
+                            btn.disabled = false;
+                        }
+                    }
+                    requestAnimationFrame(animateSpin);
+                }
+
+                btn.addEventListener('click', spin);
+                drawWheel(0);
+
+                // Also spin on wheel click
+                document.getElementById('wheelWrapper').addEventListener('click', (e) => {
+                    if (e.target === btn || e.target.closest('.wheel-btn')) return;
+                    spin();
+                });
+            })();
+
+            // ================================================================
+            // 2. THRESHOLD: ANIMATED SLIDER
+            // ================================================================
+            let sliderAnimated = false;
+
+            function animateSlider() {
+                if (sliderAnimated || prefersReducedMotion) {
+                    // Still show final state if reduced motion
+                    if (!sliderAnimated && prefersReducedMotion) {
+                        const fill = document.getElementById('sliderFill');
+                        const val = document.getElementById('sliderValue');
+                        const disc = document.getElementById('sliderDiscount');
+                        if (fill) { fill.style.width = '85%';
+                            fill.style.transition = 'none'; }
+                        if (val) val.textContent = '$875';
+                        if (disc) disc.textContent = '18%';
+                        sliderAnimated = true;
+                    }
+                    return;
+                }
+                sliderAnimated = true;
+                const fill = document.getElementById('sliderFill');
+                const val = document.getElementById('sliderValue');
+                const disc = document.getElementById('sliderDiscount');
+                if (!fill) return;
+
+                const steps = [
+                    { pct: 0, spend: 0, discPct: 0 },
+                    { pct: 20, spend: 50, discPct: 5 },
+                    { pct: 45, spend: 150, discPct: 10 },
+                    { pct: 70, spend: 350, discPct: 15 },
+                    { pct: 90, spend: 750, discPct: 18 },
+                    { pct: 100, spend: 1200, discPct: 22 },
+                ];
+
+                let currentStep = 0;
+                const totalDuration = 2800;
+                const startTime = performance.now();
+
+                function animateSliderFrame(time) {
+                    const elapsed = time - startTime;
+                    const progress = Math.min(elapsed / totalDuration, 1);
+                    // EaseInOut
+                    const ease = progress < 0.5 ?
+                        2 * progress * progress :
+                        1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+                    const totalPct = ease * 100;
+                    // Find which step we're at
+                    let pct = totalPct;
+                    let stepIdx = 0;
+                    for (let i = steps.length - 1; i >= 0; i--) {
+                        if (pct >= steps[i].pct) { stepIdx = i; break; }
+                    }
+                    const s = steps[stepIdx];
+                    const next = steps[Math.min(stepIdx + 1, steps.length - 1)];
+                    const localPct = (pct - s.pct) / (next.pct - s.pct || 1);
+                    const spend = s.spend + (next.spend - s.spend) * localPct;
+                    const discPct = s.discPct + (next.discPct - s.discPct) * localPct;
+
+                    fill.style.width = Math.min(pct, 100) + '%';
+                    val.textContent = '$' + Math.round(spend);
+                    disc.textContent = Math.round(discPct) + '%';
+
+                    if (progress < 1) {
+                        requestAnimationFrame(animateSliderFrame);
+                    } else {
+                        fill.style.width = '100%';
+                        val.textContent = '$1,200';
+                        disc.textContent = '22%';
+                    }
+                }
+                requestAnimationFrame(animateSliderFrame);
+            }
+
+            // ================================================================
+            // 3. BUNDLING: STACK ANIMATION
+            // ================================================================
+            let stackAnimated = false;
+
+            function animateStack() {
+                if (stackAnimated || prefersReducedMotion) {
+                    if (!stackAnimated && prefersReducedMotion) {
+                        document.querySelectorAll('#stackDemo .item, #stackDemo .plus, #stackDemo .equals')
+                            .forEach(el => el.classList.add('show'));
+                        stackAnimated = true;
+                    }
+                    return;
+                }
+                stackAnimated = true;
+                const items = document.querySelectorAll('#stackDemo .item, #stackDemo .plus, #stackDemo .equals');
+                const delays = [0, 300, 600, 900, 1200, 1500, 1800];
+                items.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add('show');
+                    }, delays[i] || 0);
+                });
+            }
+
+            // ================================================================
+            // 4. COMPETITIVE: LEADERBOARD
+            // ================================================================
+            let lbAnimated = false;
+
+            function animateLeaderboard() {
+                if (lbAnimated || prefersReducedMotion) {
+                    if (!lbAnimated && prefersReducedMotion) {
+                        document.querySelectorAll('#lbDemo .lb-row').forEach(row => {
+                            row.classList.add('show');
+                            const bar = row.querySelector('.bar');
+                            if (bar) {
+                                const target = row.dataset.rank === '1' ? 85 :
+                                    row.dataset.rank === '2' ? 68 :
+                                    row.dataset.rank === '3' ? 52 :
+                                    row.dataset.rank === '4' ? 36 : 20;
+                                bar.style.width = target + '%';
+                            }
+                        });
+                        lbAnimated = true;
+                    }
+                    return;
+                }
+                lbAnimated = true;
+                const rows = document.querySelectorAll('#lbDemo .lb-row');
+                const targets = {
+                    '1': 85,
+                    '2': 68,
+                    '3': 52,
+                    '4': 36,
+                    '5': 20
+                };
+                rows.forEach((row, i) => {
+                    setTimeout(() => {
+                        row.classList.add('show');
+                        const bar = row.querySelector('.bar');
+                        if (bar) {
+                            const rank = row.dataset.rank;
+                            const target = targets[rank] || 30;
+                            setTimeout(() => {
+                                bar.style.width = target + '%';
+                            }, 150);
+                        }
+                    }, 200 + i * 250);
+                });
+            }
+
+            // ================================================================
+            // 5. LOYALTY: BADGE CONTROLS
+            // ================================================================
+            (function badge() {
+                const badge = document.getElementById('badgeDisplay');
+                const btns = document.querySelectorAll('.badge-controls button');
+                const label = badge.querySelector('.badge-label');
+
+                function setTier(tier) {
+                    badge.className = 'badge';
+                    if (tier === 'bronze') {
+                        badge.classList.add('bronze');
+                        badge.textContent = '★';
+                        label.textContent = 'Bronze';
+                    } else if (tier === 'silver') {
+                        badge.classList.add('silver');
+                        badge.textContent = '★★';
+                        label.textContent = 'Silver';
+                    } else if (tier === 'gold') {
+                        badge.classList.add('gold');
+                        badge.textContent = '★★★';
+                        label.textContent = 'Gold';
+                    }
+                    badge.appendChild(label);
+                    btns.forEach(b => b.classList.toggle('active', b.dataset.tier === tier));
+                }
+
+                btns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        setTier(btn.dataset.tier);
+                    });
+                });
+                // Start bronze
+                setTier('bronze');
+            })();
+
+            // ================================================================
+            // 6. SOCIAL: REFERRAL CHAIN
+            // ================================================================
+            let socialAnimated = false;
+
+            function animateSocial() {
+                if (socialAnimated || prefersReducedMotion) {
+                    if (!socialAnimated && prefersReducedMotion) {
+                        document.querySelectorAll('#socialDemo .node, #socialDemo .connector')
+                            .forEach(el => el.classList.add('show'));
+                        socialAnimated = true;
+                    }
+                    return;
+                }
+                socialAnimated = true;
+                const nodes = document.querySelectorAll('#socialDemo .node');
+                const connectors = document.querySelectorAll('#socialDemo .connector');
+                const all = [...nodes, ...connectors];
+                // Sort by data-idx
+                const sorted = Array.from(all).sort((a, b) => {
+                    return (parseInt(a.dataset.idx) || 0) - (parseInt(b.dataset.idx) || 0);
+                });
+                sorted.forEach((el, i) => {
+                    setTimeout(() => {
+                        el.classList.add('show');
+                    }, 150 + i * 200);
+                });
+            }
+
+            // ================================================================
+            // DECISION GUIDE
+            // ================================================================
+            (function decision() {
+                const goalPills = document.querySelectorAll('#goalOptions .pill');
+                const audiencePills = document.querySelectorAll('#audienceOptions .pill');
+                const resultEl = document.getElementById('decisionResult');
+
+                let selectedGoal = null;
+                let selectedAudience = null;
+
+                const recommendations = {
+                    awareness: {
+                        b2b: '🎰 Chance-based (spin-the-wheel at trade shows) + 📉 Flash discounts',
+                        b2c: '🎰 Spin-the-wheel + 📦 BOGO for social sharing',
+                        channel: '🎰 Prize draws for partner demos + 🏆 Team quests',
+                        internal: '🎰 Mystery boxes for top performers + 🏆 Leaderboards'
+                    },
+                    conversion: {
+                        b2b: '📉 Scaling discounts + 📦 Volume-tier pricing',
+                        b2c: '📉 Flash countdown discounts + 📦 Bundling (BOGO)',
+                        channel: '📉 Tiered discounts for partners + 📦 Volume rebates',
+                        internal: '🏆 1v1 duels + 📉 Threshold spiffs'
+                    },
+                    loyalty: {
+                        b2b: '⭐ Tier progression (Bronze→Gold) + 📦 Volume loyalty perks',
+                        b2c: '⭐ Points & badges + 📦 Free 4th product for members',
+                        channel: '⭐ Partner tier program + 👥 Team challenges',
+                        internal: '⭐ Streaks & milestones + 🏆 President\'s Club'
+                    },
+                    competition: {
+                        b2b: '🏆 Tiered leagues + 🏆 1v1 duels + 👥 Team quests',
+                        b2c: '🏆 Leaderboards (top spenders) + 👥 Referral competitions',
+                        channel: '🏆 Partner ranking + 🏆 Regional knockouts',
+                        internal: '🏆 Full competitive stack: leagues, leaderboards, duels'
+                    },
+                    referral: {
+                        b2b: '👥 Referral gamification (points per referral) + ⭐ Tier progression',
+                        b2c: '👥 Referral rewards (e.g., $20 each) + 🎰 Referral raffle',
+                        channel: '👥 Partner referral bonuses + 🏆 Referral leaderboard',
+                        internal: '👥 Team-based referral challenges + 🏆 Referral duels'
+                    }
+                };
+
+                function updateResult() {
+                    if (!selectedGoal || !selectedAudience) {
+                        resultEl.innerHTML = '<span class="empty">Select a goal and audience above</span>';
+                        return;
+                    }
+                    const rec = recommendations[selectedGoal]?.[selectedAudience];
+                    if (rec) {
+                        resultEl.textContent = '💡 ' + rec;
+                    } else {
+                        resultEl.innerHTML = '<span class="empty">No recommendation found for this combination</span>';
+                    }
+                }
+
+                goalPills.forEach(p => {
+                    p.addEventListener('click', () => {
+                        goalPills.forEach(x => x.classList.remove('selected'));
+                        p.classList.add('selected');
+                        selectedGoal = p.dataset.value;
+                        updateResult();
+                    });
+                });
+
+                audiencePills.forEach(p => {
+                    p.addEventListener('click', () => {
+                        audiencePills.forEach(x => x.classList.remove('selected'));
+                        p.classList.add('selected');
+                        selectedAudience = p.dataset.value;
+                        updateResult();
+                    });
+                });
+            })();
+
+            // ================================================================
+            // TRIGGER ANIMATIONS ON VISIBLE SLIDES (re-run on scroll)
+            // ================================================================
+            // Use a single observer to re-trigger animations when slides become visible
+            // but only if they haven't been triggered yet.
+            const animationTriggers = {
+                discount: false,
+                bundle: false,
+                competitive: false,
+                social: false,
+            };
+
+            const animObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        if (id === 'discount' && !animationTriggers.discount) {
+                            animationTriggers.discount = true;
+                            animateSlider();
+                        }
+                        if (id === 'bundle' && !animationTriggers.bundle) {
+                            animationTriggers.bundle = true;
+                            animateStack();
+                        }
+                        if (id === 'competitive' && !animationTriggers.competitive) {
+                            animationTriggers.competitive = true;
+                            animateLeaderboard();
+                        }
+                        if (id === 'social' && !animationTriggers.social) {
+                            animationTriggers.social = true;
+                            animateSocial();
+                        }
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            ['discount', 'bundle', 'competitive', 'social'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) animObserver.observe(el);
+            });
+
+            // If already visible on load, trigger after a short delay
+            setTimeout(() => {
+                ['discount', 'bundle', 'competitive', 'social'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        const rect = el.getBoundingClientRect();
+                        if (rect.top < window.innerHeight * 0.7 && rect.bottom > 0) {
+                            if (id === 'discount' && !animationTriggers.discount) {
+                                animationTriggers.discount = true;
+                                animateSlider();
+                            }
+                            if (id === 'bundle' && !animationTriggers.bundle) {
+                                animationTriggers.bundle = true;
+                                animateStack();
+                            }
+                            if (id === 'competitive' && !animationTriggers.competitive) {
+                                animationTriggers.competitive = true;
+                                animateLeaderboard();
+                            }
+                            if (id === 'social' && !animationTriggers.social) {
+                                animationTriggers.social = true;
+                                animateSocial();
+                            }
+                        }
+                    }
+                });
+            }, 600);
+
+        })();
+    </script>
+</body>
+</html>
