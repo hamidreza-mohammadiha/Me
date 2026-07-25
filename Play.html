@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Playbook of Sales Gamification</title>
+    <title>The Playbook of Sales Gamification — V1.0</title>
 
     <!-- Google Fonts: Space Grotesk for headlines, Inter for body -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <style>
         /* ---------- RESET & BASE ---------- */
@@ -40,6 +40,7 @@
             --accent-competitive: #ff5722;
             --accent-loyalty: #9c27b0;
             --accent-social: #009688;
+            --accent-framework: #e879f9;
 
             --accent-chance-dim: rgba(245, 166, 35, 0.15);
             --accent-discount-dim: rgba(76, 175, 80, 0.15);
@@ -47,6 +48,7 @@
             --accent-competitive-dim: rgba(255, 87, 34, 0.15);
             --accent-loyalty-dim: rgba(156, 39, 176, 0.15);
             --accent-social-dim: rgba(0, 150, 136, 0.15);
+            --accent-framework-dim: rgba(232, 121, 249, 0.13);
         }
 
         html {
@@ -59,6 +61,10 @@
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        code, .mono {
+            font-family: 'JetBrains Mono', monospace;
         }
 
         /* ---------- SCROLLBAR ---------- */
@@ -90,7 +96,7 @@
         .progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--accent-chance), var(--accent-discount), var(--accent-bundle), var(--accent-competitive), var(--accent-loyalty), var(--accent-social));
+            background: linear-gradient(90deg, var(--accent-framework), var(--accent-chance), var(--accent-discount), var(--accent-bundle), var(--accent-competitive), var(--accent-loyalty), var(--accent-social));
             border-radius: 0 4px 4px 0;
             transition: width 0.15s ease-out;
             box-shadow: 0 0 20px rgba(245, 166, 35, 0.3);
@@ -162,7 +168,7 @@
             margin-bottom: 12px;
         }
         #title .slide-sub {
-            max-width: 600px;
+            max-width: 640px;
             margin: 0 auto 32px;
             font-size: 1.25rem;
         }
@@ -246,6 +252,27 @@
             margin-top: 4px;
         }
 
+        .framework-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 32px;
+            padding: 12px 26px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(232, 121, 249, 0.35);
+            background: var(--accent-framework-dim);
+            color: var(--accent-framework);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+        }
+        .framework-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(232, 121, 249, 0.18);
+            background: rgba(232, 121, 249, 0.22);
+        }
+
         /* ---------- CATEGORY SLIDES ---------- */
         .category-header {
             display: flex;
@@ -271,11 +298,35 @@
         .category-desc {
             color: var(--text-secondary);
             font-size: 1.05rem;
-            max-width: 640px;
-            margin-bottom: 24px;
+            max-width: 720px;
+            margin-bottom: 14px;
         }
         .category-desc strong {
             color: var(--text-primary);
+        }
+
+        .theory-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .theory-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+        .theory-pill .src {
+            color: var(--text-muted);
+            font-weight: 400;
         }
 
         /* Mechanics cards grid */
@@ -295,6 +346,8 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         .mechanic-card:hover {
             transform: translateY(-6px);
@@ -319,6 +372,7 @@
             background: rgba(255, 255, 255, 0.06);
             color: var(--text-muted);
             margin-bottom: 10px;
+            width: fit-content;
         }
         .mechanic-card .mc-desc {
             color: var(--text-secondary);
@@ -344,9 +398,24 @@
             padding: 6px 12px;
             border-radius: 6px;
             border-left: 2px solid #f87171;
+            margin-bottom: 10px;
         }
         .mechanic-card .mc-pitfall::before {
             content: "⚠️ ";
+        }
+        .mechanic-card .mc-theory {
+            margin-top: auto;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-subtle);
+        }
+        .mechanic-card .mc-theory strong {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .mechanic-card .mc-theory::before {
+            content: "📚 ";
         }
 
         /* Category accent border on cards */
@@ -391,6 +460,23 @@
         .cat-social .cat-badge {
             color: var(--accent-social);
             border-color: var(--accent-social);
+        }
+        .cat-framework .mechanic-card {
+            border-left: 3px solid var(--accent-framework);
+        }
+        .cat-framework .cat-badge {
+            color: var(--accent-framework);
+            border-color: var(--accent-framework);
+        }
+
+        /* ---------- FRAMEWORK SLIDE SPECIFIC ---------- */
+        .framework-quote {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 760px;
+            margin-top: -6px;
+            margin-bottom: 22px;
+            font-style: italic;
         }
 
         /* ---------- ANIMATION DEMO CONTAINERS ---------- */
@@ -936,6 +1022,36 @@
             font-size: 0.95rem;
         }
 
+        /* ---------- REFERENCES LIST ---------- */
+        .refs-list {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 12px 32px;
+            margin-top: 12px;
+        }
+        .refs-list .ref-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+        }
+        .refs-list .ref-item .ref-num {
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            min-width: 22px;
+            padding-top: 2px;
+        }
+        .refs-list .ref-item strong {
+            color: var(--text-primary);
+        }
+        .refs-list .ref-item .ref-year {
+            color: var(--text-muted);
+        }
+
         /* ---------- RESPONSIVE ---------- */
         @media (max-width: 820px) {
             .container {
@@ -989,6 +1105,9 @@
             }
             .decision-flow .flow-row .q {
                 min-width: auto;
+            }
+            .refs-list {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1133,12 +1252,14 @@
                 The Playbook of<br /><span class="highlight">Sales Gamification</span>
             </h1>
             <p class="slide-sub">
-                Discover 6 proven gamification mechanics that boost sales rep performance,
-                energize channel partners, and convert more customers — each powered by a
-                distinct psychological driver like competition, status, or urgency.
+                6 proven gamification mechanics that boost sales rep performance,
+                energize channel partners, and convert more customers — each grounded in a
+                named behavioral-science theory, not just a gut feeling about what "feels fun."
                 <br />
                 <span style="color: var(--text-muted); font-size: 0.85rem; display: inline-block; margin-top: 4px;">
-                    With real‑world examples, common pitfalls, and a decision guide for every audience.
+                    Built on the Octalysis Framework, Self-Determination Theory, the Fogg Behavior Model,
+                    and Prospect Theory / Cialdini's principles of influence — with real-world examples,
+                    pitfalls, and a decision guide for every audience.
                 </span>
             </p>
             <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px;">
@@ -1195,12 +1316,85 @@
                     <span class="oc-dot" style="background:var(--accent-social);"></span>
                 </a>
             </div>
+
+            <div style="width:100%;text-align:center;">
+                <a href="#frameworks" class="framework-link">📚 See the psychology &amp; behavioral-economics frameworks behind these mechanics →</a>
+            </div>
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 3: CHANCE-BASED                                        -->
+        <!-- SLIDE 3: PSYCHOLOGICAL FRAMEWORKS (NEW)                      -->
         <!-- ============================================================ -->
-        <section class="slide cat-chance" id="chance" data-index="2">
+        <section class="slide cat-framework" id="frameworks" data-index="2">
+            <div class="category-header">
+                <span class="cat-icon">📚</span>
+                <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">The Frameworks Underneath</h2>
+                <span class="cat-badge">Theory</span>
+            </div>
+            <p class="category-desc">
+                Every mechanic in this playbook maps back to one of four foundational models from
+                behavioral psychology, motivation science, and behavioral economics. Knowing <em>which</em>
+                lever you're pulling — and why it works on the brain — is what separates durable
+                gamification from a gimmick that wears off in a month.
+            </p>
+
+            <div class="mechanics-grid">
+                <div class="mechanic-card">
+                    <div class="mc-name">Octalysis Framework</div>
+                    <div class="mc-tag">Design Model</div>
+                    <div class="mc-desc">
+                        Developed by <strong>Yu-kai Chou</strong> in <em>Actionable Gamification</em> (2015).
+                        Maps every gamified experience to 8 "Core Drives": Epic Meaning, Development &amp;
+                        Accomplishment, Empowerment of Creativity, Ownership, Social Influence &amp; Relatedness,
+                        Scarcity &amp; Impatience, Unpredictability &amp; Curiosity, and Avoidance.
+                    </div>
+                    <div class="mc-example"><strong>Use it to:</strong> audit a mechanic and ask "which Core Drive is this actually triggering, and is it a healthy 'White Hat' drive (progress, purpose) or an urgent 'Black Hat' one (scarcity, fear of loss)?"</div>
+                    <div class="mc-theory"><strong>Reference:</strong> Chou, Y. (2015). <em>Actionable Gamification: Beyond Points, Badges, and Leaderboards.</em></div>
+                </div>
+
+                <div class="mechanic-card">
+                    <div class="mc-name">Self-Determination Theory (SDT)</div>
+                    <div class="mc-tag">Motivation Science</div>
+                    <div class="mc-desc">
+                        Developed by psychologists <strong>Edward Deci &amp; Richard Ryan</strong> (1985).
+                        Argues intrinsic motivation depends on satisfying three innate needs: Autonomy
+                        (choice), Competence (mastery/progress), and Relatedness (belonging).
+                    </div>
+                    <div class="mc-example"><strong>Use it to:</strong> explain why leaderboards and tier systems keep working long after the novelty fades — they feed Competence and Relatedness, not just a cash prize.</div>
+                    <div class="mc-theory"><strong>Reference:</strong> Deci, E. L., &amp; Ryan, R. M. (1985). <em>Intrinsic Motivation and Self-Determination in Human Behavior.</em></div>
+                </div>
+
+                <div class="mechanic-card">
+                    <div class="mc-name">Fogg Behavior Model</div>
+                    <div class="mc-tag">Behavior Design</div>
+                    <div class="mc-desc">
+                        Developed by <strong>BJ Fogg</strong> (Stanford, 2009): <span class="mono">B = MAP</span>.
+                        A Behavior happens only when sufficient Motivation, Ability (low friction), and a
+                        well-timed Prompt converge at the same moment.
+                    </div>
+                    <div class="mc-example"><strong>Use it to:</strong> diagnose why a mechanic isn't working — is it a motivation problem, a friction/ability problem, or simply a missing trigger/reminder?</div>
+                    <div class="mc-theory"><strong>Reference:</strong> Fogg, B. J. (2009). "A Behavior Model for Persuasive Design." <em>Persuasive '09 Proceedings.</em></div>
+                </div>
+
+                <div class="mechanic-card">
+                    <div class="mc-name">Prospect Theory &amp; Principles of Influence</div>
+                    <div class="mc-tag">Behavioral Economics</div>
+                    <div class="mc-desc">
+                        <strong>Daniel Kahneman &amp; Amos Tversky's</strong> Prospect Theory (1979) shows
+                        losses loom roughly twice as large as equivalent gains (loss aversion). <strong>Robert
+                        Cialdini's</strong> six principles of influence (1984) — reciprocity, commitment,
+                        social proof, authority, liking, scarcity — explain why specific offer framing works.
+                    </div>
+                    <div class="mc-example"><strong>Use it to:</strong> understand why "don't lose your streak" outperforms "earn a bonus," and why countdown timers convert better than plain discounts.</div>
+                    <div class="mc-theory"><strong>Reference:</strong> Kahneman &amp; Tversky (1979), <em>Econometrica</em>; Cialdini, R. (1984). <em>Influence: The Psychology of Persuasion.</em></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 4: CHANCE-BASED                                        -->
+        <!-- ============================================================ -->
+        <section class="slide cat-chance" id="chance" data-index="3">
             <div class="category-header">
                 <span class="cat-icon">🎰</span>
                 <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Chance-based</h2>
@@ -1208,9 +1402,15 @@
             </div>
             <p class="category-desc">
                 <strong>Definition:</strong> Mechanics that introduce randomness — prize draws,
-                spin-the-wheel, scratch cards, mystery boxes. <strong>Driver:</strong> anticipation,
-                dopamine from variable rewards, and the "near-miss" effect.
+                spin-the-wheel, scratch cards, mystery boxes. <strong>Driver:</strong> dopamine
+                released in <em>anticipation</em> of an uncertain reward, plus the "near-miss" effect
+                that keeps people trying just one more time.
             </p>
+            <div class="theory-strip">
+                <span class="theory-pill">🧠 Variable Ratio Reinforcement <span class="src">— B.F. Skinner, 1957</span></span>
+                <span class="theory-pill">🎯 Octalysis Core Drive 7 <span class="src">— Unpredictability &amp; Curiosity</span></span>
+                <span class="theory-pill">🎲 Near-Miss Effect <span class="src">— Reid, 1986</span></span>
+            </div>
 
             <div class="mechanics-grid">
                 <div class="mechanic-card">
@@ -1219,6 +1419,7 @@
                     <div class="mc-desc">Enter to win a prize after a qualifying action (purchase, demo, lead).</div>
                     <div class="mc-example"><strong>Example:</strong> Salesforce Dreamforce — attendees who visit 5+ booths enter a raffle for a MacBook.</div>
                     <div class="mc-pitfall">Can attract non-serious participants; low perceived probability of winning.</div>
+                    <div class="mc-theory"><strong>Variable Ratio Reinforcement</strong> (Skinner, 1957) — of all reward schedules, an unpredictable payoff after a variable number of actions produces the highest, most persistent response rate and is the most resistant to extinction.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Spin-the-Wheel</div>
@@ -1226,6 +1427,7 @@
                     <div class="mc-desc">Interactive wheel with segments offering discounts, prizes, or "try again."</div>
                     <div class="mc-example"><strong>Example:</strong> E-commerce exit-intent popup — spin for 10–50% off.</div>
                     <div class="mc-pitfall">Can feel gimmicky; overuse dilutes brand value.</div>
+                    <div class="mc-theory"><strong>Near-Miss Effect</strong> (Reid, 1986) — a "Try Again" landing next to a big prize is processed by the brain almost like an actual win, fueling continued play.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Mystery Boxes</div>
@@ -1233,6 +1435,7 @@
                     <div class="mc-desc">Customers pay a fixed price for a box with unknown value (surprise mechanics).</div>
                     <div class="mc-example"><strong>Example:</strong> Razer — "Mystery Box" with gaming gear worth up to 3× the price.</div>
                     <div class="mc-pitfall">Regulatory scrutiny in some regions; can feel like gambling.</div>
+                    <div class="mc-theory"><strong>Information Gap Theory</strong> (Loewenstein, 1994) — curiosity is a felt deprivation; an unknown box creates a gap between what we know and want to know, which is intrinsically motivating to close.</div>
                 </div>
             </div>
 
@@ -1250,9 +1453,9 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 4: THRESHOLD DISCOUNTS                                 -->
+        <!-- SLIDE 5: THRESHOLD DISCOUNTS                                 -->
         <!-- ============================================================ -->
-        <section class="slide cat-discount" id="discount" data-index="3">
+        <section class="slide cat-discount" id="discount" data-index="4">
             <div class="category-header">
                 <span class="cat-icon">📉</span>
                 <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Threshold Discounts</h2>
@@ -1260,9 +1463,15 @@
             </div>
             <p class="category-desc">
                 <strong>Definition:</strong> Discounts unlocked at specific spending or volume thresholds.
-                <strong>Driver:</strong> goal gradient, loss aversion (fear of missing the threshold),
-                and urgency from countdowns.
+                <strong>Driver:</strong> the goal-gradient effect (we accelerate as we approach a goal),
+                loss aversion (missing the threshold feels like forfeiting a gain already "in hand"),
+                and scarcity-driven urgency from countdowns.
             </p>
+            <div class="theory-strip">
+                <span class="theory-pill">⚖️ Loss Aversion / Prospect Theory <span class="src">— Kahneman &amp; Tversky, 1979</span></span>
+                <span class="theory-pill">🏁 Goal-Gradient Hypothesis <span class="src">— Hull, 1932; Kivetz et al., 2006</span></span>
+                <span class="theory-pill">⏳ Scarcity Principle <span class="src">— Cialdini, 1984</span></span>
+            </div>
 
             <div class="mechanics-grid">
                 <div class="mechanic-card">
@@ -1271,6 +1480,7 @@
                     <div class="mc-desc">A set discount (e.g., 20%) is applied once the cart reaches a minimum value.</div>
                     <div class="mc-example"><strong>Example:</strong> "Spend $100, get 20% off" — common in retail and DTC.</div>
                     <div class="mc-pitfall">Customers may add unneeded items to hit the threshold, increasing returns.</div>
+                    <div class="mc-theory"><strong>Loss Aversion</strong> (Kahneman &amp; Tversky, 1979) — once a shopper is a few dollars short, not reaching the threshold is coded by the brain as losing the discount, not merely failing to gain it.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Scaling / Progressive Discounts</div>
@@ -1278,6 +1488,7 @@
                     <div class="mc-desc">Discount percentage increases stepwise with higher spend (e.g., 10% at $100, 15% at $200).</div>
                     <div class="mc-example"><strong>Example:</strong> B2B software — "Buy 10 licenses → 10% off; 25+ → 20% off."</div>
                     <div class="mc-pitfall">Margin erosion at higher tiers; complexity in communication.</div>
+                    <div class="mc-theory"><strong>Goal-Gradient Hypothesis</strong> (Hull, 1932; Kivetz, Urminsky &amp; Zheng, 2006) — motivation and effort intensify measurably as the distance to a reward shrinks, which is why the last tier feels most urgent.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Flash Countdown Discounts</div>
@@ -1285,6 +1496,7 @@
                     <div class="mc-desc">Time-limited discount with a visible countdown timer (e.g., "40% off — ends in 2h").</div>
                     <div class="mc-example"><strong>Example:</strong> Booking.com — "Last 2 rooms at this price!" with countdown.</div>
                     <div class="mc-pitfall">Discount fatigue; customers may wait for the next flash sale.</div>
+                    <div class="mc-theory"><strong>Scarcity Principle</strong> (Cialdini, 1984) — opportunities appear more valuable as their availability decreases, especially when the constraint is time rather than quantity.</div>
                 </div>
             </div>
 
@@ -1314,9 +1526,9 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 5: BUNDLING & VOLUME                                   -->
+        <!-- SLIDE 6: BUNDLING & VOLUME                                   -->
         <!-- ============================================================ -->
-        <section class="slide cat-bundle" id="bundle" data-index="4">
+        <section class="slide cat-bundle" id="bundle" data-index="5">
             <div class="category-header">
                 <span class="cat-icon">📦</span>
                 <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Bundling &amp; Volume</h2>
@@ -1324,9 +1536,14 @@
             </div>
             <p class="category-desc">
                 <strong>Definition:</strong> Incentives tied to purchasing multiple items or higher volume.
-                <strong>Driver:</strong> anchoring (perceived savings), reciprocity, and the
-                "endowment effect" — customers value what they already have.
+                <strong>Driver:</strong> anchoring on the bundle's combined "list price," and mental
+                accounting that reframes several small purchases as one satisfying gain.
             </p>
+            <div class="theory-strip">
+                <span class="theory-pill">⚓ Anchoring Effect <span class="src">— Tversky &amp; Kahneman, 1974</span></span>
+                <span class="theory-pill">🧮 Mental Accounting <span class="src">— Richard Thaler, 1985</span></span>
+                <span class="theory-pill">🎯 Decoy Effect <span class="src">— Huber, Payne &amp; Puto, 1982</span></span>
+            </div>
 
             <div class="mechanics-grid">
                 <div class="mechanic-card">
@@ -1335,6 +1552,7 @@
                     <div class="mc-desc">Multiple products sold together at a reduced price vs. buying separately.</div>
                     <div class="mc-example"><strong>Example:</strong> Microsoft 365 — bundled apps at a lower total than individual subscriptions.</div>
                     <div class="mc-pitfall">Can cannibalize high-margin individual sales.</div>
+                    <div class="mc-theory"><strong>Mental Accounting</strong> (Thaler, 1985) — buyers evaluate the bundle as a single transaction, integrating the "losses" (price) and "gains" (multiple products), which reads as a better deal than the sum of separate purchases.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">BOGO / Free 3rd-or-4th Product</div>
@@ -1342,6 +1560,7 @@
                     <div class="mc-desc">Buy one, get one free — or buy 3, get the 4th free (volume incentive).</div>
                     <div class="mc-example"><strong>Example:</strong> "Buy 2, get 3rd free" — common in CPG and retail.</div>
                     <div class="mc-pitfall">Inventory strain; customers may stockpile and delay future purchases.</div>
+                    <div class="mc-theory"><strong>Anchoring Effect</strong> (Tversky &amp; Kahneman, 1974) — "free" anchors attention disproportionately; a $0 item is valued far above its actual cost relative to a small percentage discount of equal monetary value.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Volume-Tier Pricing</div>
@@ -1349,6 +1568,7 @@
                     <div class="mc-desc">Per-unit price decreases as order quantity increases (wholesale-style).</div>
                     <div class="mc-example"><strong>Example:</strong> Alibaba — "1–99 units: $10/ea; 100–999: $8/ea; 1000+: $6/ea."</div>
                     <div class="mc-pitfall">Smaller customers may feel penalized; complex to communicate.</div>
+                    <div class="mc-theory"><strong>Decoy Effect</strong> (Huber, Payne &amp; Puto, 1982) — a visibly worse middle tier makes the top tier's per-unit value look like the obvious rational choice, nudging buyers toward higher volume.</div>
                 </div>
             </div>
 
@@ -1368,9 +1588,9 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 6: COMPETITIVE / RANKING                               -->
+        <!-- SLIDE 7: COMPETITIVE / RANKING                               -->
         <!-- ============================================================ -->
-        <section class="slide cat-competitive" id="competitive" data-index="5">
+        <section class="slide cat-competitive" id="competitive" data-index="6">
             <div class="category-header">
                 <span class="cat-icon">🏆</span>
                 <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Competitive / Ranking</h2>
@@ -1378,9 +1598,14 @@
             </div>
             <p class="category-desc">
                 <strong>Definition:</strong> Mechanics that pit individuals or teams against each other.
-                <strong>Driver:</strong> social comparison, status seeking, and the thrill
-                of competition (especially in 1v1 or knockout formats).
+                <strong>Driver:</strong> we evaluate our own performance by comparing it to others, and
+                that comparison — not the prize alone — is often the stronger motivator.
             </p>
+            <div class="theory-strip">
+                <span class="theory-pill">👥 Social Comparison Theory <span class="src">— Leon Festinger, 1954</span></span>
+                <span class="theory-pill">🎯 Octalysis Core Drive 5 <span class="src">— Social Influence &amp; Relatedness</span></span>
+                <span class="theory-pill">🧭 Self-Determination Theory <span class="src">— Competence, Deci &amp; Ryan, 1985</span></span>
+            </div>
 
             <div class="mechanics-grid">
                 <div class="mechanic-card">
@@ -1389,6 +1614,7 @@
                     <div class="mc-desc">Participants are grouped into leagues (e.g., Bronze → Diamond) with promotions/relegation.</div>
                     <div class="mc-example"><strong>Example:</strong> HubSpot's partner program — tiers based on revenue and certifications.</div>
                     <div class="mc-pitfall">Demotivation for those stuck in lower tiers; sandbagging to stay in a winnable tier.</div>
+                    <div class="mc-theory"><strong>Social Comparison Theory</strong> (Festinger, 1954) — grouping peers of similar ability keeps comparisons "upward but attainable," which sustains motivation better than comparing everyone against the top performer.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Leaderboards</div>
@@ -1396,6 +1622,7 @@
                     <div class="mc-desc">Real-time ranking of performance (sales, points, etc.) with visibility to all.</div>
                     <div class="mc-example"><strong>Example:</strong> Salesforce's "Top Performer" dashboard visible to the whole sales org.</div>
                     <div class="mc-pitfall">Can demotivate lower-ranked reps; may encourage short-term gaming.</div>
+                    <div class="mc-theory"><strong>Social Comparison Theory</strong> (Festinger, 1954) — visible rank triggers automatic upward comparison; effective for reps near the top, but can trigger disengagement for reps far from it without a segmented view.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">1v1 Duels</div>
@@ -1403,6 +1630,7 @@
                     <div class="mc-desc">Two participants compete head-to-head in a timed challenge (e.g., most calls in 1 hour).</div>
                     <div class="mc-example"><strong>Example:</strong> Sales contests where two reps are paired and the winner gets a prize.</div>
                     <div class="mc-pitfall">Can create unhealthy rivalry; losers may feel demoralized.</div>
+                    <div class="mc-theory"><strong>Competitive Arousal</strong> (Malhotra, 2010) — head-to-head framing raises physiological arousal beyond what the stakes alone justify, which is powerful but needs guardrails against escalation.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Team Quests</div>
@@ -1410,6 +1638,7 @@
                     <div class="mc-desc">Teams compete against each other to achieve a collective goal (e.g., revenue, demos).</div>
                     <div class="mc-example"><strong>Example:</strong> Regional sales teams competing for a "President's Club" trip.</div>
                     <div class="mc-pitfall">Free-riding within teams; top performers may carry the load.</div>
+                    <div class="mc-theory"><strong>Self-Determination Theory — Relatedness</strong> (Deci &amp; Ryan, 1985) — shared stakes satisfy the need to belong, which is why team-based competition often sustains effort longer than pure individual rivalry.</div>
                 </div>
             </div>
 
@@ -1454,9 +1683,9 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 7: PROGRESSION / LOYALTY                               -->
+        <!-- SLIDE 8: PROGRESSION / LOYALTY                               -->
         <!-- ============================================================ -->
-        <section class="slide cat-loyalty" id="loyalty" data-index="6">
+        <section class="slide cat-loyalty" id="loyalty" data-index="7">
             <div class="category-header">
                 <span class="cat-icon">⭐</span>
                 <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Progression / Loyalty</h2>
@@ -1464,9 +1693,15 @@
             </div>
             <p class="category-desc">
                 <strong>Definition:</strong> Mechanics that reward ongoing engagement through points,
-                badges, streaks, and tier progression. <strong>Driver:</strong> the "endowed progress"
-                effect, status from achievement, and the desire to reach the next level.
+                badges, streaks, and tier progression. <strong>Driver:</strong> the feeling of being
+                partway to a goal already ("endowed progress"), and the sense of mastery that satisfies
+                the innate need for competence.
             </p>
+            <div class="theory-strip">
+                <span class="theory-pill">📈 Endowed Progress Effect <span class="src">— Nunes &amp; Drèze, 2006</span></span>
+                <span class="theory-pill">🧭 Self-Determination Theory <span class="src">— Competence &amp; Autonomy</span></span>
+                <span class="theory-pill">🔁 Operant Conditioning <span class="src">— B.F. Skinner, 1938</span></span>
+            </div>
 
             <div class="mechanics-grid">
                 <div class="mechanic-card">
@@ -1475,6 +1710,7 @@
                     <div class="mc-desc">Earn points for actions; redeem for rewards or unlock badges for milestones.</div>
                     <div class="mc-example"><strong>Example:</strong> Starbucks Rewards — stars earned per purchase, redeemable for free drinks.</div>
                     <div class="mc-pitfall">Points inflation; diminishing perceived value over time.</div>
+                    <div class="mc-theory"><strong>Operant Conditioning</strong> (Skinner, 1938) — points act as an immediate, tangible reinforcement signal that strengthens the purchasing behavior that preceded it.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Streaks &amp; Milestones</div>
@@ -1482,6 +1718,7 @@
                     <div class="mc-desc">Reward consecutive actions (daily logins, weekly sales) or milestone achievements.</div>
                     <div class="mc-example"><strong>Example:</strong> Duolingo — daily streaks keep users coming back; sales teams with "100% quota" streaks.</div>
                     <div class="mc-pitfall">Loss of streak can demotivate; may encourage "token" actions just to keep the streak alive.</div>
+                    <div class="mc-theory"><strong>Loss Aversion</strong> (Kahneman &amp; Tversky, 1979) applied to streaks — once a streak exists, it's mentally "owned," so breaking it is coded as a loss, which is a stronger pull than the original reward for starting it.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Tier Progression (Bronze → Silver → Gold)</div>
@@ -1489,6 +1726,7 @@
                     <div class="mc-desc">Users advance through tiers based on cumulative activity, unlocking better perks.</div>
                     <div class="mc-example"><strong>Example:</strong> American Express — Green → Gold → Platinum with increasing benefits.</div>
                     <div class="mc-pitfall">Customers may "churn" after reaching the top tier; sandbagging near tier cutoffs.</div>
+                    <div class="mc-theory"><strong>Endowed Progress Effect</strong> (Nunes &amp; Drèze, 2006) — people who feel they've already made headway toward a goal (even artificially) complete it faster; a visible "60% to Gold" bar exploits exactly this effect.</div>
                 </div>
             </div>
 
@@ -1510,9 +1748,9 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 8: SOCIAL                                              -->
+        <!-- SLIDE 9: SOCIAL                                              -->
         <!-- ============================================================ -->
-        <section class="slide cat-social" id="social" data-index="7">
+        <section class="slide cat-social" id="social" data-index="8">
             <div class="category-header">
                 <span class="cat-icon">👥</span>
                 <h2 class="slide-title" style="margin-bottom:0;font-size:clamp(1.8rem,4vw,3rem);">Social</h2>
@@ -1520,9 +1758,14 @@
             </div>
             <p class="category-desc">
                 <strong>Definition:</strong> Mechanics that leverage social connections and networks.
-                <strong>Driver:</strong> social validation, reciprocity (referral rewards),
-                and the desire to belong to a community.
+                <strong>Driver:</strong> the obligation to reciprocate a gift, the pull of watching
+                others act first, and the need to belong to a community.
             </p>
+            <div class="theory-strip">
+                <span class="theory-pill">🤝 Reciprocity Principle <span class="src">— Cialdini, 1984</span></span>
+                <span class="theory-pill">👀 Social Proof <span class="src">— Cialdini, 1984</span></span>
+                <span class="theory-pill">🧭 Self-Determination Theory <span class="src">— Relatedness</span></span>
+            </div>
 
             <div class="mechanics-grid">
                 <div class="mechanic-card">
@@ -1531,6 +1774,7 @@
                     <div class="mc-desc">Reward users for referring others, often with a points or tier system for referrals.</div>
                     <div class="mc-example"><strong>Example:</strong> Uber — "Give $20, get $20" referral credits; Dropbox's extra storage for referrals.</div>
                     <div class="mc-pitfall">Can attract low-quality referrals; gaming through fake accounts.</div>
+                    <div class="mc-theory"><strong>Reciprocity Principle</strong> (Cialdini, 1984) — giving the referred friend a credit first creates a felt obligation on both sides of the exchange, which raises acceptance rates versus a one-sided referral bonus.</div>
                 </div>
                 <div class="mechanic-card">
                     <div class="mc-name">Team-Based Challenges</div>
@@ -1538,6 +1782,7 @@
                     <div class="mc-desc">Groups work together toward a shared goal, with rewards split among the team.</div>
                     <div class="mc-example"><strong>Example:</strong> Strava — club challenges where members log miles together; sales teams with group quotas.</div>
                     <div class="mc-pitfall">Free-riding; high performers may feel they carry the team.</div>
+                    <div class="mc-theory"><strong>Social Proof</strong> (Cialdini, 1984) — seeing teammates actively participating signals "this is the correct behavior here," which pulls in members who would otherwise sit out.</div>
                 </div>
             </div>
 
@@ -1571,9 +1816,9 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 9: COMPARISON MATRIX                                   -->
+        <!-- SLIDE 10: COMPARISON MATRIX                                  -->
         <!-- ============================================================ -->
-        <section class="slide" id="comparison" data-index="8">
+        <section class="slide" id="comparison" data-index="9">
             <span class="slide-label">Compare</span>
             <h2 class="slide-title">Which mechanic wins?</h2>
             <p class="slide-sub">A high-level comparison across 4 dimensions. <span style="color:var(--text-muted);">(● = low, ●●● = high)</span></p>
@@ -1641,9 +1886,9 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- SLIDE 10: DECISION GUIDE                                     -->
+        <!-- SLIDE 11: DECISION GUIDE                                     -->
         <!-- ============================================================ -->
-        <section class="slide" id="decision" data-index="9">
+        <section class="slide" id="decision" data-index="10">
             <span class="slide-label">Choose</span>
             <h2 class="slide-title">How to choose</h2>
             <p class="slide-sub">Select your primary goal, and we'll recommend a mechanic.</p>
@@ -1680,15 +1925,46 @@
         </section>
 
         <!-- ============================================================ -->
+        <!-- SLIDE 12: REFERENCES (NEW)                                   -->
+        <!-- ============================================================ -->
+        <section class="slide" id="references" data-index="11">
+            <span class="slide-label">Sources</span>
+            <h2 class="slide-title">References</h2>
+            <p class="slide-sub">The behavioral-science literature this playbook draws on, for anyone who wants to go deeper.</p>
+
+            <div class="refs-list">
+                <div class="ref-item"><span class="ref-num">01</span><span><strong>Chou, Y.</strong> (2015). <em>Actionable Gamification: Beyond Points, Badges, and Leaderboards.</em> <span class="ref-year">— Octalysis Framework</span></span></div>
+                <div class="ref-item"><span class="ref-num">02</span><span><strong>Deci, E. L. &amp; Ryan, R. M.</strong> (1985). <em>Intrinsic Motivation and Self-Determination in Human Behavior.</em> <span class="ref-year">— Self-Determination Theory</span></span></div>
+                <div class="ref-item"><span class="ref-num">03</span><span><strong>Fogg, B. J.</strong> (2009). "A Behavior Model for Persuasive Design." <em>Persuasive '09.</em> <span class="ref-year">— B = MAP</span></span></div>
+                <div class="ref-item"><span class="ref-num">04</span><span><strong>Kahneman, D. &amp; Tversky, A.</strong> (1979). "Prospect Theory: An Analysis of Decision under Risk." <em>Econometrica.</em> <span class="ref-year">— Loss Aversion</span></span></div>
+                <div class="ref-item"><span class="ref-num">05</span><span><strong>Cialdini, R.</strong> (1984). <em>Influence: The Psychology of Persuasion.</em> <span class="ref-year">— Reciprocity, Scarcity, Social Proof</span></span></div>
+                <div class="ref-item"><span class="ref-num">06</span><span><strong>Skinner, B. F.</strong> (1957). <em>Schedules of Reinforcement.</em> <span class="ref-year">— Variable Ratio Reinforcement</span></span></div>
+                <div class="ref-item"><span class="ref-num">07</span><span><strong>Hull, C.</strong> (1932); <strong>Kivetz, R., Urminsky, O. &amp; Zheng, Y.</strong> (2006). "The Goal-Gradient Hypothesis." <em>J. of Marketing Research.</em></span></div>
+                <div class="ref-item"><span class="ref-num">08</span><span><strong>Nunes, J. C. &amp; Drèze, X.</strong> (2006). "The Endowed Progress Effect." <em>Journal of Consumer Research.</em></span></div>
+                <div class="ref-item"><span class="ref-num">09</span><span><strong>Festinger, L.</strong> (1954). "A Theory of Social Comparison Processes." <em>Human Relations.</em></span></div>
+                <div class="ref-item"><span class="ref-num">10</span><span><strong>Tversky, A. &amp; Kahneman, D.</strong> (1974). "Judgment under Uncertainty: Heuristics and Biases." <em>Science.</em> <span class="ref-year">— Anchoring</span></span></div>
+                <div class="ref-item"><span class="ref-num">11</span><span><strong>Thaler, R.</strong> (1985). "Mental Accounting and Consumer Choice." <em>Marketing Science.</em></span></div>
+                <div class="ref-item"><span class="ref-num">12</span><span><strong>Huber, J., Payne, J. W. &amp; Puto, C.</strong> (1982). "Adding Asymmetrically Dominated Alternatives." <em>J. of Consumer Research.</em> <span class="ref-year">— Decoy Effect</span></span></div>
+                <div class="ref-item"><span class="ref-num">13</span><span><strong>Loewenstein, G.</strong> (1994). "The Psychology of Curiosity." <em>Psychological Bulletin.</em> <span class="ref-year">— Information Gap Theory</span></span></div>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-muted);margin-top:20px;max-width:720px;">
+                Note: several mechanics (e.g. flash discounts, mystery boxes) sit close to consumer-protection
+                and gambling-adjacent regulation in some jurisdictions — always check local law before shipping
+                chance-based or countdown-urgency mechanics.
+            </p>
+        </section>
+
+        <!-- ============================================================ -->
         <!-- FOOTER / CLOSING                                             -->
         <!-- ============================================================ -->
-        <section class="slide" id="closing" data-index="10" style="justify-content:center;text-align:center;min-height:60vh;">
+        <section class="slide" id="closing" data-index="12" style="justify-content:center;text-align:center;min-height:60vh;">
             <h2 class="slide-title" style="font-size:clamp(2rem,5vw,3.6rem);">
                 🚀 Ready to <span class="highlight">play</span>?
             </h2>
-            <p class="slide-sub" style="max-width:500px;margin:0 auto 24px;">
+            <p class="slide-sub" style="max-width:560px;margin:0 auto 24px;">
                 The best gamification strategy combines mechanics that align with your
-                business goals, audience psychology, and operational reality.
+                business goals, audience psychology, and operational reality — and names
+                the theory behind every lever you pull.
             </p>
             <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;font-size:0.9rem;color:var(--text-muted);">
                 <span style="background:var(--bg-card);padding:6px 20px;border-radius:var(--radius-pill);border:1px solid var(--border-subtle);">🎰 Chance</span>
@@ -1701,9 +1977,8 @@
             <p style="margin-top:40px;font-size:0.8rem;color:var(--text-muted);">
                 Presented by HamidReza 🍫 Sorbon Confectionary Business
             </p>
-            <div> <span>July</span> · 2026</div>
+            <div style="color:var(--text-muted);font-size:0.8rem;"> <span>V1.0</span> · <span>July</span> · 2026</div>
         </section>
-                    
 
 
     </div><!-- /container -->
