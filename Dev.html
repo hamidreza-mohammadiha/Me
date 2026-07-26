@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decentralized Product Architecture</title>
+
+    <!-- Mermaid CDN for diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js">
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+
+    <style>
+        /* ── Reset & Base ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0b0d15;
+            color: #e8edf5;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #141824;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 12px;
+        }
+
+        /* ── Container ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ── Section Common ── */
+        section {
+            padding: 80px 0 100px;
+            position: relative;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.10);
+            padding: 4px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 2.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f0f4ff 0%, #93bbfc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            max-width: 640px;
+            font-weight: 400;
+        }
+
+        /* ── Scroll-In Animation ── */
+        .scroll-in {
+            opacity: 0;
+            transform: translateY(48px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .scroll-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* stagger children */
+        .stagger>* {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stagger.visible>*:nth-child(1) {
+            transition-delay: 0.05s;
+        }
+        .stagger.visible>*:nth-child(2) {
+            transition-delay: 0.12s;
+        }
+        .stagger.visible>*:nth-child(3) {
+            transition-delay: 0.19s;
+        }
+        .stagger.visible>*:nth-child(4) {
+            transition-delay: 0.26s;
+        }
+        .stagger.visible>*:nth-child(5) {
+            transition-delay: 0.33s;
+        }
+        .stagger.visible>*:nth-child(6) {
+            transition-delay: 0.40s;
+        }
+
+        .stagger.visible>* {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ── Glassmorphism Card ── */
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(16px) saturate(1.4);
+            -webkit-backdrop-filter: blur(16px) saturate(1.4);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px) saturate(1.3);
+            -webkit-backdrop-filter: blur(12px) saturate(1.3);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+        }
+
+        /* ── Hero ── */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 40px 0 60px;
+            background:
+                radial-gradient(ellipse 600px 400px at 15% 30%, rgba(59, 130, 246, 0.12), transparent 70%),
+                radial-gradient(ellipse 500px 500px at 85% 70%, rgba(139, 92, 246, 0.08), transparent 70%),
+                #0b0d15;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #93bbfc;
+            background: rgba(59, 130, 246, 0.12);
+            padding: 6px 16px 6px 12px;
+            border-radius: 40px;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            margin-bottom: 28px;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: pulse-dot 2.4s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: scale(0.7);
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(3.2rem, 10vw, 5.6rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 20%, #93bbfc 60%, #a78bfa 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 600px;
+            font-weight: 400;
+            line-height: 1.7;
+            margin-bottom: 36px;
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px 40px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-meta .accent {
+            color: #93bbfc;
+            font-weight: 500;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #475569;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            animation: float-down 2.6s ease-in-out infinite;
+        }
+
+        @keyframes float-down {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(8px);
+            }
+        }
+
+        .scroll-indicator .line {
+            width: 1px;
+            height: 32px;
+            background: linear-gradient(to bottom, #475569, transparent);
+        }
+
+        /* ── Tools Grid ── */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .tool-chip {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 16px 20px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #c8d6e5;
+            transition: all 0.25s;
+        }
+
+        .tool-chip:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tool-chip .icon {
+            display: block;
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+        }
+
+        /* ── Diagram Wrapper ── */
+        .diagram-wrapper {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 32px 20px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 24px;
+            overflow-x: auto;
+        }
+
+        .diagram-wrapper .mermaid {
+            display: flex;
+            justify-content: center;
+            min-height: 240px;
+        }
+
+        .diagram-caption {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 16px;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── Roadmap Timeline ── */
+        .roadmap-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .roadmap-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 20px 28px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s;
+        }
+
+        .roadmap-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-left-color: #8b5cf6;
+        }
+
+        .roadmap-item .step {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3b82f6;
+            min-width: 52px;
+            line-height: 1;
+            opacity: 0.6;
+        }
+
+        .roadmap-item .content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #f0f4ff;
+        }
+
+        .roadmap-item .content p {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        /* ── Agent Cards ── */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .agent-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 28px 24px;
+            transition: all 0.3s;
+        }
+
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(59, 130, 246, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .agent-card .role {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.08);
+            padding: 2px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .agent-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #f0f4ff;
+        }
+
+        .agent-card .pseudo {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.7;
+            color: #b0c4de;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .agent-card .info-set {
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 16px;
+        }
+
+        .agent-card .info-set .label {
+            color: #64748b;
+            font-weight: 500;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .agent-card .info-set .value {
+            color: #c8d6e5;
+        }
+
+        /* ── Closing ── */
+        #closing {
+            text-align: center;
+            padding: 100px 0 120px;
+            background:
+                radial-gradient(ellipse 600px 400px at 50% 40%, rgba(59, 130, 246, 0.06), transparent 70%),
+                #0b0d15;
+        }
+
+        #closing .section-title {
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, #f0f4ff 0%, #a78bfa 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .closing-card {
+            max-width: 600px;
+            margin: 32px auto 0;
+            padding: 48px 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 32px;
+        }
+
+        .closing-card p {
+            color: #94a3b8;
+            font-size: 1.05rem;
+            margin-bottom: 24px;
+        }
+
+        .closing-card .email {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #93bbfc;
+            background: rgba(59, 130, 246, 0.06);
+            padding: 12px 28px;
+            border-radius: 60px;
+            display: inline-block;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            section {
+                padding: 56px 0 72px;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .hero-title {
+                font-size: clamp(2.6rem, 12vw, 3.6rem);
+            }
+            .tools-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 12px;
+            }
+            .agent-grid {
+                grid-template-columns: 1fr;
+            }
+            .agent-card .info-set {
+                grid-template-columns: 1fr;
+            }
+            .roadmap-item {
+                flex-direction: column;
+                gap: 8px;
+                padding: 16px 20px;
+            }
+            .roadmap-item .step {
+                font-size: 1.4rem;
+                min-width: auto;
+            }
+            .closing-card {
+                padding: 32px 20px;
+            }
+            .diagram-wrapper {
+                padding: 16px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .hero-desc {
+                font-size: 1rem;
+            }
+            .container {
+                padding: 0 16px;
+            }
+        }
+
+        /* ── Mermaid overrides ── */
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ── Utility ── */
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mt-24 {
+            margin-top: 24px;
+        }
+        .mt-32 {
+            margin-top: 32px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-muted {
+            color: #94a3b8;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .flex-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── HERO ─── -->
+    <section id="hero">
+        <div class="container hero-content">
+            <div class="scroll-in visible">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    v0.4 · Research Prototype
+                </div>
+                <h1 class="hero-title">Decentralized<br />Product Architecture</h1>
+                <p class="hero-desc">
+                    A research-driven prototype for autonomous revenue management
+                    in simulated airline markets. Built with modern tooling,
+                    agent-based modeling, and a decoupled data layer.
+                </p>
+                <div class="hero-meta">
+                    <span>⚡ <span class="accent">4</span> core layers</span>
+                    <span>🧩 <span class="accent">6</span> integrated tools</span>
+                    <span>🎯 <span class="accent">3</span> agent types</span>
+                    <span>📊 <span class="accent">2</span> competing airlines</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>SCROLL</span>
+            <div class="line"></div>
+        </div>
+    </section>
+
+    <!-- ─── TOOLS ARCHITECTURE ─── -->
+    <section id="tools">
+        <div class="container">
+            <div class="scroll-in">
+                <span class="section-label">Layer 1 · Tooling</span>
+                <h2 class="section-title">Tools Architecture</h2>
+                <p class="section-subtitle">
+                    A lightweight, containerized stack that bridges local development,
+                    cloud environments, and production deployment.
+                </p>
+            </div>
+
+            <!-- Tool chips -->
+            <div class="tools-grid scroll-in">
+                <div class="tool-chip"><span class="icon">⌨️</span>VS Code</div>
+                <div class="tool-chip"><span class="icon">☁️</span>GitHub Codespaces</div>
+                <div class="tool-chip"><span class="icon">🔍</span>Microsoft Clarity</div>
+                <div class="tool-chip"><span class="icon">▲</span>Vercel</div>
+                <div class="tool-chip"><span class="icon">🗄️</span>SQLite</div>
+                <div class="tool-chip"><span class="icon">🐳</span>Docker</div>
+            </div>
+
+            <!-- Mermaid: Tools interconnection -->
+            <div class="diagram-wrapper scroll-in">
+                <div class="mermaid">
+                    graph TD
+                    A["VS Code<br/><small>Local Dev</small>"] --> B["GitHub Codespaces<br/><small>Cloud IDE</small>"]
+                    B --> C["Docker<br/><small>Containerization</small>"]
+                    C --> D["SQLite<br/><small>Embedded DB</small>"]
+                    D --> E["Vercel<br/><small>Hosting &amp; CDN</small>"]
+                    A -.-> F["Microsoft Clarity<br/><small>Analytics</small>"]
+                    E -.-> F
+                    C -.-> F
+
+                    style A fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#e8edf5
+                    style B fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#e8edf5
+                    style C fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#e8edf5
+                    style D fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#e8edf5
+                    style E fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#e8edf5
+                    style F fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#e8edf5
+                </div>
+                <p class="diagram-caption">↑ Tool interconnection map · solid = primary flow · dashed = observability</p>
+            </div>
+
+            <div class="scroll-in" style="margin-top:20px;">
+                <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.9rem;color:#94a3b8;background:rgba(255,255,255,0.03);padding:16px 24px;border-radius:16px;border:1px solid rgba(255,255,255,0.04);">
+                    <span style="font-weight:500;color:#e8edf5;">🧩 Integration notes:</span>
+                    <span>• VS Code ↔ Codespaces for seamless cloud-to-local sync</span>
+                    <span>• Docker bundles SQLite + app runtime</span>
+                    <span>• Vercel serves the static presentation layer</span>
+                    <span>• Clarity captures user interaction heatmaps</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── DATA MODEL ─── -->
+    <section id="data-model" style="background:rgba(255,255,255,0.01);">
+        <div class="container">
+            <div class="scroll-in">
+                <span class="section-label">Layer 2 · Data</span>
+                <h2 class="section-title">Data Model</h2>
+                <p class="section-subtitle">
+                    Core entities, fields, and relationships powering the simulation —
+                    designed for extensibility and analytical querying.
+                </p>
+            </div>
+
+            <!-- Mermaid: ER diagram -->
+            <div class="diagram-wrapper scroll-in">
+                <div class="mermaid">
+                    erDiagram
+                    AIRLINE {
+                        int id PK
+                        string name
+                        string pricing_strategy
+                        float static_price
+                        int total_seats
+                        int seats_sold
+                        float revenue
+                    }
+                    CUSTOMER {
+                        int id PK
+                        string type "Leisure | Business"
+                        float willingness_to_pay
+                        float urgency
+                        float arrival_time
+                        string final_decision
+                    }
+                    SEAT {
+                        int id PK
+                        int airline_id FK
+                        int seat_number
+                        string status "available | sold"
+                        float quality_score
+                    }
+                    BOOKING {
+                        int id PK
+                        int customer_id FK
+                        int airline_id FK
+                        int seat_id FK
+                        float price_paid
+                        float timestamp
+                        string booking_channel
+                    }
+                    PRICING_LOG {
+                        int id PK
+                        int airline_id FK
+                        float price
+                        float booking_pace_ratio
+                        float pricing_coefficient
+                        int seats_remaining
+                        float demand_arrival_rate
+                        float elapsed_time
+                    }
+                    SPILLOVER_EVENT {
+                        int id PK
+                        int customer_id FK
+                        int from_airline_id FK
+                        float wait_time
+                        float utility_loss
+                    }
+
+                    AIRLINE ||--o{ SEAT : "operates"
+                    AIRLINE ||--o{ BOOKING : "records"
+                    AIRLINE ||--o{ PRICING_LOG : "generates"
+                    CUSTOMER ||--o{ BOOKING : "makes"
+                    CUSTOMER ||--o{ SPILLOVER_EVENT : "triggers"
+                    SEAT ||--o{ BOOKING : "assigned_to"
+                </div>
+                <p class="diagram-caption">↑ Entity–Relationship diagram · core tables for simulation, pricing, and customer behavior</p>
+            </div>
+
+            <div class="scroll-in" style="margin-top:24px;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;">
+                    <div style="background:rgba(255,255,255,0.03);border-radius:16px;padding:16px 20px;border:1px solid rgba(255,255,255,0.04);">
+                        <div style="font-weight:600;color:#93bbfc;font-size:0.8rem;">📦 AIRLINE</div>
+                        <div style="font-size:0.8rem;color:#94a3b8;">pricing strategy · seats · revenue</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);border-radius:16px;padding:16px 20px;border:1px solid rgba(255,255,255,0.04);">
+                        <div style="font-weight:600;color:#a78bfa;font-size:0.8rem;">🧑 CUSTOMER</div>
+                        <div style="font-size:0.8rem;color:#94a3b8;">type · WTP · urgency · decision</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);border-radius:16px;padding:16px 20px;border:1px solid rgba(255,255,255,0.04);">
+                        <div style="font-weight:600;color:#34d399;font-size:0.8rem;">💺 SEAT</div>
+                        <div style="font-size:0.8rem;color:#94a3b8;">status · quality · airline FK</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.03);border-radius:16px;padding:16px 20px;border:1px solid rgba(255,255,255,0.04);">
+                        <div style="font-weight:600;color:#fbbf24;font-size:0.8rem;">📊 PRICING_LOG</div>
+                        <div style="font-size:0.8rem;color:#94a3b8;">pace ratio · coefficient · demand rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── SERIOUS GAME ARCHITECTURE ─── -->
+    <section id="game-arch">
+        <div class="container">
+            <div class="scroll-in">
+                <span class="section-label">Layer 3 · Simulation</span>
+                <h2 class="section-title">Serious Game Architecture</h2>
+                <p class="section-subtitle">
+                    A discrete-event market simulation with two competing airlines,
+                    heterogeneous customers, and a spillover queue.
+                </p>
+            </div>
+
+            <!-- Mermaid: Game architecture -->
+            <div class="diagram-wrapper scroll-in">
+                <div class="mermaid">
+                    flowchart TB
+                    subgraph Market["🛫 Shared Airline Market"]
+                        direction TB
+                        A["Dynamic Airline<br/><small>pace‑based pricing</small>"] --> C["Customer Decision<br/><small>observe prices, seats, WTP</small>"]
+                        B["Static Airline<br/><small>fixed $273</small>"] --> C
+                        C --> D["Buy Dynamic"]
+                        C --> E["Buy Static"]
+                        C --> F["Spillover Queue<br/><small>utility loss</small>"]
+                        C --> G["Leave Market"]
+                        F --> C
+                    end
+
+                    subgraph Pricing["📈 Dynamic Pricing Engine"]
+                        H["Static Price ×<br/>Booking Pace Ratio ×<br/>Pricing Coefficient"]
+                        I["Bounds: min / max"]
+                        J["Inputs: elapsed time,<br/>seats sold, remaining capacity,<br/>expected sales, demand rate"]
+                        J --> H --> I
+                    end
+
+                    subgraph Agents["🤖 Agents"]
+                        K["Customer<br/><small>Leisure / Business</small>"]
+                        L["Dynamic Airline<br/><small>pricing logic</small>"]
+                        M["Static Airline<br/><small>inventory tracker</small>"]
+                    end
+
+                    A -.-> Pricing
+                    K --> C
+                    L --> A
+                    M --> B
+
+                    style A fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#e8edf5
+                    style B fill:#1e293b,stroke:#64748b,stroke-width:2px,color:#e8edf5
+                    style C fill:#1e293b,stroke:#a78bfa,stroke-width:2px,color:#e8edf5
+                    style F fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#e8edf5
+                    style K fill:#1e293b,stroke:#34d399,stroke-width:2px,color:#e8edf5
+                    style L fill:#1e293b,stroke:#3b82f6,stroke-width:2px,color:#e8edf5
+                    style M fill:#1e293b,stroke:#64748b,stroke-width:2px,color:#e8edf5
+                </div>
+                <p class="diagram-caption">↑ Serious game architecture · agent interactions, pricing engine, and customer decision flow</p>
+            </div>
+
+            <!-- Customer / Agent Flow (additional diagram) -->
+            <div class="diagram-wrapper scroll-in" style="margin-top:24px;">
+                <div class="mermaid">
+                    flowchart LR
+                    subgraph CustomerFlow["🧑 Customer Decision Flow"]
+                        direction LR
+                        A1["Arrive<br/><small>Leisure / Business</small>"] --> A2["Observe:<br/>prices, availability,<br/>quality, WTP, urgency"]
+                        A2 --> A3{"Decision"}
+                        A3 -->|"buy"| A4["Purchase from<br/>selected airline"]
+                        A3 -->|"wait"| A5["Spillover Queue<br/><small>utility loss: −v or −0.1v</small>"]
+                        A3 -->|"leave"| A6["Exit market"]
+                        A5 --> A7["Future catch value<br/><small>U(0.5v,1.5v) / U(0,2v)</small>"]
+                        A7 --> A2
+                    end
+
+                    style A1 fill:#1e293b,stroke:#34d399,stroke-width:2px,color:#e8edf5
+                    style A3 fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#e8edf5
+                    style A5 fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#e8edf5
+                    style A7 fill:#1e293b,stroke:#a78bfa,stroke-width:2px,color:#e8edf5
+                </div>
+                <p class="diagram-caption">↑ Customer decision flow · arrival → observation → decision → purchase / wait / leave</p>
+            </div>
+
+            <!-- Game description -->
+            <div class="scroll-in" style="margin-top:32px;background:rgba(255,255,255,0.03);border-radius:20px;padding:24px 28px;border:1px solid rgba(255,255,255,0.05);">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+                    <div>
+                        <div style="font-weight:600;color:#93bbfc;font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;">🎯 Dynamic Airline</div>
+                        <div style="font-size:0.9rem;color:#c8d6e5;">Pace‑based pricing · 20 seats · adjusts price based on booking pace ratio</div>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;color:#94a3b8;font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;">⚖️ Static Airline</div>
+                        <div style="font-size:0.9rem;color:#c8d6e5;">Fixed $273 · 20 seats · never changes price · tracks inventory only</div>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;color:#a78bfa;font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;">🧑‍🤝‍🧑 Customers</div>
+                        <div style="font-size:0.9rem;color:#c8d6e5;">Leisure / Business · WTP + urgency · observe both prices &amp; availability</div>
+                    </div>
+                    <div>
+                        <div style="font-weight:600;color:#fbbf24;font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;">⏳ Spillover</div>
+                        <div style="font-size:0.9rem;color:#c8d6e5;">Wait → utility loss · future catch drawn from U(0.5v,1.5v) or U(0,2v)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── AGENT LOGIC (pseudo-code) ─── -->
+    <section id="agents" style="background:rgba(255,255,255,0.01);">
+        <div class="container">
+            <div class="scroll-in">
+                <span class="section-label">Agent Logic</span>
+                <h2 class="section-title">Behavior &amp; Decision Sets</h2>
+                <p class="section-subtitle">
+                    Concise pseudo‑code for each autonomous agent in the simulation.
+                </p>
+            </div>
+
+            <div class="agent-grid">
+                <!-- Customer -->
+                <div class="agent-card scroll-in">
+                    <span class="role">🧑 Agent</span>
+                    <h4>Customer</h4>
+                    <div class="pseudo">
+                        # Customer behavior
+                        on arrival:
+                        observe p_dyn, p_stat, seats_dyn, seats_stat, quality, WTP, urgency
+                        if WTP >= p_dyn and seats_dyn > 0:
+                        buy_dynamic()
+                        else if WTP >= p_stat and seats_stat > 0:
+                        buy_static()
+                        else:
+                        if urgency > threshold:
+                        enter_spillover(wait_utility_loss)
+                        else:
+                        leave_market()
+
+                        # Spillover re‑entry
+                        on spillover_return:
+                        draw future_value ~ U(low, high)
+                        update WTP += future_value
+                        re‑evaluate()
+                    </div>
+                    <div class="info-set">
+                        <span class="label">Knows</span>
+                        <span class="value">own type, WTP, urgency, prices, availability</span>
+                        <span class="label">Doesn't know</span>
+                        <span class="value">future prices, others' WTP, airline strategies</span>
+                        <span class="label">Decisions</span>
+                        <span class="value">buy DYN · buy STAT · spillover · leave</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Airline -->
+                <div class="agent-card scroll-in">
+                    <span class="role">📈 Agent</span>
+                    <h4>Dynamic Airline</h4>
+                    <div class="pseudo">
+                        # Dynamic pricing logic
+                        on each tick:
+                        observe elapsed_time, seats_sold, remaining_capacity,
+                        expected_sales, demand_arrival_rate, static_price
+
+                        pace_ratio = elapsed_time / total_time * (remaining_capacity / total_seats)
+                        coeff = clamp(pace_ratio * demand_arrival_rate, 0.6, 1.8)
+                        price = static_price * pace_ratio * coeff
+                        price = clamp(price, min_price, max_price)
+
+                        set_price(price)
+                        log(price, pace_ratio, coeff)
+                    </div>
+                    <div class="info-set">
+                        <span class="label">Knows</span>
+                        <span class="value">own inventory, elapsed time, static price, demand rate</span>
+                        <span class="label">Doesn't know</span>
+                        <span class="value">individual WTP, competitor's next move</span>
+                        <span class="label">Decisions</span>
+                        <span class="value">set price (pace‑based, bounded)</span>
+                    </div>
+                </div>
+
+                <!-- Static Airline -->
+                <div class="agent-card scroll-in">
+                    <span class="role">⚖️ Agent</span>
+                    <h4>Static Airline</h4>
+                    <div class="pseudo">
+                        # Fixed‑price inventory tracker
+                        on each tick:
+                        observe incoming_demand, remaining_inventory
+                        price = 273  # fixed
+
+                        for each request:
+                        if remaining_inventory > 0 and customer.WTP >= price:
+                        sell_seat(price)
+                        remaining_inventory -= 1
+                        log_sale(price)
+
+                        # Never changes price — only tracks
+                        log_inventory(remaining_inventory, incoming_demand)
+                    </div>
+                    <div class="info-set">
+                        <span class="label">Knows</span>
+                        <span class="value">own price ($273), remaining inventory, demand</span>
+                        <span class="label">Doesn't know</span>
+                        <span class="value">customer WTP distribution, competitor's strategy</span>
+                        <span class="label">Decisions</span>
+                        <span class="value">sell if inventory &amp; WTP ≥ price (passive)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── ROADMAP ─── -->
+    <section id="roadmap">
+        <div class="container">
+            <div class="scroll-in">
+                <span class="section-label">Layer 4 · Roadmap</span>
+                <h2 class="section-title">Development Timeline</h2>
+                <p class="section-subtitle">
+                    A self‑education and prototyping roadmap across four integrated layers.
+                </p>
+            </div>
+
+            <div class="roadmap-list">
+                <div class="roadmap-item scroll-in">
+                    <div class="step">01</div>
+                    <div class="content">
+                        <h4>Landing View · Discovery</h4>
+                        <p>Research agent‑based modeling · define market rules · sketch customer utility functions · select toolchain (VS Code + Docker + SQLite).</p>
+                        <span style="font-size:0.75rem;color:#64748b;display:inline-block;margin-top:4px;">⏱️ Weeks 1–2</span>
+                    </div>
+                </div>
+                <div class="roadmap-item scroll-in">
+                    <div class="step">02</div>
+                    <div class="content">
+                        <h4>Tools Architecture · Integration</h4>
+                        <p>Set up Codespaces environment · containerize app with Docker · configure SQLite for embedded storage · deploy static shell on Vercel · install Clarity for analytics.</p>
+                        <span style="font-size:0.75rem;color:#64748b;display:inline-block;margin-top:4px;">⏱️ Weeks 3–4</span>
+                    </div>
+                </div>
+                <div class="roadmap-item scroll-in">
+                    <div class="step">03</div>
+                    <div class="content">
+                        <h4>Data Model · Schema Design</h4>
+                        <p>Design ER schema (Airline, Customer, Seat, Booking, Pricing_Log, Spillover_Event) · implement migrations · seed test data · build query layer for analytics.</p>
+                        <span style="font-size:0.75rem;color:#64748b;display:inline-block;margin-top:4px;">⏱️ Weeks 5–6</span>
+                    </div>
+                </div>
+                <div class="roadmap-item scroll-in">
+                    <div class="step">04</div>
+                    <div class="content">
+                        <h4>Serious Game · Simulation Engine</h4>
+                        <p>Implement agent logic (Customer, Dynamic, Static) · build discrete‑event loop · add spillover queue · integrate pricing engine · capture logs for post‑game analysis.</p>
+                        <span style="font-size:0.75rem;color:#64748b;display:inline-block;margin-top:4px;">⏱️ Weeks 7–10</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline diagram -->
+            <!-- <div class="diagram-wrapper scroll-in" style="margin-top:32px;">
+                <div class="mermaid">
+                    gantt
+                    title Self‑Education &amp; Prototyping Roadmap
+                    dateFormat  YYYY-MM-DD
+                    axisFormat %b %d
+
+                    section Layer 1
+                    Landing View · Discovery      :a1, 2026-01-05, 14d
+
+                    section Layer 2
+                    Tools Architecture · Integration :a2, after a1, 14d
+
+                    section Layer 3
+                    Data Model · Schema Design      :a3, after a2, 14d
+
+                    section Layer 4
+                    Serious Game · Simulation Engine :a4, after a3, 28d
+
+                    section Polish
+                    Testing &amp; Documentation        :a5, after a4, 14d
+                    Deployment &amp; Presentation      :a6, after a5, 7d
+                </div>
+                <p class="diagram-caption">↑ Gantt-style roadmap · four layers with realistic milestones</p>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- ─── CLOSING ─── -->
+    <section id="closing">
+        <div class="container">
+            <div class="scroll-in">
+                <span class="section-label">Next Steps</span>
+                <h2 class="section-title">Let's Keep in Touch!</h2>
+            <!-- </div>
+            <div class="closing-card scroll-in">
+                <p style="font-size:1.1rem;">
+                    This prototype is a living document — part research, part product,
+                    part portfolio. I'd love to hear your thoughts, questions, or
+                    ideas for collaboration.
+                </p>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                    <div class="email">✉️ hello@decentralized.arch</div>
+                    <div style="display:flex;gap:20px;font-size:0.85rem;color:#64748b;margin-top:8px;">
+                        <span>🐦 @decent_arch</span>
+                        <span>💼 linkedin.com/in/yourname</span>
+                        <span>📄 github.com/yourrepo</span>
+                    </div>
+                </div>
+                <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.05);font-size:0.8rem;color:#475569;">
+                    Built with ❤️ · Decentralized Product Architecture · v0.4
+                </div>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- ─── SCRIPTS ─── -->
+    <script>
+        // ── Mermaid init ──
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                background: '#0b0d15',
+                primaryColor: '#1e293b',
+                primaryTextColor: '#e8edf5',
+                primaryBorderColor: '#3b82f6',
+                lineColor: '#475569',
+                secondaryColor: '#1e293b',
+                tertiaryColor: '#0b0d15',
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '13px',
+            },
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+            },
+            gantt: {
+                useMaxWidth: true,
+                barHeight: 28,
+                barGap: 8,
+                topPadding: 40,
+                rightPadding: 60,
+                leftPadding: 80,
+                gridLineStartPadding: 40,
+                fontSize: 12,
+                fontFamily: 'Inter, sans-serif',
+            },
+            er: {
+                useMaxWidth: true,
+                entityPadding: 12,
+                fontSize: 12,
+            },
+        });
+
+        // ── Scroll-in with Intersection Observer ──
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.scroll-in');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: '0px 0px -40px 0px',
+            });
+
+            elements.forEach(el => observer.observe(el));
+
+            // Also handle stagger containers
+            document.querySelectorAll('.stagger').forEach(el => observer.observe(el));
+
+            // ── Re-render Mermaid after a small delay to ensure sizing ──
+            setTimeout(() => {
+                mermaid.run({
+                    nodes: document.querySelectorAll('.mermaid'),
+                });
+            }, 300);
+        });
+
+        // ── Re-render on resize for responsiveness ──
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                mermaid.run({
+                    nodes: document.querySelectorAll('.mermaid'),
+                });
+            }, 400);
+        });
+    </script>
+
+</body>
+</html>
