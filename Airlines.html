@@ -599,7 +599,7 @@
         <!-- HEADER -->
         <header class="header">
 
-            <img style="padding: 1%;;" width="66%" SRC="Images/ship 1.png">
+            <img style="padding: 1%;;" width="59%" SRC="Images/ship 1.png">
 
                <h1 style="font-size: x-large;"><a href="https://hamidreza-mohammadiha.github.io/Me/PRD"> A Revenue Management <br> Serious Game </a> </h1>
 
@@ -653,7 +653,7 @@
                     <b style="font-size: medium;"><br>  Sell 20 💺s in 40 seconds  <br>--------------------------------------- </b><br><b style="font-size: 21px;">🎫</b> Pre-Reserved ⚓<b style="color:#7aaad4;">  20 </b> seats at <b style="color:#7aaad4;"> 273 $</b> 
             </div>
         </div>
-                    <!-- <div style="font-size: xx-large;" class="icon-row"> ✈️  <a href="https://hamidreza-mohammadiha.github.io/Me/PRD">🛫</a></div> -->
+                <div style="text-align:center;margin-top:6px;" id="winnerBadge"></div>
            <div id="countdown"
                 style="
                     
@@ -749,7 +749,7 @@
             <div class="seat-panel">
                 <div class="panel-head">
                     <h2 style="color:var(--static-blue);">⚓Booked Tickets</h2>
-                    <span class="badge badge-stc">fixed $273 · cost‑plus</span>
+                    <span class="badge badge-stc">Fixed Cost : 200 $</span>
                 </div>
                 <div class="seat-grid" id="stcGrid"></div>
                 <div class="seat-stats">
@@ -773,7 +773,6 @@
                     <span><span class="dot" style="background:var(--static-blue);"></span> Stc PnL%</span>
                     <span><span class="dot" style="background:#4a4a3a;border:1px solid #6a6a50;"></span> 0% ref</span>
                 </div>
-                <div style="text-align:center;margin-top:6px;" id="winnerBadge"></div>
             </div>
 
             <div class="dash-panel">
@@ -1768,10 +1767,10 @@
                     const s = state.stcRevenue;
                     if (d > s) {
                         winnerBadge.innerHTML =
-                            `<span class="winner-badge winner-dyn">🏆 Dynamic WINS +$${(d-s).toLocaleString()} (${((d/s-1)*100).toFixed(1)}% more)</span>`;
+                            `<span class="winner-badge winner-dyn">🏆 You are the winner   +$${(d-s).toLocaleString()} (${((d/s-1)*100).toFixed(1)}% more)</span>`;
                     } else if (s > d) {
                         winnerBadge.innerHTML =
-                            `<span class="winner-badge winner-stc">🥈 Static wins by +$${(s-d).toLocaleString()}</span>`;
+                            `<span class="winner-badge winner-stc">🥈 You gained less  -$${(s-d).toLocaleString()}</span>`;
                     } else if (d > 0) {
                         winnerBadge.innerHTML =
                             `<span class="winner-badge" style="background:#262a1e;color:#c0b890;">🤝 Tie at $${d.toLocaleString()}</span>`;
