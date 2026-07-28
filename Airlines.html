@@ -602,6 +602,69 @@
             <br>
             <h1>A Revenue Management Serious Game</h1>
             <img width="55%" SRC="Images/ship 1.png">
+            <div id="countdown"
+                style="
+                    
+                    padding:14px;
+                    text-align:center;
+                    font:700 28px 'Courier New', monospace;
+                    color:#fff;
+                    /* background:#222; */
+                    border-radius:12px;
+                    letter-spacing:2px;
+                    box-shadow:0 4px 15px rgba(0,0,0,.3);
+                    transition:transform .15s;
+                ">
+                00:00:40
+            </div>
+
+            <script>
+            (() => {
+                const clock = document.getElementById("countdown");
+                let remaining = 40;
+
+                function format(sec) {
+                    const h = String(Math.floor(sec / 3600)).padStart(2, "0");
+                    const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+                    const s = String(sec % 60).padStart(2, "0");
+                    return `${h}:${m}:${s}`;
+                }
+
+                function tick() {
+                    clock.textContent = format(remaining);
+
+                    // Pulse animation every second
+                    clock.animate([
+                        { transform: "scale(1.15)" },
+                        { transform: "scale(1)" }
+                    ], {
+                        duration: 250,
+                        easing: "ease-out"
+                    });
+
+                    if (remaining <= 0) {
+                        clearInterval(timer);
+
+                        // Finished animation
+                        clock.animate([
+                            { background: "#222" },
+                            { background: "#28a745" },
+                            { background: "#222" }
+                        ], {
+                            duration: 800,
+                            iterations: 2
+                        });
+
+                        return;
+                    }
+
+                    remaining--;
+                }
+
+                tick(); // initial display
+                const timer = setInterval(tick, 1000);
+            })();
+            </script>
             <!-- <p class="sub">Poisson arrivals · Leisure / Business · Utility-based waiting · Spillover</p> -->
         </header>
 
@@ -643,7 +706,7 @@
             </div>
             </div>
             <div style="font-size:0.95em;color:var(--dim);text-align:center;">
-                  ---  <b>  Sell 20 💺 in 40 seconds before ✈️ --- </b><br><b style="font-size: 21px;">🎫</b> Pre-Reserved ⚓<b style="color:#7aaad4;">  20 </b> seats at <b style="color:#7aaad4;"> 273 $</b> 
+                    <b>  Sell 20 💺 in 40 seconds before ✈️ <br>---------------------------------------- </b><br><b style="font-size: 21px;">🎫</b> Pre-Reserved ⚓<b style="color:#7aaad4;">  20 </b> seats at <b style="color:#7aaad4;"> 273 $</b> 
             </div>
         </div>
 
