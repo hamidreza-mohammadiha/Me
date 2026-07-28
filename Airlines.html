@@ -685,6 +685,7 @@
                 }
 
                 function tick() {
+
                     clock.textContent = format(remaining);
 
                     // Pulse animation every second
@@ -716,8 +717,14 @@
                 }
 
                 
-                tick(); // initial display
-                const timer = setInterval(tick, 1000);
+                const btnRun = document.getElementById("btnRun");
+
+                btnRun.addEventListener("click", () => {
+                    tick(); // Initial display immediately
+                    timer = setInterval(tick, 1000); // Continue every second
+                });
+                                
+                // const timer = setInterval(tick, 1000);
             })();
             </script>
 
