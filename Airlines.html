@@ -601,7 +601,7 @@
             <div class="icon-row"><a href="https://hamidreza-mohammadiha.github.io/Me/Dev"> 💺 </a>  ✈️  <a href="https://hamidreza-mohammadiha.github.io/Me/PRD">🛫</a></div>
             <br>
             <h1>A Revenue Management Serious Game</h1>
-            <img width="66%" SRC="Images/ship 1.png">
+            <img width="55%" SRC="Images/ship 1.png">
             <!-- <p class="sub">Poisson arrivals · Leisure / Business · Utility-based waiting · Spillover</p> -->
         </header>
 
@@ -611,23 +611,39 @@
                 <label>📊 Demand λ (arrivals/s)</label>
                 <span class="slider-val" id="lambdaVal">1.0</span>
                 <input type="range" id="lambdaSlider" min="0.5" max="2.5" step="0.01" value="1.0" />
+                <script>
+                const slider = document.getElementById("lambdaSlider");
+                const mean = 1.5;
+                const sigma = 0.5;     // Approximate standard variation
+                const period = 4000;   // One oscillation every 4 seconds
+
+                function animateSlider() {
+                    const t = performance.now();
+                    const value = mean + sigma * Math.sin(2 * Math.PI * t / period);
+                    slider.value = Math.min(2.5, Math.max(0.5, value));
+                    requestAnimationFrame(animateSlider);
+                }
+
+                animateSlider();
+                </script>
             </div>
             <div class="ctrl-group">
                 <label>⚙️ Dynamic Pricing Adjustment</label>
                 <span class="slider-val" id="coeffVal">1.00</span>
                 <input type="range" id="coeffSlider" min="0.618" max="2.718" step="0.01" value="1.00" />
             </div>
-            <div class="ctrl-group" style="min-width:80px;">
+
+            <div class="btn-row">
+                <button class="btn btn-run" id="btnRun">▶ Run</button>
+                <button class="btn btn-reset" id="btnReset">↻ Reset</button>
+                            <div class="ctrl-group" style="min-width:80px;">
                 <label>⏱️ Speed</label>
                 <span class="slider-val" id="speedVal">1.0×</span>
                 <input type="range" id="speedSlider" min="0.3" max="3.0" step="0.1" value="1.0" />
             </div>
-            <div class="btn-row">
-                <button class="btn btn-run" id="btnRun">▶ Run</button>
-                <button class="btn btn-reset" id="btnReset">↻ Reset</button>
             </div>
-            <div style="font-size:0.65em;color:var(--dim);text-align:center;">
-                Static price = 1.367×$200 = <b style="color:#7aaad4;">$273</b> · <b>20 seats each</b>
+            <div style="font-size:0.95em;color:var(--dim);text-align:center;">
+                  ---  <b>  Sell 20 💺 in 40 seconds before ✈️ --- </b><br><b style="font-size: 21px;">🎫</b> Pre-Reserved ⚓<b style="color:#7aaad4;">  20 </b> seats at <b style="color:#7aaad4;"> 273 $</b> 
             </div>
         </div>
 
@@ -636,8 +652,8 @@
             <!-- Dynamic -->
             <div class="seat-panel">
                 <div class="panel-head">
-                    <h2 style="color:var(--dynamic-gold);">🟡 Dynamic Airline</h2>
-                    <span class="badge badge-dyn">price adjusts · pace‑based</span>
+                    <h2 style="color:var(--dynamic-gold);">🚢 Dynamic Pricing</h2>
+                    <span class="badge badge-dyn" style="font-size: medium;">--- Your Strategy ---</span>
                 </div>
                 <div class="seat-grid" id="dynGrid"></div>
                 <div class="seat-stats">
@@ -651,7 +667,7 @@
             <!-- Static -->
             <div class="seat-panel">
                 <div class="panel-head">
-                    <h2 style="color:var(--static-blue);">🔵 Static Airline</h2>
+                    <h2 style="color:var(--static-blue);">⚓ Static Airline</h2>
                     <span class="badge badge-stc">fixed $273 · cost‑plus</span>
                 </div>
                 <div class="seat-grid" id="stcGrid"></div>
