@@ -599,16 +599,69 @@
         <!-- HEADER -->
         <header class="header">
 
-            <h1><a href="https://hamidreza-mohammadiha.github.io/Me/PRD"> A Revenue Management Serious Game </a> </h1>
-            <img style="padding: 4%;" width="76%" SRC="Images/poster.png">
-            <div id="countdown"
+            <img style="padding: 4%;;" width="77%" SRC="Images/poster.png">
+
+               <h1><a href="https://hamidreza-mohammadiha.github.io/Me/PRD"> A Revenue Management Serious Game </a> </h1>
+
+            
+            <!-- <p class="sub">Poisson arrivals · Leisure / Business · Utility-based waiting · Spillover</p> -->
+        </header>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <div class="ctrl-group">
+                <label>📊 Demand λ (arrivals/s)</label>
+                <span class="slider-val" id="lambdaVal">1.0</span>
+                <input type="range" id="lambdaSlider" min="0.5" max="2.5" step="0.01" value="1.0" />
+                <script>
+                const slider = document.getElementById("lambdaSlider");
+                const slider_val = document.getElementById("lambdaVal");
+                const mean = 1.5;
+                const sigma = 0.5;     // Approximate standard variation
+                const period = 4000;   // One oscillation every 4 seconds
+
+                function animateSlider() {
+                    const t = performance.now();
+                    const value = mean + sigma * Math.sin(2 * Math.PI * t / period);
+                    slider.value = Math.min(2.5, Math.max(0.5, value));
+                    slider_val.value = slider.value;
+                    requestAnimationFrame(animateSlider);
+
+                }
+
+                animateSlider();
+                </script>
+            </div>
+            <div class="ctrl-group">
+                <label>⚙️ Dynamic Pricing Adjustment</label>
+                <span class="slider-val" id="coeffVal">1.00</span>
+                <input type="range" id="coeffSlider" min="0.618" max="2.718" step="0.01" value="1.00" /><br>
+            </div>
+
+            <div class="btn-row">
+                
+                <button class="btn btn-run" id="btnRun">▶ Run</button>
+                <button class="btn btn-reset" id="btnReset">↻ Reset</button>
+                            <div class="ctrl-group" style="min-width:80px;">
+                <br>
+                <label>⏱️ Simulation Speed</label>
+                <span class="slider-val" id="speedVal">1.0×</span>
+                <input type="range" id="speedSlider" min="0.3" max="3.0" step="0.1" value="1.0" />
+            </div>
+            </div>
+            <div style="font-size:0.95em;color:var(--dim);text-align:center;">
+                    <b style="font-size: medium;"><br>  Sell 20 💺s in 40 seconds  <br>--------------------------------------- </b><br><b style="font-size: 21px;">🎫</b> Pre-Reserved ⚓<b style="color:#7aaad4;">  20 </b> seats at <b style="color:#7aaad4;"> 273 $</b> 
+            </div>
+        </div>
+                    <!-- <div style="font-size: xx-large;" class="icon-row"> ✈️  <a href="https://hamidreza-mohammadiha.github.io/Me/PRD">🛫</a></div> -->
+           <div id="countdown"
                 style="
                     
                     padding:14px;
                     text-align:center;
                     font:700 28px 'Courier New', monospace;
                     color:#fff;
-                    /* background:#222; */
+                    background:none;
                     border-radius:12px;
                     letter-spacing:2px;
                     box-shadow:0 4px 15px rgba(0,0,0,.3);
@@ -667,55 +720,6 @@
                 const timer = setInterval(tick, 1000);
             })();
             </script>
-            <!-- <p class="sub">Poisson arrivals · Leisure / Business · Utility-based waiting · Spillover</p> -->
-        </header>
-
-        <!-- CONTROLS -->
-        <div class="controls">
-            <div class="ctrl-group">
-                <label>📊 Demand λ (arrivals/s)</label>
-                <span class="slider-val" id="lambdaVal">1.0</span>
-                <input type="range" id="lambdaSlider" min="0.5" max="2.5" step="0.01" value="1.0" />
-                <script>
-                const slider = document.getElementById("lambdaSlider");
-                const slider_val = document.getElementById("lambdaVal");
-                const mean = 1.5;
-                const sigma = 0.5;     // Approximate standard variation
-                const period = 4000;   // One oscillation every 4 seconds
-
-                function animateSlider() {
-                    const t = performance.now();
-                    const value = mean + sigma * Math.sin(2 * Math.PI * t / period);
-                    slider.value = Math.min(2.5, Math.max(0.5, value));
-                    slider_val.value = slider.value;
-                    requestAnimationFrame(animateSlider);
-
-                }
-
-                animateSlider();
-                </script>
-            </div>
-            <div class="ctrl-group">
-                <label>⚙️ Dynamic Pricing Adjustment</label>
-                <span class="slider-val" id="coeffVal">1.00</span>
-                <input type="range" id="coeffSlider" min="0.618" max="2.718" step="0.01" value="1.00" />
-            </div>
-
-            <div class="btn-row">
-                <button class="btn btn-run" id="btnRun">▶ Run</button>
-                <button class="btn btn-reset" id="btnReset">↻ Reset</button>
-                            <div class="ctrl-group" style="min-width:80px;">
-                <label>⏱️ Speed</label>
-                <span class="slider-val" id="speedVal">1.0×</span>
-                <input type="range" id="speedSlider" min="0.3" max="3.0" step="0.1" value="1.0" />
-            </div>
-            </div>
-            <div style="font-size:0.95em;color:var(--dim);text-align:center;">
-                    <b style="font-size: large;"><br>  Sell 20 💺s in 40 seconds  <br>--------------------------------------- </b><br><b style="font-size: 21px;">🎫</b> Pre-Reserved ⚓<b style="color:#7aaad4;">  20 </b> seats at <b style="color:#7aaad4;"> 273 $</b> 
-            </div>
-        </div>
-                    <!-- <div style="font-size: xx-large;" class="icon-row"> ✈️  <a href="https://hamidreza-mohammadiha.github.io/Me/PRD">🛫</a></div> -->
-           
 
         <!-- SEAT MAPS -->
         <div class="main-grid">
@@ -723,7 +727,7 @@
             <div class="seat-panel">
                 <div class="panel-head">
                     <h2 style="color:var(--dynamic-gold);">🚢 Dynamic Pricing</h2>
-                    <span class="badge badge-dyn" style="font-size: medium;">--- Your Strategy ---</span>
+                    <span class="badge badge-dyn" style="font-size: medium;">--- Your Play ---</span>
                 </div>
                 <div class="seat-grid" id="dynGrid"></div>
                 <div class="seat-stats">
@@ -923,6 +927,8 @@
                 <strong>constant ticket price</strong>
                 throughout the simulation.
             </p>
+            <br>
+
         </section>
 
     </div>
