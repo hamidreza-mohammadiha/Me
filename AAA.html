@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airline Revenue Management & Strategic Pricing Simulator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        canvas { max-height: 320px; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
+        <img style="padding: 1%;;" width="33%" SRC="Images/ship 1.png">
+
+               <h1 style="font-size: large;"><a href="https://hamidreza-mohammadiha.github.io/Me"> A Revenue Management  Serious Game </a> </h1><br><br>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-plane-departure text-indigo-400 text-2xl"></i>
+                    <div>
+                        <h1 class="text-lg font-bold text-white leading-none">Yield Studio</h1>
+                        <!-- <span class="text-xs text-slate-400">Industrial Engineering & RM Simulator</span> -->
+                    </div>
+                </div>
+                <nav class="flex space-x-2">
+                    <button onclick="switchTab('simTab')" id="btn-simTab" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white transition">
+                        <i class="fa-solid fa-gamepad mr-2"></i>Interactive Simulator
+                    </button>
+                    <button onclick="switchTab('benchmarkTab')" id="btn-benchmarkTab" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+                        <i class="fa-solid fa-chart-line mr-2"></i>Monte Carlo Benchmarks
+                    </button>
+                    <button onclick="switchTab('optimizerTab')" id="btn-optimizerTab" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+                        <i class="fa-solid fa-robot mr-2"></i>Metaheuristic Optimizer
+                    </button>
+                    <button onclick="switchTab('paperTab')" id="btn-paperTab" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 transition">
+                        <i class="fa-solid fa-file-invoice mr-2"></i>Whitepaper Specs
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- TAB 1: INTERACTIVE SIMULATOR -->
+        <div id="simTab" class="tab-content active space-y-6">
+            <!-- Control Bar -->
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <button id="startBtn" onclick="toggleSimulation()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-2.5 rounded-lg font-semibold flex items-center shadow-lg transition">
+                        <i class="fa-solid fa-play mr-2"></i> Run Episode
+                    </button>
+                    <button onclick="resetSimulation()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-lg font-medium transition">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Reset
+                    </button>
+                </div>
+
+                <!-- Simulation Speed -->
+                <div class="flex items-center space-x-3 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <span class="text-xs text-slate-400 font-medium">Speed:</span>
+                    <input type="range" id="simSpeed" min="1" max="50" value="10" class="w-24 accent-indigo-500">
+                    <span id="speedVal" class="text-xs font-mono text-indigo-400">10x</span>
+                </div>
+
+                <!-- Live Status Metrics -->
+                <div class="flex items-center space-x-6 text-sm">
+                    <div><span class="text-slate-400">Time:</span> <span id="clock" class="font-mono text-indigo-400 font-bold">0.0 / 40.0</span></div>
+                    <div><span class="text-slate-400">Arrivals:</span> <span id="totalArrivals" class="font-mono text-slate-200 font-bold">0</span></div>
+                    <div><span class="text-slate-400">Spillover Queue:</span> <span id="queueSize" class="font-mono text-amber-400 font-bold">0</span></div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Left Column: Strategy Controls & Model Parameters -->
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-5">
+                    <h2 class="text-base font-bold text-white flex items-center border-b border-slate-700 pb-2">
+                        <i class="fa-solid fa-sliders text-indigo-400 mr-2"></i> Strategy Controls
+                    </h2>
+
+                    <!-- Dynamic Pricing Power (Alpha) -->
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span class="text-slate-300">Pricing Multiplier (&alpha;)</span>
+                            <span id="alphaVal" class="text-indigo-400 font-mono">1.20</span>
+                        </div>
+                        <input type="range" id="paramAlpha" min="0.1" max="3.0" step="0.05" value="1.2" oninput="updateSliders()" class="w-full accent-indigo-500">
+                        <p class="text-[11px] text-slate-400 mt-1">Controls how aggressively dynamic price scales with booking pace.</p>
+                    </div>
+
+                    <!-- Arrival Rate (Lambda) -->
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span class="text-slate-300">Poisson Arrival Rate (&lambda;)</span>
+                            <span id="lambdaVal" class="text-indigo-400 font-mono">1.50</span>
+                        </div>
+                        <input type="range" id="paramLambda" min="0.5" max="3.0" step="0.1" value="1.5" oninput="updateSliders()" class="w-full accent-indigo-500">
+                    </div>
+
+                    <!-- Static Price -->
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span class="text-slate-300">Static Competitor Fare ($P_s$)</span>
+                            <span id="staticPriceVal" class="text-indigo-400 font-mono">$273</span>
+                        </div>
+                        <input type="range" id="paramStaticPrice" min="150" max="400" step="5" value="273" oninput="updateSliders()" class="w-full accent-indigo-500">
+                    </div>
+
+                    <!-- Cost Base -->
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span class="text-slate-300">Seat Production Cost ($C_{cost}$)</span>
+                            <span id="costVal" class="text-indigo-400 font-mono">$200</span>
+                        </div>
+                        <input type="range" id="paramCost" min="100" max="250" step="5" value="200" oninput="updateSliders()" class="w-full accent-indigo-500">
+                    </div>
+
+                    <!-- Rational Waiting Weight -->
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span class="text-slate-300">Strategic Waiting Utility (&gamma;)</span>
+                            <span id="gammaVal" class="text-indigo-400 font-mono">0.50</span>
+                        </div>
+                        <input type="range" id="paramGamma" min="0.0" max="1.5" step="0.05" value="0.5" oninput="updateSliders()" class="w-full accent-indigo-500">
+                    </div>
+                </div>
+
+                <!-- Middle & Right Columns: Charts & Visualizers -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Scoreboard Cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <div class="text-xs text-slate-400">Dynamic Revenue</div>
+                            <div id="dynRevenue" class="text-xl font-bold text-emerald-400 font-mono mt-1">$0</div>
+                            <div id="dynProfit" class="text-xs text-slate-400 font-mono">Profit: $0</div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <div class="text-xs text-slate-400">Static Revenue</div>
+                            <div id="statRevenue" class="text-xl font-bold text-blue-400 font-mono mt-1">$0</div>
+                            <div id="statProfit" class="text-xs text-slate-400 font-mono">Profit: $0</div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <div class="text-xs text-slate-400">Dynamic Load Factor</div>
+                            <div id="dynSeats" class="text-xl font-bold text-slate-100 font-mono mt-1">0 / 20</div>
+                            <div id="dynPnL" class="text-xs text-emerald-400 font-mono">Margin: 0%</div>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <div class="text-xs text-slate-400">Static Load Factor</div>
+                            <div id="statSeats" class="text-xl font-bold text-slate-100 font-mono mt-1">0 / 20</div>
+                            <div id="statPnL" class="text-xs text-blue-400 font-mono">Margin: 0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Charts -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Price Trajectory ($P_d$ vs $P_s$)</h3>
+                            <canvas id="priceChart"></canvas>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Cumulative Bookings Pace</h3>
+                            <canvas id="bookingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: MONTE CARLO BENCHMARKS -->
+        <div id="benchmarkTab" class="tab-content space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Monte Carlo Strategic Benchmarking</h2>
+                        <p class="text-sm text-slate-400">Simulate hundreds of market booking horizons to evaluate statistical performance distributions.</p>
+                    </div>
+                    <button onclick="runMonteCarlo()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg font-semibold transition flex items-center">
+                        <i class="fa-solid fa-bolt mr-2"></i> Run 100 Simulations
+                    </button>
+                </div>
+
+                <!-- Benchmark Metrics Table -->
+                <div class="overflow-x-auto pt-4">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-900 text-slate-400 uppercase text-xs">
+                            <tr>
+                                <th class="p-3">Strategy / Metric</th>
+                                <th class="p-3">Avg Revenue</th>
+                                <th class="p-3">Avg Profit</th>
+                                <th class="p-3">Avg PnL %</th>
+                                <th class="p-3">Load Factor</th>
+                                <th class="p-3">Spillover Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="benchmarkTable" class="divide-y divide-slate-700 font-mono">
+                            <tr><td colspan="6" class="p-4 text-center text-slate-500">No benchmark runs executed yet. Click "Run 100 Simulations".</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: METAHEURISTIC OPTIMIZER -->
+        <div id="optimizerTab" class="tab-content space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Metaheuristic Parameter Optimizer</h2>
+                        <p class="text-sm text-slate-400">Uses a local search hill-climbing metaheuristic to tune pricing power ($\alpha$) for maximum expected profit.</p>
+                    </div>
+                    <button id="optBtn" onclick="runOptimizer()" class="bg-amber-600 hover:bg-amber-500 text-white px-5 py-2.5 rounded-lg font-semibold transition flex items-center">
+                        <i class="fa-solid fa-brain mr-2"></i> Optimize Dynamic Policy
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-2">
+                        <h4 class="text-sm font-bold text-slate-200">Optimization Progress</h4>
+                        <div id="optLog" class="h-48 overflow-y-auto text-xs font-mono text-slate-400 space-y-1 p-2 bg-slate-950 rounded">
+                            Ready to run optimization...
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 flex flex-col justify-center items-center text-center">
+                        <span class="text-xs text-slate-400 uppercase">Optimal Parameter Found</span>
+                        <div id="optBestAlpha" class="text-4xl font-bold font-mono text-amber-400 my-2">&alpha; = --</div>
+                        <span id="optBestProfit" class="text-sm text-emerald-400 font-mono">Expected Profit: $--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: WHITEPAPER SPECS -->
+        <div id="paperTab" class="tab-content space-y-6">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 text-slate-300 space-y-4 leading-relaxed">
+                <h2 class="text-xl font-bold text-white border-b border-slate-700 pb-2">Whitepaper Architecture Specification</h2>
+                <p>This application implements the simulation and optimization architecture described by HamidReza and Behrad (2026).</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <strong class="text-slate-100 block mb-1">Poisson Passenger Arrivals</strong>
+                        Arriving customers follow inter-arrival distribution $\Delta t \sim \text{Exp}(\lambda)$.
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <strong class="text-slate-100 block mb-1">Dynamic Booking Velocity</strong>
+                        Dynamic price scales via ratio $R(t) = B(t)/\max(1, E(t))$ with elasticity factor $\alpha$.
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <strong class="text-slate-100 block mb-1">Heterogeneous Segmentation</strong>
+                        Leisure travelers (low valuation, high price sensitivity) vs. Business travelers (high valuation, low sensitivity).
+                    </div>
+                    <div class="bg-slate-900 p-3 rounded border border-slate-700">
+                        <strong class="text-slate-100 block mb-1">Rational Spillover Queue</strong>
+                        Strategic passengers postpone purchase when expected waiting utility $U_W$ exceeds immediate purchase utilities.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Simulation Engine Core -->
+    <script>
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-indigo-600', 'text-white');
+                el.classList.add('text-slate-300');
+            });
+            document.getElementById(tabId).classList.add('active');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('bg-indigo-600', 'text-white');
+            activeBtn.classList.remove('text-slate-300');
+        }
+
+        // --- SIMULATION STATE & MODEL PARAMETERS ---
+        let simInterval = null;
+        let isRunning = false;
+        
+        // Model Constants
+        const HORIZON = 40.0;
+        const CAPACITY = 20;
+
+        // Current Parameters
+        let params = {
+            alpha: 1.2,
+            lambda: 1.5,
+            Ps: 273,
+            cost: 200,
+            gamma: 0.5
+        };
+
+        // State variables
+        let state = {
+            currentTime: 0,
+            dynamicBookings: 0,
+            staticBookings: 0,
+            dynamicRevenue: 0,
+            staticRevenue: 0,
+            totalArrivals: 0,
+            queue: [], // spillover queue
+            history: {
+                time: [],
+                dynamicPrice: [],
+                staticPrice: [],
+                dynamicBookings: [],
+                staticBookings: []
+            }
+        };
+
+        // UI Slider Sync
+        function updateSliders() {
+            params.alpha = parseFloat(document.getElementById('paramAlpha').value);
+            params.lambda = parseFloat(document.getElementById('paramLambda').value);
+            params.Ps = parseFloat(document.getElementById('paramStaticPrice').value);
+            params.cost = parseFloat(document.getElementById('paramCost').value);
+            params.gamma = parseFloat(document.getElementById('paramGamma').value);
+
+            document.getElementById('alphaVal').innerText = params.alpha.toFixed(2);
+            document.getElementById('lambdaVal').innerText = params.lambda.toFixed(2);
+            document.getElementById('staticPriceVal').innerText = '$' + params.Ps;
+            document.getElementById('costVal').innerText = '$' + params.cost;
+            document.getElementById('gammaVal').innerText = params.gamma.toFixed(2);
+        }
+
+        // Charts Initialization
+        let priceChart, bookingChart;
+        function initCharts() {
+            const ctx1 = document.getElementById('priceChart').getContext('2d');
+            priceChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Dynamic Price ($)', data: [], borderColor: '#10b981', tension: 0.1, fill: false },
+                        { label: 'Static Price ($)', data: [], borderColor: '#3b82f6', borderDash: [5, 5], fill: false }
+                    ]
+                },
+                options: { responsive: true, scales: { x: { display: false }, y: { min: 100, max: 600 } } }
+            });
+
+            const ctx2 = document.getElementById('bookingChart').getContext('2d');
+            bookingChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Dynamic Seats', data: [], borderColor: '#10b981', tension: 0.1 },
+                        { label: 'Static Seats', data: [], borderColor: '#3b82f6', tension: 0.1 }
+                    ]
+                },
+                options: { responsive: true, scales: { x: { display: false }, y: { min: 0, max: 20 } } }
+            });
+        }
+
+        // Mathematical Helper Functions
+        function getDynamicPrice(time, bookings, alpha, Ps) {
+            const E = CAPACITY * (time / HORIZON);
+            const R = bookings / Math.max(1, E);
+            const rawPrice = Ps * Math.pow(Math.max(0.1, R), alpha);
+            return Math.min(600, Math.max(120, rawPrice));
+        }
+
+        function createPassenger() {
+            const isBusiness = Math.random() < 0.35; // 35% business, 65% leisure
+            return {
+                type: isBusiness ? 'business' : 'leisure',
+                valuation: isBusiness ? (350 + Math.random() * 250) : (180 + Math.random() * 170),
+                urgency: isBusiness ? 0.8 : 0.2
+            };
+        }
+
+        // Utility Evaluation Logic (HamidReza & Behrad Section 2.8-2.9)
+        function evaluatePassengerChoice(p, time, dynPrice, statPrice, dynSeats, statSeats) {
+            const Ud = (dynSeats < CAPACITY) ? (p.valuation - dynPrice + 20) : -9999;
+            const Us = (statSeats < CAPACITY) ? (p.valuation - statPrice) : -9999;
+            const Ul = 0; // Outside option
+
+            // Strategic Waiting Utility Calculation
+            const Sr = (CAPACITY - dynSeats) / CAPACITY;
+            const Tr = (HORIZON - time) / HORIZON;
+            const deltaP = Math.max(0, dynPrice - statPrice);
+            const expectedBenefit = params.gamma * Sr * Tr * deltaP * (p.valuation / 300);
+            const costUrgency = p.urgency * 40;
+            const costTime = (time / HORIZON) * 20;
+            const Uw = expectedBenefit - costUrgency - costTime;
+
+            const maxU = Math.max(Ud, Us, Ul, Uw);
+            if (maxU <= 0 && maxU === Ul) return 'LEAVE';
+            if (maxU === Ud) return 'BUY_DYNAMIC';
+            if (maxU === Us) return 'BUY_STATIC';
+            if (maxU === Uw) return 'WAIT';
+            return 'LEAVE';
+        }
+
+        // Single Step Simulation Advance
+        function stepSimulation(dt) {
+            state.currentTime += dt;
+            if (state.currentTime > HORIZON) {
+                state.currentTime = HORIZON;
+                stopSimulation();
+                return;
+            }
+
+            const currentDynPrice = getDynamicPrice(state.currentTime, state.dynamicBookings, params.alpha, params.Ps);
+
+            // 1. Process Spillover Queue Re-evaluations
+            let nextQueue = [];
+            for (let p of state.queue) {
+                let choice = evaluatePassengerChoice(p, state.currentTime, currentDynPrice, params.Ps, state.dynamicBookings, state.staticBookings);
+                if (choice === 'BUY_DYNAMIC' && state.dynamicBookings < CAPACITY) {
+                    state.dynamicBookings++;
+                    state.dynamicRevenue += currentDynPrice;
+                } else if (choice === 'BUY_STATIC' && state.staticBookings < CAPACITY) {
+                    state.staticBookings++;
+                    state.staticRevenue += params.Ps;
+                } else if (choice === 'WAIT') {
+                    nextQueue.push(p);
+                }
+            }
+            state.queue = nextQueue;
+
+            // 2. Process New Poisson Arrivals
+            // Expected arrivals in dt = lambda * dt
+            if (Math.random() < params.lambda * dt) {
+                state.totalArrivals++;
+                let p = createPassenger();
+                let choice = evaluatePassengerChoice(p, state.currentTime, currentDynPrice, params.Ps, state.dynamicBookings, state.staticBookings);
+                
+                if (choice === 'BUY_DYNAMIC' && state.dynamicBookings < CAPACITY) {
+                    state.dynamicBookings++;
+                    state.dynamicRevenue += currentDynPrice;
+                } else if (choice === 'BUY_STATIC' && state.staticBookings < CAPACITY) {
+                    state.staticBookings++;
+                    state.staticRevenue += params.Ps;
+                } else if (choice === 'WAIT') {
+                    state.queue.push(p);
+                }
+            }
+
+            // Update History Logs
+            state.history.time.push(state.currentTime.toFixed(1));
+            state.history.dynamicPrice.push(currentDynPrice);
+            state.history.staticPrice.push(params.Ps);
+            state.history.dynamicBookings.push(state.dynamicBookings);
+            state.history.staticBookings.push(state.staticBookings);
+
+            updateUI(currentDynPrice);
+        }
+
+        // UI Renderer
+        function updateUI(currentDynPrice) {
+            document.getElementById('clock').innerText = `${state.currentTime.toFixed(1)} / ${HORIZON}`;
+            document.getElementById('totalArrivals').innerText = state.totalArrivals;
+            document.getElementById('queueSize').innerText = state.queue.length;
+
+            const dynCostTotal = state.dynamicBookings * params.cost;
+            const statCostTotal = state.staticBookings * params.cost;
+            const dynProfitVal = state.dynamicRevenue - dynCostTotal;
+            const statProfitVal = state.staticRevenue - statCostTotal;
+
+            document.getElementById('dynRevenue').innerText = '$' + Math.round(state.dynamicRevenue);
+            document.getElementById('dynProfit').innerText = 'Profit: $' + Math.round(dynProfitVal);
+            document.getElementById('statRevenue').innerText = '$' + Math.round(state.staticRevenue);
+            document.getElementById('statProfit').innerText = 'Profit: $' + Math.round(statProfitVal);
+
+            document.getElementById('dynSeats').innerText = `${state.dynamicBookings} / ${CAPACITY}`;
+            document.getElementById('statSeats').innerText = `${state.staticBookings} / ${CAPACITY}`;
+
+            const dynMargin = dynCostTotal > 0 ? ((dynProfitVal / dynCostTotal) * 100).toFixed(1) : '0.0';
+            const statMargin = statCostTotal > 0 ? ((statProfitVal / statCostTotal) * 100).toFixed(1) : '0.0';
+
+            document.getElementById('dynPnL').innerText = `Margin: ${dynMargin}%`;
+            document.getElementById('statPnL').innerText = `Margin: ${statMargin}%`;
+
+            // Chart Render Updates
+            priceChart.data.labels = state.history.time;
+            priceChart.data.datasets[0].data = state.history.dynamicPrice;
+            priceChart.data.datasets[1].data = state.history.staticPrice;
+            priceChart.update();
+
+            bookingChart.data.labels = state.history.time;
+            bookingChart.data.datasets[0].data = state.history.dynamicBookings;
+            bookingChart.data.datasets[1].data = state.history.staticBookings;
+            bookingChart.update();
+        }
+
+        // Controller Handlers
+        function toggleSimulation() {
+            if (isRunning) {
+                stopSimulation();
+            } else {
+                startSimulation();
+            }
+        }
+
+        function startSimulation() {
+            if (state.currentTime >= HORIZON) resetSimulation();
+            isRunning = true;
+            document.getElementById('startBtn').innerHTML = '<i class="fa-solid fa-pause mr-2"></i> Pause';
+            document.getElementById('startBtn').classList.replace('bg-emerald-600', 'bg-amber-600');
+            
+            const speed = parseInt(document.getElementById('simSpeed').value);
+            simInterval = setInterval(() => {
+                stepSimulation(0.2);
+            }, 200 / (speed / 5));
+        }
+
+        function stopSimulation() {
+            isRunning = false;
+            clearInterval(simInterval);
+            document.getElementById('startBtn').innerHTML = '<i class="fa-solid fa-play mr-2"></i> Run Episode';
+            document.getElementById('startBtn').classList.replace('bg-amber-600', 'bg-emerald-600');
+        }
+
+        function resetSimulation() {
+            stopSimulation();
+            state = {
+                currentTime: 0,
+                dynamicBookings: 0,
+                staticBookings: 0,
+                dynamicRevenue: 0,
+                staticRevenue: 0,
+                totalArrivals: 0,
+                queue: [],
+                history: { time: [], dynamicPrice: [], staticPrice: [], dynamicBookings: [], staticBookings: [] }
+            };
+            updateUI(params.Ps);
+        }
+
+        // Pure Execution Simulation Engine for Monte Carlo Runs
+        function runSingleEpisode(alphaVal) {
+            let epState = { time: 0, dynB: 0, statB: 0, dynRev: 0, statRev: 0, arrivals: 0, queue: [] };
+            const dt = 0.2;
+            
+            while (epState.time < HORIZON) {
+                epState.time += dt;
+                let curPrice = getDynamicPrice(epState.time, epState.dynB, alphaVal, params.Ps);
+
+                // Queue
+                let nextQ = [];
+                for (let p of epState.queue) {
+                    let choice = evaluatePassengerChoice(p, epState.time, curPrice, params.Ps, epState.dynB, epState.statB);
+                    if (choice === 'BUY_DYNAMIC' && epState.dynB < CAPACITY) { epState.dynB++; epState.dynRev += curPrice; }
+                    else if (choice === 'BUY_STATIC' && epState.statB < CAPACITY) { epState.statB++; epState.statRev += params.Ps; }
+                    else if (choice === 'WAIT') nextQ.push(p);
+                }
+                epState.queue = nextQ;
+
+                // New arrival
+                if (Math.random() < params.lambda * dt) {
+                    epState.arrivals++;
+                    let p = createPassenger();
+                    let choice = evaluatePassengerChoice(p, epState.time, curPrice, params.Ps, epState.dynB, epState.statB);
+                    if (choice === 'BUY_DYNAMIC' && epState.dynB < CAPACITY) { epState.dynB++; epState.dynRev += curPrice; }
+                    else if (choice === 'BUY_STATIC' && epState.statB < CAPACITY) { epState.statB++; epState.statRev += params.Ps; }
+                    else if (choice === 'WAIT') epState.queue.push(p);
+                }
+            }
+            return epState;
+        }
+
+        // Monte Carlo Benchmark Runner
+        function runMonteCarlo() {
+            const N = 100;
+            let dynRevTot = 0, statRevTot = 0, dynProfTot = 0, statProfTot = 0;
+            let dynSeatsTot = 0, statSeatsTot = 0;
+
+            for (let i = 0; i < N; i++) {
+                let res = runSingleEpisode(params.alpha);
+                dynRevTot += res.dynRev;
+                statRevTot += res.statRev;
+                dynSeatsTot += res.dynB;
+                statSeatsTot += res.statB;
+
+                dynProfTot += (res.dynRev - res.dynB * params.cost);
+                statProfTot += (res.statRev - res.statB * params.cost);
+            }
+
+            const tbody = document.getElementById('benchmarkTable');
+            tbody.innerHTML = `
+                <tr class="border-b border-slate-800">
+                    <td class="p-3 text-emerald-400 font-bold">Dynamic Strategy (&alpha;=${params.alpha.toFixed(2)})</td>
+                    <td class="p-3">$${Math.round(dynRevTot/N)}</td>
+                    <td class="p-3">$${Math.round(dynProfTot/N)}</td>
+                    <td class="p-3">${(((dynProfTot/N)/((dynSeatsTot/N)*params.cost))*100).toFixed(1)}%</td>
+                    <td class="p-3">${((dynSeatsTot/N)/CAPACITY*100).toFixed(1)}%</td>
+                    <td class="p-3">--</td>
+                </tr>
+                <tr>
+                    <td class="p-3 text-blue-400 font-bold">Static Strategy (Fixed $${params.Ps})</td>
+                    <td class="p-3">$${Math.round(statRevTot/N)}</td>
+                    <td class="p-3">$${Math.round(statProfTot/N)}</td>
+                    <td class="p-3">${(((statProfTot/N)/((statSeatsTot/N)*params.cost))*100).toFixed(1)}%</td>
+                    <td class="p-3">${((statSeatsTot/N)/CAPACITY*100).toFixed(1)}%</td>
+                    <td class="p-3">--</td>
+                </tr>
+            `;
+        }
+
+        // Local Search Metaheuristic Parameter Tuning (HamidReza & Behrad Section 3)
+        function runOptimizer() {
+            const log = document.getElementById('optLog');
+            log.innerHTML = 'Starting Hill-Climbing Metaheuristic Optimization...<br>';
+            
+            let bestAlpha = 0.5;
+            let maxProfit = -99999;
+            const stepSize = 0.2;
+
+            let candidate = 0.4;
+            let iter = 0;
+
+            let interval = setInterval(() => {
+                if (candidate > 2.8) {
+                    clearInterval(interval);
+                    log.innerHTML += `<br><strong class="text-amber-400">Optimization Complete! Optimal &alpha; = ${bestAlpha.toFixed(2)}</strong>`;
+                    document.getElementById('optBestAlpha').innerText = `\u03B1 = ${bestAlpha.toFixed(2)}`;
+                    document.getElementById('optBestProfit').innerText = `Expected Profit: $${Math.round(maxProfit)}`;
+                    return;
+                }
+
+                // Evaluate candidate via 30 sample simulations
+                let sumProfit = 0;
+                for (let k = 0; k < 30; k++) {
+                    let r = runSingleEpisode(candidate);
+                    sumProfit += (r.dynRev - r.dynB * params.cost);
+                }
+                let avgProfit = sumProfit / 30;
+
+                log.innerHTML += `Iter ${++iter}: Tested &alpha;=${candidate.toFixed(2)} -> Avg Profit: $${Math.round(avgProfit)}<br>`;
+                log.scrollTop = log.scrollHeight;
+
+                if (avgProfit > maxProfit) {
+                    maxProfit = avgProfit;
+                    bestAlpha = candidate;
+                }
+
+                candidate += stepSize;
+            }, 100);
+        }
+
+        // Initialize App on DOM Load
+        window.onload = () => {
+            updateSliders();
+            initCharts();
+            resetSimulation();
+
+            document.getElementById('simSpeed').oninput = function() {
+                document.getElementById('speedVal').innerText = this.value + 'x';
+                if (isRunning) { stopSimulation(); startSimulation(); }
+            };
+        };
+    </script>
+</body>
+</html>
