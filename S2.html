@@ -43,7 +43,7 @@
                         <i class="fa-solid fa-plane-departure text-indigo-400 text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-base sm:text-lg font-bold text-white leading-none">AeroYield Studio</h1>
+                        <h1 class="text-base sm:text-lg font-bold text-white leading-none">Serious Game Studio</h1>
                         <span class="text-[11px] sm:text-xs text-slate-400 block mt-0.5">RM & Pricing Simulator</span>
                     </div>
                 </div>
@@ -220,14 +220,7 @@
                             <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1">Aggressiveness scaling dynamic fare with booking velocity.</p>
                         </div>
 
-                        <!-- Arrival Rate (Lambda) -->
-                        <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-750">
-                            <div class="flex justify-between text-xs font-medium mb-1.5">
-                                <span class="text-slate-300">Poisson Arrival Rate ($\lambda$)</span>
-                                <span id="lambdaVal" class="text-indigo-400 font-mono font-bold">1.50</span>
-                            </div>
-                            <input type="range" id="paramLambda" min="0.5" max="3.0" step="0.1" value="1.5" oninput="updateSliders()" class="w-full accent-indigo-500">
-                        </div>
+
 
                         <!-- Static Price -->
                         <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-750">
@@ -244,7 +237,7 @@
                                 <span class="text-slate-300">Seat Cost ($C_{cost}$)</span>
                                 <span id="costVal" class="text-indigo-400 font-mono font-bold">$200</span>
                             </div>
-                            <input type="range" id="paramCost" min="100" max="250" step="5" value="200" oninput="updateSliders()" class="w-full accent-indigo-500">
+                            <input type="range" id="paramCost" min="100" max="250" step="5" value="200" oninput="updateSliders()" class="w-full accent-indigo-300">
                         </div>
 
                         <!-- Strategic Waiting Weight -->
@@ -254,6 +247,14 @@
                                 <span id="gammaVal" class="text-indigo-400 font-mono font-bold">0.50</span>
                             </div>
                             <input type="range" id="paramGamma" min="0.0" max="1.5" step="0.05" value="0.5" oninput="updateSliders()" class="w-full accent-indigo-500">
+                        </div>
+                                                <!-- Arrival Rate (Lambda) -->
+                        <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-750">
+                            <div class="flex justify-between text-xs font-medium mb-1.5">
+                                <span class="text-slate-300">Poisson Arrival Rate ($\lambda$)</span>
+                                <span id="lambdaVal" class="text-indigo-400 font-mono font-bold">1.50</span>
+                            </div>
+                            <input type="range" id="paramLambda" min="0.5" max="3.0" step="0.1" value="1.5" oninput="updateSliders()" class="w-full accent-indigo-500">
                         </div>
                     </div>
                 </div>
