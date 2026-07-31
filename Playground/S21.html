@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AeroYield - Airline Revenue Management & Pricing Simulator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- MathJax for Mathematical Markup -->
+    <script>
+      MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .chart-container { position: relative; width: 100%; height: 260px; }
+        @media (min-width: 768px) {
+            .chart-container { height: 310px; }
+        }
+        input[type=range]::-webkit-slider-thumb {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Flight Deck Cockpit Slider Styling */
+        input[type=range].slider-purple::-webkit-slider-thumb {
+            background-color: #a855f7;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
+        }
+        input[type=range].slider-red::-webkit-slider-thumb {
+            background-color: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+        }
+        input[type=range].slider-blue::-webkit-slider-thumb {
+            background-color: #3b82f6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+
+        /* Locked Controls Overlay */
+        .controls-locked {
+            pointer-events: none;
+            opacity: 0.55;
+            filter: grayscale(30%);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <!-- Sticky Navigation Bar -->
+    <header class="bg-slate-800/95 backdrop-blur border-b border-slate-700 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-indigo-600/20 p-2 rounded-lg border border-indigo-500/30">
+                        <i class="fa-solid fa-plane-departure text-indigo-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base sm:text-lg font-bold text-white leading-none">Serious Game Studio</h1>
+                        <span class="text-[11px] sm:text-xs text-slate-400 block mt-0.5">RM & Pricing Simulator</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-2">
+                    <button onclick="switchTab('simTab')" id="btn-simTab" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium bg-indigo-600 text-white transition flex items-center">
+                        <i class="fa-solid fa-gamepad mr-2"></i>Simulator
+                    </button>
+                    <button onclick="switchTab('benchmarkTab')" id="btn-benchmarkTab" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 transition flex items-center">
+                        <i class="fa-solid fa-chart-line mr-2"></i>Monte Carlo
+                    </button>
+                    <button onclick="switchTab('optimizerTab')" id="btn-optimizerTab" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 transition flex items-center">
+                        <i class="fa-solid fa-robot mr-2"></i>Optimizer
+                    </button>
+                    <button onclick="switchTab('paperTab')" id="btn-paperTab" class="tab-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 transition flex items-center">
+                        <i class="fa-solid fa-file-invoice mr-2"></i>Whitepaper Specs
+                    </button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex md:hidden">
+                    <button onclick="toggleMobileMenu()" class="p-2.5 rounded-lg text-slate-300 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <i id="menuIcon" class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-slate-700 bg-slate-800 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTabMobile('simTab')" id="mbtn-simTab" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium bg-indigo-600 text-white flex items-center justify-between">
+                <span><i class="fa-solid fa-gamepad mr-3"></i>Interactive Simulator</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+            </button>
+            <button onclick="switchTabMobile('benchmarkTab')" id="mbtn-benchmarkTab" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 flex items-center justify-between">
+                <span><i class="fa-solid fa-chart-line mr-3"></i>Monte Carlo Benchmarks</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+            </button>
+            <button onclick="switchTabMobile('optimizerTab')" id="mbtn-optimizerTab" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 flex items-center justify-between">
+                <span><i class="fa-solid fa-robot mr-3"></i>Metaheuristic Optimizer</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+            </button>
+            <button onclick="switchTabMobile('paperTab')" id="mbtn-paperTab" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 flex items-center justify-between">
+                <span><i class="fa-solid fa-file-invoice mr-3"></i>Whitepaper Specs</span>
+                <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
+
+        <!-- TAB 1: INTERACTIVE SIMULATOR -->
+        <div id="simTab" class="tab-content active space-y-4 sm:space-y-6">
+            
+            <!-- Dynamic Controls & Live Counter Bar -->
+            <div class="bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700 shadow-sm space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
+                
+                <!-- Action Buttons -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <button id="startBtn" onclick="toggleSimulation()" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center shadow-lg transition active:scale-95">
+                        <i class="fa-solid fa-play mr-2"></i> Run Episode
+                    </button>
+                    <button onclick="resetSimulation()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-3.5 py-2.5 rounded-lg text-sm font-medium transition active:scale-95">
+                        <i class="fa-solid fa-rotate-right mr-1.5"></i> Reset
+                    </button>
+                    <!-- JSON Export Button (Appears when completed) -->
+                    <button id="exportJsonBtn" onclick="exportExperimentData()" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2.5 rounded-lg text-sm font-medium transition shadow flex items-center active:scale-95 animate-pulse">
+                        <i class="fa-solid fa-download mr-1.5"></i> Save JSON
+                    </button>
+                </div>
+
+                <!-- Simulation Speed -->
+                <div class="flex items-center justify-between sm:justify-start space-x-3 bg-slate-900 px-3 py-2 rounded-lg border border-slate-700">
+                    <span class="text-xs text-slate-400 font-medium">Speed:</span>
+                    <input type="range" id="simSpeed" min="1" max="50" value="10" class="w-28 sm:w-24 accent-indigo-500">
+                    <span id="speedVal" class="text-xs font-mono text-indigo-400 font-bold min-w-[30px] text-right">10x</span>
+                </div>
+
+                <!-- Real-Time Mobile Score Bar -->
+                <div class="grid grid-cols-3 gap-2 sm:flex sm:items-center sm:space-x-6 text-xs sm:text-sm bg-slate-950/60 sm:bg-transparent p-2.5 sm:p-0 rounded-lg border border-slate-800 sm:border-0">
+                    <div class="text-center sm:text-left">
+                        <span class="text-slate-400 block sm:inline text-[10px] sm:text-xs">Time:</span> 
+                        <span id="clock" class="font-mono text-indigo-400 font-bold">0.0/40.0</span>
+                    </div>
+                    <div class="text-center sm:text-left border-x border-slate-800 sm:border-0">
+                        <span class="text-slate-400 block sm:inline text-[10px] sm:text-xs">Arrivals:</span> 
+                        <span id="totalArrivals" class="font-mono text-slate-200 font-bold">0</span>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <span class="text-slate-400 block sm:inline text-[10px] sm:text-xs">Queue:</span> 
+                        <span id="queueSize" class="font-mono text-amber-400 font-bold">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CUMULATIVE PROFIT SPECTRUM GAUGE SECTION -->
+            <div class="bg-slate-800 p-4 sm:p-5 rounded-xl border border-slate-700 space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h3 class="text-sm font-bold text-white flex items-center">
+                            <i class="fa-solid fa-gauge-high text-emerald-400 mr-2"></i> Cumulative Profit & Performance Spectrum
+                        </h3>
+                    </div>
+                    <div class="flex space-x-4 text-xs font-mono">
+                        <div style="font-size: x-large;">Total: <span id="CumProfitText" class="font-bold text-emerald-400">$0</span></div>
+                    </div>
+                </div>
+
+                <!-- Spectrum Progress Trackers -->
+                <div class="space-y-2 pt-1">
+                    <!-- Dynamic Gauge Bar -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <span>Dynamic Strategy</span>
+                            <span id="dynRating" class="text-emerald-400 font-bold">Pending Execution</span>
+                        </div>
+                        <div class="relative w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-700">
+                            <div class="absolute inset-0 bg-gradient-to-r from-red-600 via-amber-500 via-emerald-500 to-indigo-500 opacity-40"></div>
+                            <div id="dynProfitBar" class="absolute top-0 bottom-0 left-0 bg-emerald-400 transition-all duration-300 rounded-full" style="width: 16.66%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Static Gauge Bar -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                            <span>Static Strategy</span>
+                            <span id="statRating" class="text-blue-400 font-bold">Pending Execution</span>
+                        </div>
+                        <div class="relative w-full h-3 bg-slate-900 rounded-full overflow-hidden border border-slate-700">
+                            <div class="absolute inset-0 bg-gradient-to-r from-red-600 via-amber-500 via-emerald-500 to-indigo-500 opacity-40"></div>
+                            <div id="statProfitBar" class="absolute top-0 bottom-0 left-0 bg-blue-400 transition-all duration-300 rounded-full" style="width: 16.66%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Interactive Layout Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                
+                <!-- Left Column: Strategy Controls (Flight Deck Style Panel) -->
+                <div id="strategyDeckPanel" class="bg-slate-800/90 p-4 sm:p-5 rounded-xl border border-slate-700 shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                        <h2 id="strategyTitle" class="text-sm sm:text-base font-bold text-white flex items-center uppercase tracking-wider">
+                            <i class="fa-solid fa-sliders text-indigo-400 mr-2"></i> Strategy Controls
+                        </h2>
+                        <button onclick="toggleAccordion('paramBody')" class="lg:hidden text-xs text-indigo-400 font-medium hover:underline">
+                            Toggle Panel
+                        </button>
+                    </div>
+
+                    <div id="paramBody" class="space-y-4">
+                        
+                        <!-- Flight Deck: Dynamic Pricing Multiplier -->
+                        <div class="bg-slate-900/70 p-3 rounded-lg border border-slate-700 relative shadow-inner">
+                            <div class="flex justify-between text-xs font-medium mb-1.5">
+                                <span class="text-slate-300 flex items-center">
+                                    <i class="fa-solid fa-gears text-indigo-400 mr-1.5"></i> Pricing Multiplier ($\alpha$)
+                                </span>
+                                <span id="alphaVal" class="text-indigo-400 font-mono font-bold">1.20</span>
+                            </div>
+                            <input type="range" id="paramAlpha" min="0.1" max="3.0" step="0.05" value="1.2" oninput="updateSliders('alpha')" class="w-full accent-indigo-500">
+                            <p class="text-[10px] sm:text-[11px] text-slate-400 mt-1">Aggressiveness scaling dynamic fare with booking velocity.</p>
+                        </div>
+
+                        <!-- Cockpit Section 1: Market Conditions (Purple) -->
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-purple-500/30 space-y-3 shadow-inner">
+                            <div class="flex items-center justify-between border-b border-purple-500/20 pb-1.5">
+                                <span class="text-xs font-bold text-purple-400 uppercase tracking-wide flex items-center">
+                                    <i class="fa-solid fa-cloud-sun text-purple-400 mr-1.5"></i> Market Conditions
+                                </span>
+                                <span class="text-[10px] text-purple-300/60 font-mono">STATUS: OK</span>
+                            </div>
+                            
+                            <!-- Side-by-Side Sliders: Lambda & Gamma -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- Poisson Arrival Rate (Purple) -->
+                                <div>
+                                    <div class="flex justify-between text-[11px] font-medium mb-1">
+                                        <span class="text-slate-300">Arrival ($\lambda$)</span>
+                                        <span id="lambdaVal" class="text-purple-400 font-mono font-bold">1.50</span>
+                                    </div>
+                                    <input type="range" id="paramLambda" min="0.5" max="3.0" step="0.1" value="1.5" oninput="updateSliders('lambda')" class="w-full slider-purple accent-purple-500">
+                                </div>
+
+                                <!-- Waiting Utility Weight (Purple) -->
+                                <div>
+                                    <div class="flex justify-between text-[11px] font-medium mb-1">
+                                        <span class="text-slate-300">Wait ($\gamma$)</span>
+                                        <span id="gammaVal" class="text-purple-400 font-mono font-bold">0.50</span>
+                                    </div>
+                                    <input type="range" id="paramGamma" min="0.0" max="1.5" step="0.05" value="0.5" oninput="updateSliders('gamma')" class="w-full slider-purple accent-purple-500">
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-slate-400">Arrival rate correlates (+0.25) with Seat Cost in real-time.</p>
+                        </div>
+
+                        <!-- Cockpit Section 2: Cost Model (Red) -->
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-red-500/30 space-y-2 shadow-inner">
+                            <div class="flex items-center justify-between border-b border-red-500/20 pb-1.5">
+                                <span class="text-xs font-bold text-red-400 uppercase tracking-wide flex items-center">
+                                    <i class="fa-solid fa-coins text-red-400 mr-1.5"></i> Cost Model
+                                </span>
+                                <span class="text-[10px] text-red-300/60 font-mono">STATUS: OPERATIONAL</span>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-medium mb-1.5">
+                                    <span class="text-slate-300">Seat Cost ($C_{cost}$)</span>
+                                    <span id="costVal" class="text-red-400 font-mono font-bold">$200</span>
+                                </div>
+                                <input type="range" id="paramCost" min="100" max="250" step="5" value="200" oninput="updateSliders('cost')" class="w-full slider-red accent-red-500">
+                            </div>
+                        </div>
+
+                        <!-- Cockpit Section 3: Pricing Strategy (Blue) -->
+                        <div class="bg-slate-950/60 p-3 rounded-lg border border-blue-500/30 space-y-2 shadow-inner">
+                            <div class="flex items-center justify-between border-b border-blue-500/20 pb-1.5">
+                                <span class="text-xs font-bold text-blue-400 uppercase tracking-wide flex items-center">
+                                    <i class="fa-solid fa-chart-line text-blue-400 mr-1.5"></i> Pricing Strategy
+                                </span>
+                                <span class="text-[10px] text-blue-300/60 font-mono">BENCHMARK: STATIC</span>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-medium mb-1.5">
+                                    <span class="text-slate-300">Static Competitor Fare ($P_s$)</span>
+                                    <span id="staticPriceVal" class="text-blue-400 font-mono font-bold">$273</span>
+                                </div>
+                                <input type="range" id="paramStaticPrice" min="150" max="400" step="5" value="273" oninput="updateSliders('staticPrice')" class="w-full slider-blue accent-blue-500">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Middle & Right Columns: Dynamic KPIs & Live Charts -->
+                <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+                    
+                    <!-- Performance Metrics Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+                        <div class="bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700">
+                            <div class="text-[11px] sm:text-xs text-slate-400">Dynamic Revenue</div>
+                            <div id="dynRevenue" class="text-lg sm:text-xl font-bold text-emerald-400 font-mono mt-0.5">$0</div>
+                            <div id="dynProfit" class="text-[10px] sm:text-xs text-slate-400 font-mono mt-0.5">Profit: $0</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700">
+                            <div class="text-[11px] sm:text-xs text-slate-400">Static Revenue</div>
+                            <div id="statRevenue" class="text-lg sm:text-xl font-bold text-blue-400 font-mono mt-0.5">$0</div>
+                            <div id="statProfit" class="text-[10px] sm:text-xs text-slate-400 font-mono mt-0.5">Profit: $0</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700">
+                            <div class="text-[11px] sm:text-xs text-slate-400">Dynamic Seats</div>
+                            <div id="dynSeats" class="text-lg sm:text-xl font-bold text-slate-100 font-mono mt-0.5">0 / 20</div>
+                            <div id="dynPnL" class="text-[10px] sm:text-xs text-emerald-400 font-mono mt-0.5">Margin: 0%</div>
+                        </div>
+                        <div class="bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700">
+                            <div class="text-[11px] sm:text-xs text-slate-400">Static Seats</div>
+                            <div id="statSeats" class="text-lg sm:text-xl font-bold text-slate-100 font-mono mt-0.5">0 / 20</div>
+                            <div id="statPnL" class="text-[10px] sm:text-xs text-blue-400 font-mono mt-0.5">Margin: 0%</div>
+                        </div>
+                    </div>
+
+                    <!-- Live Charts -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div class="bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700">
+                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Price Trajectory ($P_d$ vs $P_s$)</h3>
+                            <div class="chart-container">
+                                <canvas id="priceChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 p-3.5 sm:p-4 rounded-xl border border-slate-700">
+                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Cumulative Booking Pace</h3>
+                            <div class="chart-container">
+                                <canvas id="bookingChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: MONTE CARLO BENCHMARKS -->
+        <div id="benchmarkTab" class="tab-content space-y-4 sm:space-y-6">
+            <div class="bg-slate-800 p-4 sm:p-6 rounded-xl border border-slate-700 space-y-4">
+                <div class="sm:flex sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-white">Monte Carlo Strategic Benchmarking</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">Simulate 100 booking horizons to compute stochastic outcome distributions.</p>
+                    </div>
+                    <button onclick="runMonteCarlo()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition flex items-center justify-center">
+                        <i class="fa-solid fa-bolt mr-2"></i> Run 100 Simulations
+                    </button>
+                </div>
+
+                <!-- Benchmark Metrics Table -->
+                <div class="overflow-x-auto -mx-4 sm:mx-0">
+                    <div class="inline-block min-w-full align-middle">
+                        <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                            <thead class="bg-slate-900 text-slate-400 uppercase text-[10px] sm:text-xs">
+                                <tr>
+                                    <th class="p-3">Strategy</th>
+                                    <th class="p-3">Avg Revenue</th>
+                                    <th class="p-3">Avg Profit</th>
+                                    <th class="p-3">Avg PnL %</th>
+                                    <th class="p-3">Load Factor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="benchmarkTable" class="divide-y divide-slate-700 font-mono">
+                                <tr><td colspan="5" class="p-4 text-center text-slate-500">No benchmark runs executed yet. Click "Run 100 Simulations".</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: METAHEURISTIC OPTIMIZER -->
+        <div id="optimizerTab" class="tab-content space-y-4 sm:space-y-6">
+            <div class="bg-slate-800 p-4 sm:p-6 rounded-xl border border-slate-700 space-y-4">
+                <div class="sm:flex sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+                    <div>
+                        <h2 class="text-base sm:text-lg font-bold text-white">Metaheuristic Parameter Optimizer</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">Local search optimization tuning dynamic power ($\alpha$) for maximal profit.</p>
+                    </div>
+                    <button id="optBtn" onclick="runOptimizer()" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-500 text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition flex items-center justify-center">
+                        <i class="fa-solid fa-brain mr-2"></i> Optimize Dynamic Policy
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-2">
+                    <div class="bg-slate-900 p-3.5 sm:p-4 rounded-lg border border-slate-700 space-y-2">
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-200">Optimization Progress</h4>
+                        <div id="optLog" class="h-44 sm:h-48 overflow-y-auto text-xs font-mono text-slate-400 space-y-1 p-2 bg-slate-950 rounded border border-slate-800">
+                            Ready to run optimization...
+                        </div>
+                    </div>
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 flex flex-col justify-center items-center text-center py-6">
+                        <span class="text-xs text-slate-400 uppercase">Optimal Parameter Found</span>
+                        <div id="optBestAlpha" class="text-3xl sm:text-4xl font-bold font-mono text-amber-400 my-2">$\alpha$ = --</div>
+                        <span id="optBestProfit" class="text-xs sm:text-sm text-emerald-400 font-mono">Expected Profit: $--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: WHITEPAPER SPECS WITH ENHANCED LATEX FORMULAS -->
+        <div id="paperTab" class="tab-content space-y-4 sm:space-y-6">
+            <div class="bg-slate-800 p-4 sm:p-6 rounded-xl border border-slate-700 text-slate-300 space-y-4 text-xs sm:text-sm leading-relaxed">
+                <h2 class="text-lg sm:text-xl font-bold text-white border-b border-slate-700 pb-2">Whitepaper Analytical Framework</h2>
+                <p>This simulator faithfully operationalizes the analytical models introduced by HamidReza & Behrad (2026)[cite: 1].</p>
+                
+                <div class="space-y-4 pt-2">
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-2">
+                        <h3 class="text-sm font-bold text-indigo-400">1. Stochastic Passenger Arrivals</h3>
+                        <p class="text-slate-300">Arrivals follow a homogeneous Poisson process $N(t) \sim \text{Poisson}(\lambda t)$ with inter-arrival distribution[cite: 1]:</p>
+                        <div class="text-center font-mono py-2 text-slate-100">
+                            $$f(\Delta t) = \lambda e^{-\lambda \Delta t}$$
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-2">
+                        <h3 class="text-sm font-bold text-indigo-400">2. Adaptive Dynamic Pricing Engine</h3>
+                        <p class="text-slate-300">Let $B(t)$ represent cumulative bookings and $E(t) = C \cdot \frac{t}{T}$ be expected linear booking trajectory[cite: 1]. Dynamic price $P_d(t)$ scales dynamically with booking pace $R(t)$[cite: 1]:</p>
+                        <div class="text-center font-mono py-2 text-slate-100">
+                            $$R(t) = \frac{B(t)}{\max\{1, E(t)\}}, \quad P_d(t) = \text{Clamp}\left(P_s \cdot [R(t)]^\alpha, P_{\min}, P_{\max}\right)$$
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 space-y-2">
+                        <h3 class="text-sm font-bold text-indigo-400">3. Utility-Based Strategic Waiting Mechanism</h3>
+                        <p class="text-slate-300">Each arriving passenger $i$ evaluates action utilities $U_D, U_S, U_L, U_W$[cite: 1]. The utility of rational postponement (waiting) $U_W$ is modeled as[cite: 1]:</p>
+                        <div class="text-center font-mono py-2 text-slate-100">
+                            $$U_W = \gamma \cdot S_r \cdot T_r \cdot \Delta P \cdot \left(\frac{V_i}{300}\right) - C_u - C_t$$
+                        </div>
+                        <p class="text-slate-400 text-[11px]">Where $S_r = \frac{C - B(t)}{C}$ is remaining seat ratio, $T_r = \frac{T - t}{T}$ is remaining horizon ratio, and $\Delta P = \max(0, P_d - P_s)$ is current dynamic price premium[cite: 1].</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Simulation Engine Core -->
+    <script>
+        // UX Navigation Handlers
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            const isHidden = menu.classList.contains('hidden');
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.classList.replace('fa-bars', 'fa-xmark');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.replace('fa-xmark', 'fa-bars');
+            }
+        }
+
+        function switchTabMobile(tabId) {
+            switchTab(tabId);
+            toggleMobileMenu();
+        }
+
+        function toggleAccordion(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-indigo-600', 'text-white');
+                el.classList.add('text-slate-300');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-indigo-600', 'text-white');
+                activeBtn.classList.remove('text-slate-300');
+            }
+        }
+
+        // State Constants & Model Parameters
+        let simInterval = null;
+        let isRunning = false;
+        let lastCompletedExperiment = null;
+        
+        const HORIZON = 40.0;
+        const CAPACITY = 20;
+
+        let params = { alpha: 1.2, lambda: 1.5, Ps: 273, cost: 200, gamma: 0.5 };
+
+        let state = {
+            currentTime: 0,
+            dynamicBookings: 0,
+            staticBookings: 0,
+            dynamicRevenue: 0,
+            staticRevenue: 0,
+            totalArrivals: 0,
+            queue: [],
+            history: { time: [], dynamicPrice: [], staticPrice: [], dynamicBookings: [], staticBookings: [], dynamicProfit: [], staticProfit: [] }
+        };
+
+        // Real-Time Correlation Drag Logic (+0.25 between Cost and Lambda)
+        function updateSliders(source) {
+            const lambdaElem = document.getElementById('paramLambda');
+            const costElem = document.getElementById('paramCost');
+
+            if (source === 'lambda') {
+                const currentLambda = parseFloat(lambdaElem.value);
+                const prevLambda = params.lambda;
+                const deltaLambda = (currentLambda - prevLambda) / (3.0 - 0.5); // normalized delta [0, 1]
+                
+                const costRange = 250 - 100;
+                let newCost = params.cost + (deltaLambda * costRange * 0.25);
+                newCost = Math.min(250, Math.max(100, Math.round(newCost / 5) * 5));
+                costElem.value = newCost;
+            } else if (source === 'cost') {
+                const currentCost = parseFloat(costElem.value);
+                const prevCost = params.cost;
+                const deltaCost = (currentCost - prevCost) / (250 - 100); // normalized delta [0, 1]
+                
+                const lambdaRange = 3.0 - 0.5;
+                let newLambda = params.lambda + (deltaCost * lambdaRange * 0.25);
+                newLambda = Math.min(3.0, Math.max(0.5, Math.round(newLambda * 10) / 10));
+                lambdaElem.value = newLambda;
+            }
+
+            // Sync JS params object with controls
+            params.alpha = parseFloat(document.getElementById('paramAlpha').value);
+            params.lambda = parseFloat(document.getElementById('paramLambda').value);
+            params.Ps = parseFloat(document.getElementById('paramStaticPrice').value);
+            params.cost = parseFloat(document.getElementById('paramCost').value);
+            params.gamma = parseFloat(document.getElementById('paramGamma').value);
+
+            // Dynamic text updates
+            document.getElementById('alphaVal').innerText = params.alpha.toFixed(2);
+            document.getElementById('lambdaVal').innerText = params.lambda.toFixed(2);
+            document.getElementById('staticPriceVal').innerText = '$' + params.Ps;
+            document.getElementById('costVal').innerText = '$' + params.cost;
+            document.getElementById('gammaVal').innerText = params.gamma.toFixed(2);
+        }
+
+        // Lock/Unlock Strategy Controls Cockpit
+        function setControlsLockState(locked) {
+            const panel = document.getElementById('strategyDeckPanel');
+            const title = document.getElementById('strategyTitle');
+            const inputs = panel.querySelectorAll('input[type=range]');
+
+            if (locked) {
+                panel.classList.add('controls-locked');
+                title.innerHTML = '<i class="fa-solid fa-lock text-amber-400 mr-2"></i> 🔒 Strategy Controls (Flight Active)';
+                inputs.forEach(input => input.disabled = true);
+            } else {
+                panel.classList.remove('controls-locked');
+                title.innerHTML = '<i class="fa-solid fa-sliders text-indigo-400 mr-2"></i> Strategy Controls';
+                inputs.forEach(input => input.disabled = false);
+            }
+        }
+
+        let priceChart, bookingChart;
+        function initCharts() {
+            const ctx1 = document.getElementById('priceChart').getContext('2d');
+            priceChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Dynamic Price ($)', data: [], borderColor: '#10b981', borderWidth: 2, tension: 0.1, fill: false, pointRadius: 0 },
+                        { label: 'Static Price ($)', data: [], borderColor: '#3b82f6', borderWidth: 2, borderDash: [5, 5], fill: false, pointRadius: 0 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { min: 100, max: 600 } } }
+            });
+
+            const ctx2 = document.getElementById('bookingChart').getContext('2d');
+            bookingChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Dynamic Seats', data: [], borderColor: '#10b981', borderWidth: 2, tension: 0.1, pointRadius: 0 },
+                        { label: 'Static Seats', data: [], borderColor: '#3b82f6', borderWidth: 2, tension: 0.1, pointRadius: 0 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { min: 0, max: 20 } } }
+            });
+        }
+
+        function getDynamicPrice(time, bookings, alpha, Ps) {
+            const E = CAPACITY * (time / HORIZON);
+            const R = bookings / Math.max(1, E);
+            const rawPrice = Ps * Math.pow(Math.max(0.1, R), alpha);
+            return Math.min(600, Math.max(120, rawPrice));
+        }
+
+        function createPassenger() {
+            const isBusiness = Math.random() < 0.35;
+            return {
+                type: isBusiness ? 'business' : 'leisure',
+                valuation: isBusiness ? (350 + Math.random() * 250) : (180 + Math.random() * 170),
+                urgency: isBusiness ? 0.8 : 0.2
+            };
+        }
+
+        function evaluatePassengerChoice(p, time, dynPrice, statPrice, dynSeats, statSeats) {
+            const Ud = (dynSeats < CAPACITY) ? (p.valuation - dynPrice + 20) : -9999;
+            const Us = (statSeats < CAPACITY) ? (p.valuation - statPrice) : -9999;
+            const Ul = 0;
+
+            const Sr = (CAPACITY - dynSeats) / CAPACITY;
+            const Tr = (HORIZON - time) / HORIZON;
+            const deltaP = Math.max(0, dynPrice - statPrice);
+            const expectedBenefit = params.gamma * Sr * Tr * deltaP * (p.valuation / 300);
+            const costUrgency = p.urgency * 40;
+            const costTime = (time / HORIZON) * 20;
+            const Uw = expectedBenefit - costUrgency - costTime;
+
+            const maxU = Math.max(Ud, Us, Ul, Uw);
+            if (maxU <= 0 && maxU === Ul) return 'LEAVE';
+            if (maxU === Ud) return 'BUY_DYNAMIC';
+            if (maxU === Us) return 'BUY_STATIC';
+            if (maxU === Uw) return 'WAIT';
+            return 'LEAVE';
+        }
+
+        function stepSimulation(dt) {
+            state.currentTime += dt;
+            if (state.currentTime > HORIZON) {
+                state.currentTime = HORIZON;
+                stopSimulation();
+                onSimulationEnd();
+                return;
+            }
+
+            const currentDynPrice = getDynamicPrice(state.currentTime, state.dynamicBookings, params.alpha, params.Ps);
+
+            let nextQueue = [];
+            for (let p of state.queue) {
+                let choice = evaluatePassengerChoice(p, state.currentTime, currentDynPrice, params.Ps, state.dynamicBookings, state.staticBookings);
+                if (choice === 'BUY_DYNAMIC' && state.dynamicBookings < CAPACITY) {
+                    state.dynamicBookings++;
+                    state.dynamicRevenue += currentDynPrice;
+                } else if (choice === 'BUY_STATIC' && state.staticBookings < CAPACITY) {
+                    state.staticBookings++;
+                    state.staticRevenue += params.Ps;
+                } else if (choice === 'WAIT') {
+                    nextQueue.push(p);
+                }
+            }
+            state.queue = nextQueue;
+
+            if (Math.random() < params.lambda * dt) {
+                state.totalArrivals++;
+                let p = createPassenger();
+                let choice = evaluatePassengerChoice(p, state.currentTime, currentDynPrice, params.Ps, state.dynamicBookings, state.staticBookings);
+                
+                if (choice === 'BUY_DYNAMIC' && state.dynamicBookings < CAPACITY) {
+                    state.dynamicBookings++;
+                    state.dynamicRevenue += currentDynPrice;
+                } else if (choice === 'BUY_STATIC' && state.staticBookings < CAPACITY) {
+                    state.staticBookings++;
+                    state.staticRevenue += params.Ps;
+                } else if (choice === 'WAIT') {
+                    state.queue.push(p);
+                }
+            }
+
+            const dynProf = state.dynamicRevenue - (state.dynamicBookings * params.cost);
+            const statProf = state.staticRevenue - (state.staticBookings * params.cost);
+
+            state.history.time.push(state.currentTime.toFixed(1));
+            state.history.dynamicPrice.push(currentDynPrice);
+            state.history.staticPrice.push(params.Ps);
+            state.history.dynamicBookings.push(state.dynamicBookings);
+            state.history.staticBookings.push(state.staticBookings);
+            state.history.dynamicProfit.push(dynProf);
+            state.history.staticProfit.push(statProf);
+
+            updateUI(currentDynPrice, dynProf, statProf);
+        }
+
+        function calcSpectrumPercentage(profit) {
+            const MIN = -2500;
+            const MAX = 12500;
+            const clamped = Math.max(MIN, Math.min(MAX, profit));
+            return ((clamped - MIN) / (MAX - MIN)) * 100;
+        }
+
+        function getProfitRatingLabel(profit) {
+            if (profit < 0) return "Distressed Loss";
+            if (profit < 2000) return "Sub-Optimal Yield";
+            if (profit < 4500) return "Acceptable Performance";
+            if (profit < 7500) return "Strong Strategy";
+            return "Optimal Maximum";
+        }
+
+        function updateUI(currentDynPrice, dynProf, statProf) {
+            document.getElementById('clock').innerText = `${state.currentTime.toFixed(1)}/${HORIZON}`;
+            document.getElementById('totalArrivals').innerText = state.totalArrivals;
+            document.getElementById('queueSize').innerText = state.queue.length;
+
+            const dynCostTotal = state.dynamicBookings * params.cost;
+            const statCostTotal = state.staticBookings * params.cost;
+            const dynProfitVal = dynProf !== undefined ? dynProf : state.dynamicRevenue - dynCostTotal;
+            const statProfitVal = statProf !== undefined ? statProf : state.staticRevenue - statCostTotal;
+
+            document.getElementById('dynRevenue').innerText = '$' + Math.round(state.dynamicRevenue);
+            document.getElementById('dynProfit').innerText = 'Profit: $' + Math.round(dynProfitVal);
+            document.getElementById('statRevenue').innerText = '$' + Math.round(state.staticRevenue);
+            document.getElementById('statProfit').innerText = 'Profit: $' + Math.round(statProfitVal);
+
+            document.getElementById('dynSeats').innerText = `${state.dynamicBookings} / ${CAPACITY}`;
+            document.getElementById('statSeats').innerText = `${state.staticBookings} / ${CAPACITY}`;
+
+            const dynMargin = dynCostTotal > 0 ? ((dynProfitVal / dynCostTotal) * 100).toFixed(1) : '0.0';
+            const statMargin = statCostTotal > 0 ? ((statProfitVal / statCostTotal) * 100).toFixed(1) : '0.0';
+
+            document.getElementById('dynPnL').innerText = `Margin: ${dynMargin}%`;
+            document.getElementById('statPnL').innerText = `Margin: ${statMargin}%`;
+
+            document.getElementById('CumProfitText').innerText = '$' + Math.round(dynProfitVal+statProfitVal);
+            
+            document.getElementById('dynProfitBar').style.width = calcSpectrumPercentage(dynProfitVal) + '%';
+            document.getElementById('statProfitBar').style.width = calcSpectrumPercentage(statProfitVal) + '%';
+
+            document.getElementById('dynRating').innerText = getProfitRatingLabel(dynProfitVal);
+            document.getElementById('statRating').innerText = getProfitRatingLabel(statProfitVal);
+
+            priceChart.data.labels = state.history.time;
+            priceChart.data.datasets[0].data = state.history.dynamicPrice;
+            priceChart.data.datasets[1].data = state.history.staticPrice;
+            priceChart.update();
+
+            bookingChart.data.labels = state.history.time;
+            bookingChart.data.datasets[0].data = state.history.dynamicBookings;
+            bookingChart.data.datasets[1].data = state.history.staticBookings;
+            bookingChart.update();
+        }
+
+        function toggleSimulation() {
+            if (isRunning) {
+                stopSimulation();
+            } else {
+                startSimulation();
+            }
+        }
+
+        function startSimulation() {
+            if (state.currentTime >= HORIZON) resetSimulation();
+            isRunning = true;
+            setControlsLockState(true);
+            
+            document.getElementById('startBtn').innerHTML = '<i class="fa-solid fa-pause mr-2"></i> Pause';
+            document.getElementById('startBtn').classList.replace('bg-emerald-600', 'bg-amber-600');
+            document.getElementById('exportJsonBtn').classList.add('hidden');
+            
+            const speed = parseInt(document.getElementById('simSpeed').value);
+            simInterval = setInterval(() => {
+                stepSimulation(0.2);
+            }, 200 / (speed / 5));
+        }
+
+        function stopSimulation() {
+            isRunning = false;
+            clearInterval(simInterval);
+            document.getElementById('startBtn').innerHTML = '<i class="fa-solid fa-play mr-2"></i> Run Episode';
+            document.getElementById('startBtn').classList.replace('bg-amber-600', 'bg-emerald-600');
+        }
+
+        function onSimulationEnd() {
+            setControlsLockState(false);
+            lastCompletedExperiment = {
+                timestamp: new Date().toISOString(),
+                parameters: { ...params },
+                summary: {
+                    totalArrivals: state.totalArrivals,
+                    dynamic: {
+                        revenue: state.dynamicRevenue,
+                        bookings: state.dynamicBookings,
+                        profit: state.dynamicRevenue - (state.dynamicBookings * params.cost)
+                    },
+                    static: {
+                        revenue: state.staticRevenue,
+                        bookings: state.staticBookings,
+                        profit: state.staticRevenue - (state.staticBookings * params.cost)
+                    }
+                },
+                timeSeriesHistory: state.history
+            };
+            document.getElementById('exportJsonBtn').classList.remove('hidden');
+        }
+
+        function exportExperimentData() {
+            if (!lastCompletedExperiment) return;
+            const blob = new Blob([JSON.stringify(lastCompletedExperiment, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AeroYield_Experiment_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function resetSimulation() {
+            if (state.currentTime > 0 && !isRunning) {
+                onSimulationEnd();
+            }
+            stopSimulation();
+            setControlsLockState(false);
+            state = {
+                currentTime: 0,
+                dynamicBookings: 0,
+                staticBookings: 0,
+                dynamicRevenue: 0,
+                staticRevenue: 0,
+                totalArrivals: 0,
+                queue: [],
+                history: { time: [], dynamicPrice: [], staticPrice: [], dynamicBookings: [], staticBookings: [], dynamicProfit: [], staticProfit: [] }
+            };
+            updateUI(params.Ps, 0, 0);
+        }
+
+        function runSingleEpisode(alphaVal) {
+            let epState = { time: 0, dynB: 0, statB: 0, dynRev: 0, statRev: 0, arrivals: 0, queue: [] };
+            const dt = 0.2;
+            
+            while (epState.time < HORIZON) {
+                epState.time += dt;
+                let curPrice = getDynamicPrice(epState.time, epState.dynB, alphaVal, params.Ps);
+
+                let nextQ = [];
+                for (let p of epState.queue) {
+                    let choice = evaluatePassengerChoice(p, epState.time, curPrice, params.Ps, epState.dynB, epState.statB);
+                    if (choice === 'BUY_DYNAMIC' && epState.dynB < CAPACITY) { epState.dynB++; epState.dynRev += curPrice; }
+                    else if (choice === 'BUY_STATIC' && epState.statB < CAPACITY) { epState.statB++; epState.statRev += params.Ps; }
+                    else if (choice === 'WAIT') nextQ.push(p);
+                }
+                epState.queue = nextQ;
+
+                if (Math.random() < params.lambda * dt) {
+                    epState.arrivals++;
+                    let p = createPassenger();
+                    let choice = evaluatePassengerChoice(p, epState.time, curPrice, params.Ps, epState.dynB, epState.statB);
+                    if (choice === 'BUY_DYNAMIC' && epState.dynB < CAPACITY) { epState.dynB++; epState.dynRev += curPrice; }
+                    else if (choice === 'BUY_STATIC' && epState.statB < CAPACITY) { epState.statB++; epState.statRev += params.Ps; }
+                    else if (choice === 'WAIT') epState.queue.push(p);
+                }
+            }
+            return epState;
+        }
+
+        function runMonteCarlo() {
+            const N = 100;
+            let dynRevTot = 0, statRevTot = 0, dynProfTot = 0, statProfTot = 0;
+            let dynSeatsTot = 0, statSeatsTot = 0;
+
+            for (let i = 0; i < N; i++) {
+                let res = runSingleEpisode(params.alpha);
+                dynRevTot += res.dynRev;
+                statRevTot += res.statRev;
+                dynSeatsTot += res.dynB;
+                statSeatsTot += res.statB;
+
+                dynProfTot += (res.dynRev - res.dynB * params.cost);
+                statProfTot += (res.statRev - res.statB * params.cost);
+            }
+
+            const tbody = document.getElementById('benchmarkTable');
+            tbody.innerHTML = `
+                <tr class="border-b border-slate-800">
+                    <td class="p-3 text-emerald-400 font-bold">Dynamic ($\alpha=${params.alpha.toFixed(2)}$)</td>
+                    <td class="p-3">$${Math.round(dynRevTot/N)}</td>
+                    <td class="p-3">$${Math.round(dynProfTot/N)}</td>
+                    <td class="p-3">${(((dynProfTot/N)/((dynSeatsTot/N)*params.cost))*100).toFixed(1)}%</td>
+                    <td class="p-3">${((dynSeatsTot/N)/CAPACITY*100).toFixed(1)}%</td>
+                </tr>
+                <tr>
+                    <td class="p-3 text-blue-400 font-bold">Static (Fixed $${params.Ps})</td>
+                    <td class="p-3">$${Math.round(statRevTot/N)}</td>
+                    <td class="p-3">$${Math.round(statProfTot/N)}</td>
+                    <td class="p-3">${(((statProfTot/N)/((statSeatsTot/N)*params.cost))*100).toFixed(1)}%</td>
+                    <td class="p-3">${((statSeatsTot/N)/CAPACITY*100).toFixed(1)}%</td>
+                </tr>
+            `;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function runOptimizer() {
+            const log = document.getElementById('optLog');
+            log.innerHTML = 'Starting Metaheuristic Optimizer...<br>';
+            
+            let bestAlpha = 0.5;
+            let maxProfit = -99999;
+            const stepSize = 0.2;
+
+            let candidate = 0.4;
+            let iter = 0;
+
+            let interval = setInterval(() => {
+                if (candidate > 2.8) {
+                    clearInterval(interval);
+                    log.innerHTML += `<br><strong class="text-amber-400">Complete! $\alpha^* = ${bestAlpha.toFixed(2)}$</strong>`;
+                    document.getElementById('optBestAlpha').innerHTML = `$\\alpha = ${bestAlpha.toFixed(2)}$`;
+                    document.getElementById('optBestProfit').innerText = `Expected Profit: $${Math.round(maxProfit)}`;
+                    if (window.MathJax) MathJax.typesetPromise();
+                    return;
+                }
+
+                let sumProfit = 0;
+                for (let k = 0; k < 30; k++) {
+                    let r = runSingleEpisode(candidate);
+                    sumProfit += (r.dynRev - r.dynB * params.cost);
+                }
+                let avgProfit = sumProfit / 30;
+
+                log.innerHTML += `Iter ${++iter}: $\\alpha=${candidate.toFixed(2)}$ -> Profit: $${Math.round(avgProfit)}<br>`;
+                log.scrollTop = log.scrollHeight;
+
+                if (avgProfit > maxProfit) {
+                    maxProfit = avgProfit;
+                    bestAlpha = candidate;
+                }
+
+                candidate += stepSize;
+                if (window.MathJax) MathJax.typesetPromise();
+            }, 100);
+        }
+
+        window.onload = () => {
+            updateSliders();
+            initCharts();
+            resetSimulation();
+
+            document.getElementById('simSpeed').oninput = function() {
+                document.getElementById('speedVal').innerText = this.value + 'x';
+                if (isRunning) { stopSimulation(); startSimulation(); }
+            };
+        };
+    </script>
+</body>
+</html>
