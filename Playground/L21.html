@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Deck - Leaderboard & Mission Logs</title>
+  <style>
+    :root {
+      --bg-color: #0b0f19;
+      --panel-bg: rgba(16, 24, 39, 0.85);
+      --panel-border: #1e293b;
+      --accent-amber: #ffb703;
+      --accent-cyan: #00f0ff;
+      --accent-green: #00ff66;
+      --text-main: #e2e8f0;
+      --text-muted: #64748b;
+      --gold: #ffd700;
+      --silver: #c0c0c0;
+      --bronze: #cd7f32;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 80%),
+        linear-gradient(rgba(30, 41, 59, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30, 41, 59, 0.2) 1px, transparent 1px);
+      background-size: 100% 100%, 20px 20px, 20px 20px;
+    }
+
+    /* Landing Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      border-bottom: 2px solid var(--accent-cyan);
+    }
+
+    .hud-title {
+      font-size: 3rem;
+      letter-spacing: 4px;
+      color: var(--accent-cyan);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+      margin-bottom: 10px;
+    }
+
+    .hud-subtitle {
+      font-size: 1.2rem;
+      color: var(--accent-amber);
+      letter-spacing: 2px;
+      margin-bottom: 40px;
+    }
+
+    .scroll-btn {
+      background: transparent;
+      border: 2px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 15px 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+
+    .scroll-btn:hover {
+      background: var(--accent-cyan);
+      color: var(--bg-color);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.8);
+    }
+
+    /* Radar Line Decoration */
+    .radar-sweep {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -1;
+    }
+    .radar-sweep::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 50%; height: 2px;
+      background: var(--accent-cyan);
+      transform-origin: 0% 0%;
+      animation: radar 4s linear infinite;
+    }
+    @keyframes radar {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 20px;
+    }
+
+    /* Panels & Cards */
+    .cockpit-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+      border-radius: 4px;
+      padding: 25px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .cockpit-panel::before {
+      content: 'SYS.LOG//';
+      position: absolute;
+      top: -10px;
+      left: 15px;
+      background: var(--bg-color);
+      padding: 0 8px;
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+    }
+
+    .panel-title {
+      font-size: 1.4rem;
+      color: var(--accent-amber);
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Import Form Controls */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 15px;
+      align-items: end;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .cockpit-input {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--panel-border);
+      color: var(--accent-cyan);
+      padding: 10px 15px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    .cockpit-input:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-action {
+      background: var(--accent-amber);
+      color: #000;
+      border: none;
+      padding: 11px 25px;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+
+    .btn-action:hover {
+      background: #e0a100;
+    }
+
+    /* Top 3 Podiums Section */
+    .top3-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .podium-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .podium-card.rank-1 { border-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); }
+    .podium-card.rank-2 { border-color: var(--silver); }
+    .podium-card.rank-3 { border-color: var(--bronze); }
+
+    .rank-badge {
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 2px 8px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    .rank-1 .rank-badge { background: var(--gold); color: #000; }
+    .rank-2 .rank-badge { background: var(--silver); color: #000; }
+    .rank-3 .rank-badge { background: var(--bronze); color: #000; }
+
+    .podium-name {
+      font-size: 1.2rem;
+      color: var(--text-main);
+      margin: 10px 0;
+    }
+
+    .podium-metric {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .podium-value {
+      color: var(--accent-green);
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    /* Leaderboard Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .cockpit-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .cockpit-table th, .cockpit-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .cockpit-table th {
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--accent-cyan);
+      font-size: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cockpit-table th:hover {
+      color: var(--accent-amber);
+    }
+
+    .cockpit-table tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .sort-icon {
+      font-size: 0.7rem;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Landing Section -->
+  <!-- <section class="hero">
+    <div class="radar-sweep"></div>
+    <h1 class="hud-title">FLIGHT DECK SYSTEM</h1>
+    <p class="hud-subtitle">FLIGHT DATA & LEADERBOARD SYSTEM</p>
+    <button class="scroll-btn" onclick="scrollToSystem()">INITIALIZE SYSTEM</button>
+  </section> -->
+
+  <!-- Import & Main Content Area -->
+  <div class="container" id="system-panel">
+    
+    <!-- File Import Panel -->
+    <div class="cockpit-panel">
+      <h2 class="panel-title"><span>✈</span> IMPORT MISSION RECORD (.TXT)</h2>
+      <form id="importForm" class="form-grid">
+        <div class="input-group">
+          <label for="pilotName">PILOT / CALLSIGN</label>
+          <input type="text" id="pilotName" class="cockpit-input" placeholder="e.g. MAVERICK" required>
+        </div>
+        <div class="input-group">
+          <label for="fileInput">SELECT TELEMETRY FILE (.TXT / JSON)</label>
+          <input type="file" id="fileInput" class="cockpit-input" accept=".txt,.json" required>
+        </div>
+        <button type="submit" class="btn-action">SAVE DATA LOG</button>
+      </form>
+    </div>
+
+    <!-- Top 3 Performers -->
+    <h2 style="color: var(--accent-cyan); margin-bottom: 15px;">TOP PERFORMERS</h2>
+    <div class="top3-grid" id="top3Container">
+      <!-- Top 3 items injected via JS -->
+    </div>
+
+    <!-- Leaderboard Panel -->
+    <div class="cockpit-panel">
+      <h2 class="panel-title"><span>📊</span> MISSION LEADERBOARD</h2>
+      <div class="table-container">
+        <table class="cockpit-table">
+          <thead>
+            <tr>
+              <th>RANK</th>
+              <th onclick="sortTable('pilotName')">PILOT <span class="sort-icon" id="sort-pilotName">↕</span></th>
+              <th onclick="sortTable('timestamp')">TIMESTAMP <span class="sort-icon" id="sort-timestamp">↕</span></th>
+              <th onclick="sortTable('totalEarned')">TOTAL EARNED ($) <span class="sort-icon" id="sort-totalEarned">↕</span></th>
+              <th onclick="sortTable('profitPercent')">PROFIT (%) <span class="sort-icon" id="sort-profitPercent">↕</span></th>
+              <th onclick="sortTable('bookings')">BOOKINGS <span class="sort-icon" id="sort-bookings">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <!-- Data rows injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Smooth scroll to main panel
+    function scrollToSystem() {
+      document.getElementById('system-panel').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- IndexedDB Storage Engine ---
+    const DB_NAME = 'FlightDeckDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'records';
+    let db;
+
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+          }
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve(db);
+        };
+        request.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    function saveRecord(record) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.add(record);
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    function getAllRecords() {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    // --- Global App State & Sorting ---
+    let recordsData = [];
+    let currentSort = { key: 'totalEarned', dir: 'desc' };
+
+    // --- Form Handling & Calculations ---
+    document.getElementById('importForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('pilotName').value.trim();
+      const fileInput = document.getElementById('fileInput');
+
+      if (!fileInput.files.length) return;
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = async (event) => {
+        try {
+          const fileData = JSON.parse(event.target.result);
+          
+          // Calculate Metrics
+          const dynamicRev = fileData.summary?.dynamic?.revenue || 0;
+          const cost = fileData.parameters?.cost || 0;
+          const profit = fileData.summary?.dynamic?.profit || 0;
+          const profitPct = cost > 0 ? (profit / cost) * 100 : 0;
+          const bookings = fileData.summary?.dynamic?.bookings || 0;
+
+          const record = {
+            pilotName: name,
+            timestamp: fileData.timestamp || new Date().toISOString(),
+            totalEarned: dynamicRev,
+            profitPercent: profitPct,
+            bookings: bookings,
+            rawParams: fileData.parameters
+          };
+
+          await saveRecord(record);
+          document.getElementById('importForm').reset();
+          await loadAndRenderData();
+
+        } catch (err) {
+          alert('Error parsing file: Make sure file format matches the JSON telemetry specification.');
+          console.error(err);
+        }
+      };
+
+      reader.readAsText(file);
+    });
+
+    // --- Table Rendering & Sorting ---
+    async function loadAndRenderData() {
+      recordsData = await getAllRecords();
+      renderLeaderboard();
+    }
+
+    function sortTable(key) {
+      if (currentSort.key === key) {
+        currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort.key = key;
+        currentSort.dir = 'desc';
+      }
+      renderLeaderboard();
+    }
+
+    function renderLeaderboard() {
+      // Sort Data
+      const sorted = [...recordsData].sort((a, b) => {
+        let valA = a[currentSort.key];
+        let valB = b[currentSort.key];
+
+        if (typeof valA === 'string') {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+
+        if (valA < valB) return currentSort.dir === 'asc' ? -1 : 1;
+        if (valA > valB) return currentSort.dir === 'asc' ? 1 : -1;
+        return 0;
+      });
+
+      // Update Sort Header Icons
+      ['pilotName', 'timestamp', 'totalEarned', 'profitPercent', 'bookings'].forEach(k => {
+        const icon = document.getElementById(`sort-${k}`);
+        if (icon) {
+          if (k === currentSort.key) {
+            icon.textContent = currentSort.dir === 'asc' ? '▲' : '▼';
+          } else {
+            icon.textContent = '↕';
+          }
+        }
+      });
+
+      // Render Top 3 Cards
+      const top3 = [...recordsData].sort((a, b) => b.totalEarned - a.totalEarned).slice(0, 3);
+      const top3Container = document.getElementById('top3Container');
+      top3Container.innerHTML = '';
+
+      for (let i = 0; i < 3; i++) {
+        const item = top3[i];
+        const card = document.createElement('div');
+        card.className = `podium-card rank-${i + 1}`;
+        if (item) {
+          card.innerHTML = `
+            <span class="rank-badge">TOP ${i + 1}</span>
+            <div class="podium-name">${item.pilotName}</div>
+            <div class="podium-metric">EARNED: <span class="podium-value">$${item.totalEarned.toFixed(2)}</span></div>
+            <div class="podium-metric">PROFIT: <span class="podium-value">${item.profitPercent.toFixed(1)}%</span></div>
+          `;
+        } else {
+          card.innerHTML = `
+            <span class="rank-badge">TOP ${i + 1}</span>
+            <div class="podium-name">---</div>
+            <div class="podium-metric">EARNED: <span class="podium-value">N/A</span></div>
+            <div class="podium-metric">PROFIT: <span class="podium-value">N/A</span></div>
+          `;
+        }
+        top3Container.appendChild(card);
+      }
+
+      // Render Main Table
+      const tbody = document.getElementById('leaderboardBody');
+      tbody.innerHTML = '';
+
+      if (sorted.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">NO MISSION LOGS RECORDED. IMPORT DATA TO BEGIN.</td></tr>`;
+        return;
+      }
+
+      sorted.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        const formattedDate = new Date(row.timestamp).toLocaleString();
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td style="color: var(--accent-cyan); font-weight: bold;">${row.pilotName}</td>
+          <td>${formattedDate}</td>
+          <td style="color: var(--accent-green);">$${row.totalEarned.toFixed(2)}</td>
+          <td>${row.profitPercent.toFixed(2)}%</td>
+          <td>${row.bookings}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Initialize application
+    window.addEventListener('DOMContentLoaded', async () => {
+      await initDB();
+      await loadAndRenderData();
+    });
+  </script>
+</body>
+</html>
