@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Standings Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dark-theme">
+  <!-- Layout Wrapper -->
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <img id="tournament-logo" src="" alt="Logo" class="logo hidden">
+        <div>
+          <h1 id="tournament-title">Apex League</h1>
+          <span id="tournament-season" class="badge">Season 1</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-btn active" data-view="standings">🏆 Standings</button>
+        <button class="nav-btn" data-view="matches">⚔️ Match Log</button>
+        <button class="nav-btn" data-view="analytics">📊 Analytics</button>
+      </nav>
+
+      <div class="sync-status">
+        <span class="pulse-dot"></span>
+        <span id="sync-text">Live Syncing</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="content-area">
+      <!-- Global Controls Bar -->
+      <header class="top-bar">
+        <div class="search-box">
+          <input type="text" id="global-search" placeholder="Search player, team, country...">
+        </div>
+        <div class="round-selector">
+          <label for="round-filter">Snapshot Round:</label>
+          <select id="round-filter">
+            <option value="latest">Latest Standings</option>
+          </select>
+        </div>
+      </header>
+
+      <!-- View 1: Standings Leaderboard -->
+      <section id="view-standings" class="view-panel active">
+        <div class="table-card glassmorphism">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th data-sort="rank">Rank</th>
+                <th>Player</th>
+                <th data-sort="played">P</th>
+                <th data-sort="wins">W</th>
+                <th data-sort="draws">D</th>
+                <th data-sort="losses">L</th>
+                <th data-sort="scoreDiff">DIFF</th>
+                <th data-sort="points">PTS</th>
+                <th data-sort="winRate">WR%</th>
+                <th>Form</th>
+              </tr>
+            </thead>
+            <tbody id="standings-body">
+              <!-- Rendered Dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- View 2: Match History Log -->
+      <section id="view-matches" class="view-panel hidden">
+        <div class="matches-filter-bar glassmorphism">
+          <select id="match-round-filter"><option value="all">All Rounds</option></select>
+          <input type="text" id="match-player-filter" placeholder="Filter by player name...">
+        </div>
+        <div id="matches-list" class="matches-grid"></div>
+      </section>
+
+      <!-- View 3: Visual Analytics -->
+      <section id="view-analytics" class="view-panel hidden">
+        <div class="charts-grid">
+          <div class="chart-card glassmorphism">
+            <h3>Rank Progression Over Rounds</h3>
+            <canvas id="rankProgressionChart"></canvas>
+          </div>
+          <div class="chart-card glassmorphism">
+            <h3>Win Rate Distribution</h3>
+            <canvas id="winRateChart"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Player Profile Modal -->
+  <div id="player-modal" class="modal hidden">
+    <div class="modal-content glassmorphism">
+      <button class="close-modal">&times;</button>
+      <div id="player-profile-detail"></div>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

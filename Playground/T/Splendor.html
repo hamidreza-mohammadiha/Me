@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Splendor Tournament Leaderboard</title>
+    <style>
+        /* ----- RESET & BASE ----- */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+            background: #f3efe8;
+            color: #1e1e2a;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            background: linear-gradient(135deg, #1a2639, #2c3e6b);
+            color: #f5f0e8;
+            padding: 1.8rem 2.2rem;
+            border-radius: 18px;
+            margin-bottom: 2.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 28px rgba(26, 38, 57, 0.35);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header-left .icon {
+            font-size: 2.2rem;
+            line-height: 1;
+        }
+        .header-left h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        .header-left .sub {
+            font-size: 0.9rem;
+            opacity: 0.75;
+            font-weight: 400;
+            margin-top: 0.1rem;
+        }
+        .header-stats {
+            display: flex;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+        }
+        .header-stats div {
+            text-align: center;
+        }
+        .header-stats .num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: block;
+            line-height: 1.2;
+        }
+        .header-stats .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            opacity: 0.7;
+        }
+
+        /* ----- CARDS ----- */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1.6rem 1.8rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+            gap: 0.6rem;
+        }
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a2639;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-header h2 .badge {
+            font-size: 0.7rem;
+            background: #e8e4dc;
+            color: #4a3f35;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .card-header .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* ----- BUTTONS ----- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1.2rem;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #f0ede8;
+            color: #1e1e2a;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-primary {
+            background: #2c3e6b;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #1f2e4f;
+        }
+        .btn-success {
+            background: #2a7d5e;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #1d6248;
+        }
+        .btn-danger {
+            background: #b13e4b;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #8f313c;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #d0cbc4;
+        }
+        .btn-outline:hover {
+            border-color: #a0988e;
+            background: rgba(0, 0, 0, 0.03);
+        }
+        .btn-gold {
+            background: #c9a84c;
+            color: #1e1e2a;
+        }
+        .btn-gold:hover {
+            background: #b8973a;
+        }
+        .btn-sm {
+            padding: 0.3rem 0.9rem;
+            font-size: 0.75rem;
+        }
+        .btn-xs {
+            padding: 0.15rem 0.6rem;
+            font-size: 0.65rem;
+            border-radius: 20px;
+        }
+
+        /* ----- FORM ELEMENTS ----- */
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            align-items: center;
+        }
+        .input-group input[type="text"],
+        .input-group input[type="number"] {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e0dad2;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            background: #faf8f5;
+            transition: border-color 0.2s;
+            outline: none;
+            flex: 1 1 180px;
+            min-width: 120px;
+            color: #1e1e2a;
+        }
+        .input-group input:focus {
+            border-color: #2c3e6b;
+            background: #fff;
+        }
+        .input-group input[type="number"] {
+            max-width: 100px;
+            flex: 0 1 80px;
+            text-align: center;
+        }
+        .input-group .player-label {
+            font-weight: 500;
+            font-size: 0.9rem;
+            min-width: 70px;
+            color: #3a3a4a;
+        }
+
+        /* ----- PLAYER TAGS ----- */
+        .player-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.3rem;
+        }
+        .player-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #ede9e2;
+            padding: 0.3rem 0.9rem 0.3rem 1.2rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1e1e2a;
+        }
+        .player-tag .remove {
+            cursor: pointer;
+            color: #a08078;
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            padding: 0 0.1rem;
+        }
+        .player-tag .remove:hover {
+            color: #b13e4b;
+        }
+
+        /* ----- GAME ENTRY ----- */
+        .game-entry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.8rem 1.2rem;
+            margin: 0.8rem 0 1.2rem;
+        }
+        .game-entry-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: #f8f6f2;
+            padding: 0.2rem 0.6rem 0.2rem 1rem;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .game-entry-item:focus-within {
+            border-color: #2c3e6b;
+            background: #fff;
+        }
+        .game-entry-item .name {
+            font-weight: 500;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 50px;
+        }
+        .game-entry-item input {
+            border: none;
+            background: transparent;
+            padding: 0.4rem 0.2rem;
+            width: 55px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            outline: none;
+            color: #1a2639;
+        }
+        .game-entry-item input::-webkit-inner-spin-button {
+            opacity: 0.5;
+        }
+        .game-entry-item .winner-star {
+            color: #c9a84c;
+            font-size: 0.8rem;
+            margin-left: 0.1rem;
+        }
+
+        /* ----- LEADERBOARD ----- */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 0.2rem;
+        }
+        table.leaderboard {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        table.leaderboard th {
+            text-align: left;
+            padding: 0.7rem 0.5rem 0.7rem 0;
+            font-weight: 600;
+            color: #4a4a5a;
+            border-bottom: 2px solid #e8e4dc;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        table.leaderboard td {
+            padding: 0.6rem 0.5rem 0.6rem 0;
+            border-bottom: 1px solid #f0ece6;
+            vertical-align: middle;
+        }
+        table.leaderboard tr:last-child td {
+            border-bottom: none;
+        }
+        table.leaderboard tr:hover td {
+            background: #f9f7f3;
+        }
+        .rank {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #6a5f55;
+            text-align: center;
+            width: 36px;
+        }
+        .rank.gold {
+            color: #c9a84c;
+        }
+        .rank.silver {
+            color: #a8a09a;
+        }
+        .rank.bronze {
+            color: #cd7f4a;
+        }
+        .player-name {
+            font-weight: 600;
+            color: #1a2639;
+        }
+        .stat-num {
+            font-weight: 600;
+            color: #1e1e2a;
+        }
+        .stat-sub {
+            font-size: 0.7rem;
+            color: #8a8078;
+            margin-left: 0.2rem;
+        }
+        .win-badge {
+            display: inline-block;
+            background: #c9a84c;
+            color: #1e1e2a;
+            font-weight: 700;
+            font-size: 0.7rem;
+            padding: 0.05rem 0.6rem;
+            border-radius: 20px;
+            min-width: 24px;
+            text-align: center;
+        }
+        .medal {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        /* ----- GAME HISTORY ----- */
+        .history-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 0.8rem;
+            background: #faf8f5;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #d0cbc4;
+            transition: background 0.15s;
+        }
+        .history-item:hover {
+            background: #f5f2ec;
+        }
+        .history-item .left {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem 1.2rem;
+        }
+        .history-item .date {
+            font-size: 0.75rem;
+            color: #8a8078;
+            font-weight: 500;
+        }
+        .history-item .scores {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem 1.2rem;
+        }
+        .history-item .score-entry {
+            font-size: 0.85rem;
+        }
+        .history-item .score-entry strong {
+            font-weight: 600;
+            color: #1a2639;
+        }
+        .history-item .score-entry .pts {
+            font-weight: 700;
+            color: #2c3e6b;
+        }
+        .history-item .score-entry.winner .pts {
+            color: #c9a84c;
+        }
+        .history-item .delete-btn {
+            background: none;
+            border: none;
+            color: #b0a8a0;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            transition: all 0.15s;
+        }
+        .history-item .delete-btn:hover {
+            color: #b13e4b;
+            background: rgba(177, 62, 75, 0.08);
+        }
+
+        /* ----- EMPTY STATES ----- */
+        .empty-state {
+            text-align: center;
+            padding: 2rem 0.5rem;
+            color: #8a8078;
+        }
+        .empty-state .emoji {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 0.6rem;
+        }
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* ----- TOAST / NOTIFICATION ----- */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1e1e2a;
+            color: #f5f0e8;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 700px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+            .header {
+                padding: 1.2rem 1.2rem;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.8rem;
+            }
+            .header-left h1 {
+                font-size: 1.4rem;
+            }
+            .header-stats {
+                justify-content: space-around;
+                padding: 0.5rem 0.8rem;
+                gap: 0.5rem;
+            }
+            .header-stats .num {
+                font-size: 1.2rem;
+            }
+            .card {
+                padding: 1.2rem 1rem;
+            }
+            .game-entry-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .game-entry-item {
+                padding: 0.1rem 0.4rem 0.1rem 0.6rem;
+            }
+            .game-entry-item input {
+                width: 45px;
+                font-size: 0.9rem;
+            }
+            .game-entry-item .name {
+                font-size: 0.75rem;
+                min-width: 30px;
+            }
+            table.leaderboard {
+                font-size: 0.78rem;
+            }
+            table.leaderboard th,
+            table.leaderboard td {
+                padding: 0.4rem 0.3rem 0.4rem 0;
+            }
+            .history-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.4rem;
+            }
+            .history-item .left {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.3rem;
+            }
+            .history-item .scores {
+                gap: 0.3rem 0.8rem;
+            }
+            .btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.9rem;
+            }
+            .input-group input[type="text"] {
+                flex: 1 1 120px;
+                min-width: 80px;
+            }
+            .rank {
+                width: 28px;
+                font-size: 0.8rem;
+            }
+        }
+        @media (max-width: 450px) {
+            .game-entry-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-stats {
+                flex-wrap: wrap;
+                gap: 0.2rem 1rem;
+            }
+        }
+
+        /* ----- UTILITY ----- */
+        .mt-1 {
+            margin-top: 0.6rem;
+        }
+        .mb-1 {
+            margin-bottom: 0.6rem;
+        }
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .gap-1 {
+            gap: 0.5rem;
+        }
+        .text-muted {
+            color: #8a8078;
+            font-size: 0.85rem;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- TOAST -->
+        <div id="toast" class="toast"></div>
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-left">
+                <span class="icon">👑</span>
+                <div>
+                    <h1>Splendor Tournament</h1>
+                    <div class="sub">Leaderboard &amp; results tracker</div>
+                </div>
+            </div>
+            <div class="header-stats" id="headerStats">
+                <div>
+                    <span class="num" id="totalPlayers">0</span>
+                    <span class="label">Players</span>
+                </div>
+                <div>
+                    <span class="num" id="totalGames">0</span>
+                    <span class="label">Games</span>
+                </div>
+                <div>
+                    <span class="num" id="totalScores">0</span>
+                    <span class="label">Scores recorded</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- PLAYER MANAGEMENT -->
+        <section class="card" id="playerCard">
+            <div class="card-header">
+                <h2>🧑‍🤝‍🧑 Players <span class="badge" id="playerCountBadge">0</span></h2>
+                <div class="actions">
+                    <button class="btn btn-outline btn-sm" id="resetAllBtn" title="Clear all data">🗑️ Reset</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <input type="text" id="playerInput" placeholder="Enter player name…" />
+                <button class="btn btn-primary" id="addPlayerBtn">+ Add</button>
+            </div>
+            <div class="player-tags" id="playerTags"></div>
+            <div class="text-muted mt-1" style="font-size:0.8rem;">
+                ⚡ Add all participants before recording games.
+            </div>
+        </section>
+
+        <!-- RECORD GAME -->
+        <section class="card" id="recordCard">
+            <div class="card-header">
+                <h2>🎲 Record Game</h2>
+                <div class="actions">
+                    <button class="btn btn-success" id="recordGameBtn">✅ Save Game</button>
+                </div>
+            </div>
+            <div id="gameEntryArea">
+                <div class="empty-state">
+                    <span class="emoji">➕</span>
+                    <p>Add at least 2 players above to start recording games.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEADERBOARD -->
+        <section class="card" id="leaderboardCard">
+            <div class="card-header">
+                <h2>🏆 Leaderboard</h2>
+                <div class="actions">
+                    <button class="btn btn-outline btn-sm" id="refreshLeaderboardBtn">🔄 Refresh</button>
+                </div>
+            </div>
+            <div id="leaderboardArea">
+                <div class="empty-state">
+                    <span class="emoji">📊</span>
+                    <p>No games recorded yet. Play some Splendor!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAME HISTORY -->
+        <section class="card" id="historyCard">
+            <div class="card-header">
+                <h2>📜 Game History <span class="badge" id="historyCount">0</span></h2>
+                <div class="actions">
+                    <button class="btn btn-outline btn-sm" id="clearHistoryBtn">🗑️ Clear All</button>
+                </div>
+            </div>
+            <div id="historyArea">
+                <div class="empty-state">
+                    <span class="emoji">🎴</span>
+                    <p>No games recorded yet.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <div style="text-align:center;font-size:0.75rem;color:#a0988e;padding:1rem 0 0.2rem;">
+            Data is saved locally in your browser &bull; Splendor Tournament Tracker
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATA LAYER
+        // ============================================================
+
+        const STORAGE_KEY = 'splendor_tournament_data';
+
+        function getDefaultData() {
+            return { players: [], games: [] };
+        }
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return getDefaultData();
+                const parsed = JSON.parse(raw);
+                // ensure structure
+                if (!parsed.players || !parsed.games) return getDefaultData();
+                return parsed;
+            } catch (_) {
+                return getDefaultData();
+            }
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // ============================================================
+        //  STATE
+        // ============================================================
+
+        let appData = loadData();
+
+        // ============================================================
+        //  DOM REFS
+        // ============================================================
+
+        const $ = (sel, ctx = document) => ctx.querySelector(sel);
+        const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+
+        const playerInput = $('#playerInput');
+        const addPlayerBtn = $('#addPlayerBtn');
+        const playerTags = $('#playerTags');
+        const playerCountBadge = $('#playerCountBadge');
+
+        const gameEntryArea = $('#gameEntryArea');
+        const recordGameBtn = $('#recordGameBtn');
+
+        const leaderboardArea = $('#leaderboardArea');
+        const refreshLeaderboardBtn = $('#refreshLeaderboardBtn');
+
+        const historyArea = $('#historyArea');
+        const historyCount = $('#historyCount');
+        const clearHistoryBtn = $('#clearHistoryBtn');
+
+        const resetAllBtn = $('#resetAllBtn');
+
+        const totalPlayersEl = $('#totalPlayers');
+        const totalGamesEl = $('#totalGames');
+        const totalScoresEl = $('#totalScores');
+
+        const toastEl = $('#toast');
+        let toastTimeout = null;
+
+        // ============================================================
+        //  TOAST
+        // ============================================================
+
+        function showToast(msg, duration = 2200) {
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, duration);
+        }
+
+        // ============================================================
+        //  PLAYER MANAGEMENT
+        // ============================================================
+
+        function renderPlayers() {
+            const players = appData.players;
+            if (players.length === 0) {
+                playerTags.innerHTML =
+                    `<span class="text-muted" style="padding:0.3rem 0;">No players yet. Add some above.</span>`;
+                playerCountBadge.textContent = '0';
+                return;
+            }
+            playerTags.innerHTML = players.map(name => `
+                <span class="player-tag">
+                    ${name}
+                    <button class="remove" data-name="${name}" title="Remove player">✕</button>
+                </span>
+            `).join('');
+            playerCountBadge.textContent = players.length;
+
+            // Remove handlers
+            $$('.player-tag .remove').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const name = btn.dataset.name;
+                    if (confirm(`Remove player "${name}" and all their scores?`)) {
+                        // remove from players
+                        appData.players = appData.players.filter(p => p !== name);
+                        // remove from all games
+                        appData.games.forEach(g => {
+                            delete g.scores[name];
+                        });
+                        // clean up games with no scores
+                        appData.games = appData.games.filter(g => Object.keys(g.scores).length > 0);
+                        saveData(appData);
+                        renderAll();
+                        showToast(`Removed "${name}"`);
+                    }
+                });
+            });
+        }
+
+        function addPlayer() {
+            const name = playerInput.value.trim();
+            if (!name) { showToast('Please enter a name.'); return; }
+            if (appData.players.includes(name)) { showToast(`"${name}" already exists.`); return; }
+            appData.players.push(name);
+            saveData(appData);
+            playerInput.value = '';
+            playerInput.focus();
+            renderAll();
+            showToast(`Added "${name}"`);
+        }
+
+        // ============================================================
+        //  GAME ENTRY FORM
+        // ============================================================
+
+        function renderGameEntry() {
+            const players = appData.players;
+            if (players.length < 2) {
+                gameEntryArea.innerHTML = `
+                    <div class="empty-state">
+                        <span class="emoji">👥</span>
+                        <p>Need at least 2 players to record a game.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `<div class="game-entry-grid">`;
+            players.forEach(name => {
+                html += `
+                    <div class="game-entry-item" data-player="${name}">
+                        <span class="name">${name}</span>
+                        <input type="number" min="0" max="99" value="0" data-player="${name}" />
+                        <span class="winner-star" data-player="${name}" style="display:none;">⭐</span>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            html += `
+                <div style="display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;margin-top:0.2rem;">
+                    <span style="font-size:0.8rem;color:#6a5f55;">Enter each player's prestige points.</span>
+                    <span style="font-size:0.8rem;color:#6a5f55;margin-left:auto;" id="gameEntryHint">Winner gets ⭐</span>
+                </div>
+            `;
+            gameEntryArea.innerHTML = html;
+
+            // Auto-detect winner as user types
+            const inputs = $$('.game-entry-item input', gameEntryArea);
+            inputs.forEach(inp => {
+                inp.addEventListener('input', () => updateWinnerStars());
+                inp.addEventListener('change', () => updateWinnerStars());
+            });
+            // also update on any change
+            setTimeout(updateWinnerStars, 50);
+        }
+
+        function updateWinnerStars() {
+            const items = $$('.game-entry-item', gameEntryArea);
+            const scores = {};
+            items.forEach(item => {
+                const inp = item.querySelector('input');
+                const val = parseInt(inp.value, 10) || 0;
+                const name = inp.dataset.player;
+                scores[name] = val;
+            });
+            const maxVal = Math.max(...Object.values(scores), 0);
+            // if maxVal === 0, no winner
+            const winners = Object.keys(scores).filter(name => scores[name] === maxVal && maxVal > 0);
+
+            items.forEach(item => {
+                const star = item.querySelector('.winner-star');
+                const name = item.querySelector('input').dataset.player;
+                if (winners.includes(name) && maxVal > 0) {
+                    star.style.display = 'inline';
+                } else {
+                    star.style.display = 'none';
+                }
+            });
+        }
+
+        // ============================================================
+        //  RECORD GAME
+        // ============================================================
+
+        function recordGame() {
+            const players = appData.players;
+            if (players.length < 2) { showToast('Need at least 2 players.'); return; }
+
+            const inputs = $$('.game-entry-item input', gameEntryArea);
+            const scores = {};
+            let allZero = true;
+            inputs.forEach(inp => {
+                const val = parseInt(inp.value, 10) || 0;
+                const name = inp.dataset.player;
+                scores[name] = val;
+                if (val > 0) allZero = false;
+            });
+
+            if (allZero) { showToast('All scores are zero. Enter at least one score > 0.'); return; }
+
+            // Check if any player is missing (shouldn't happen)
+            const allPlayers = new Set(players);
+            const scoredPlayers = new Set(Object.keys(scores));
+            // if some players have no score entry, add them with 0
+            allPlayers.forEach(p => {
+                if (!scoredPlayers.has(p)) scores[p] = 0;
+            });
+
+            // Build game record
+            const game = {
+                id: 'g_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+                date: new Date().toISOString().slice(0, 10),
+                scores: scores
+            };
+
+            appData.games.push(game);
+            saveData(appData);
+            renderAll();
+            showToast(`✅ Game recorded! (${Object.keys(scores).length} players)`);
+        }
+
+        // ============================================================
+        //  LEADERBOARD
+        // ============================================================
+
+        function computeStats() {
+            const players = appData.players;
+            const games = appData.games;
+
+            const stats = {};
+            players.forEach(p => {
+                stats[p] = {
+                    gamesPlayed: 0,
+                    totalPoints: 0,
+                    wins: 0,
+                    bestScore: 0,
+                    allScores: []
+                };
+            });
+
+            games.forEach(g => {
+                const scores = g.scores;
+                const entries = Object.keys(scores).filter(p => players.includes(p));
+                if (entries.length === 0) return;
+
+                // find max
+                let maxVal = -Infinity;
+                entries.forEach(p => { if (scores[p] > maxVal) maxVal = scores[p]; });
+                const winners = entries.filter(p => scores[p] === maxVal);
+
+                entries.forEach(p => {
+                    const s = stats[p];
+                    s.gamesPlayed += 1;
+                    const pts = scores[p] || 0;
+                    s.totalPoints += pts;
+                    s.allScores.push(pts);
+                    if (pts > s.bestScore) s.bestScore = pts;
+                    if (winners.includes(p)) s.wins += 1;
+                });
+            });
+
+            // compute average
+            players.forEach(p => {
+                const s = stats[p];
+                s.average = s.gamesPlayed > 0 ? (s.totalPoints / s.gamesPlayed) : 0;
+            });
+
+            return stats;
+        }
+
+        function renderLeaderboard() {
+            const players = appData.players;
+            const games = appData.games;
+
+            if (players.length === 0 || games.length === 0) {
+                leaderboardArea.innerHTML = `
+                    <div class="empty-state">
+                        <span class="emoji">📊</span>
+                        <p>No games recorded yet. Play some Splendor!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const stats = computeStats();
+
+            // Sort: total points desc, wins desc, average desc
+            const sorted = [...players].sort((a, b) => {
+                const sa = stats[a],
+                    sb = stats[b];
+                if (sa.totalPoints !== sb.totalPoints) return sb.totalPoints - sa.totalPoints;
+                if (sa.wins !== sb.wins) return sb.wins - sa.wins;
+                return sb.average - sa.average;
+            });
+
+            let html = `<div class="table-wrap"><table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th style="width:44px;">#</th>
+                        <th>Player</th>
+                        <th style="text-align:center;">Played</th>
+                        <th style="text-align:center;">Total</th>
+                        <th style="text-align:center;">Avg</th>
+                        <th style="text-align:center;">Wins</th>
+                        <th style="text-align:center;">Best</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            sorted.forEach((p, idx) => {
+                const s = stats[p];
+                const rank = idx + 1;
+                let rankClass = 'rank';
+                let medal = '';
+                if (rank === 1) { rankClass += ' gold';
+                    medal = '🥇 '; } else if (rank === 2) { rankClass += ' silver';
+                    medal = '🥈 '; } else if (rank === 3) { rankClass += ' bronze';
+                    medal = '🥉 '; }
+
+                const avgDisplay = s.average.toFixed(1);
+
+                html += `
+                    <tr>
+                        <td class="${rankClass}">${medal}${rank}</td>
+                        <td class="player-name">${p}</td>
+                        <td style="text-align:center;">${s.gamesPlayed}</td>
+                        <td style="text-align:center;font-weight:700;color:#2c3e6b;">${s.totalPoints}</td>
+                        <td style="text-align:center;">${avgDisplay}</td>
+                        <td style="text-align:center;"><span class="win-badge">${s.wins}</span></td>
+                        <td style="text-align:center;">${s.bestScore}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div>`;
+            leaderboardArea.innerHTML = html;
+        }
+
+        // ============================================================
+        //  GAME HISTORY
+        // ============================================================
+
+        function renderHistory() {
+            const games = appData.games;
+            if (games.length === 0) {
+                historyArea.innerHTML = `
+                    <div class="empty-state">
+                        <span class="emoji">🎴</span>
+                        <p>No games recorded yet.</p>
+                    </div>
+                `;
+                historyCount.textContent = '0';
+                return;
+            }
+
+            // show newest first
+            const sorted = [...games].reverse();
+
+            let html = '';
+            sorted.forEach(g => {
+                const scores = g.scores;
+                const entries = Object.keys(scores).filter(p => appData.players.includes(p));
+                if (entries.length === 0) return;
+
+                // find winner(s)
+                let maxVal = -Infinity;
+                entries.forEach(p => { if (scores[p] > maxVal) maxVal = scores[p]; });
+                const winners = entries.filter(p => scores[p] === maxVal);
+
+                const scoreHtml = entries.map(p => {
+                    const isWinner = winners.includes(p);
+                    const pts = scores[p] || 0;
+                    return `<span class="score-entry ${isWinner ? 'winner' : ''}">
+                        <strong>${p}</strong> <span class="pts">${pts}</span>${isWinner ? ' ⭐' : ''}
+                    </span>`;
+                }).join('');
+
+                html += `
+                    <div class="history-item" data-id="${g.id}">
+                        <div class="left">
+                            <span class="date">📅 ${g.date}</span>
+                            <div class="scores">${scoreHtml}</div>
+                        </div>
+                        <button class="delete-btn" data-id="${g.id}" title="Delete this game">✕</button>
+                    </div>
+                `;
+            });
+
+            if (!html) {
+                historyArea.innerHTML = `
+                    <div class="empty-state">
+                        <span class="emoji">🎴</span>
+                        <p>No games with active players.</p>
+                    </div>
+                `;
+                historyCount.textContent = '0';
+                return;
+            }
+
+            historyArea.innerHTML = html;
+            historyCount.textContent = games.length;
+
+            // Delete handlers
+            $$('.history-item .delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.id;
+                    if (confirm('Delete this game? This cannot be undone.')) {
+                        appData.games = appData.games.filter(g => g.id !== id);
+                        saveData(appData);
+                        renderAll();
+                        showToast('Game deleted.');
+                    }
+                });
+            });
+        }
+
+        // ============================================================
+        //  HEADER STATS
+        // ============================================================
+
+        function renderHeaderStats() {
+            totalPlayersEl.textContent = appData.players.length;
+            totalGamesEl.textContent = appData.games.length;
+            let totalScores = 0;
+            appData.games.forEach(g => {
+                totalScores += Object.keys(g.scores).filter(p => appData.players.includes(p)).length;
+            });
+            totalScoresEl.textContent = totalScores;
+        }
+
+        // ============================================================
+        //  RESET / CLEAR
+        // ============================================================
+
+        function resetAll() {
+            if (!confirm('⚠️ Delete ALL data (players, games, scores)? This cannot be undone.')) return;
+            appData = getDefaultData();
+            saveData(appData);
+            renderAll();
+            showToast('All data cleared.');
+        }
+
+        function clearHistory() {
+            if (appData.games.length === 0) { showToast('No games to clear.'); return; }
+            if (!confirm('Delete ALL game history? Players will remain.')) return;
+            appData.games = [];
+            saveData(appData);
+            renderAll();
+            showToast('History cleared.');
+        }
+
+        // ============================================================
+        //  RENDER ALL
+        // ============================================================
+
+        function renderAll() {
+            renderPlayers();
+            renderGameEntry();
+            renderLeaderboard();
+            renderHistory();
+            renderHeaderStats();
+            // update winner stars after a tiny delay
+            setTimeout(updateWinnerStars, 80);
+        }
+
+        // ============================================================
+        //  EVENT BINDING
+        // ============================================================
+
+        addPlayerBtn.addEventListener('click', addPlayer);
+        playerInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPlayer(); });
+
+        recordGameBtn.addEventListener('click', recordGame);
+
+        refreshLeaderboardBtn.addEventListener('click', () => {
+            renderLeaderboard();
+            showToast('Leaderboard refreshed.');
+        });
+
+        clearHistoryBtn.addEventListener('click', clearHistory);
+        resetAllBtn.addEventListener('click', resetAll);
+
+        // Keyboard shortcut: Ctrl+Enter to record game
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                const active = document.activeElement;
+                if (active && active.closest('.game-entry-item')) {
+                    e.preventDefault();
+                    recordGame();
+                }
+            }
+        });
+
+        // ============================================================
+        //  AUTO-LOAD
+        // ============================================================
+
+        renderAll();
+
+        // also re-render when coming back from another tab (storage change)
+        window.addEventListener('storage', (e) => {
+            if (e.key === STORAGE_KEY) {
+                appData = loadData();
+                renderAll();
+                showToast('📥 Data updated from another tab.');
+            }
+        });
+
+        console.log('🏆 Splendor Tournament Tracker ready!');
+        console.log(`📊 ${appData.players.length} players, ${appData.games.length} games`);
+    </script>
+
+</body>
+</html>
